@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
-import 'signup.dart';
 
 class StartPage extends StatelessWidget {
   const StartPage({super.key});
@@ -25,8 +23,7 @@ class StartPage extends StatelessWidget {
                 height: 60,
                 child:ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const LoginPage()),);
+
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
@@ -45,8 +42,7 @@ class StartPage extends StatelessWidget {
                 height: 60,
                 child:ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const SignupPage()),);
+
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
