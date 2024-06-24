@@ -1,88 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'start_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GPS Application',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'GUIO App',
+        theme: ThemeData(
+          //useMaterial3: true,
+          //colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue), //Queda comentado hasta ver cómo funcionan los temas
+        ),
+        home: const GeneratorPage(),
       ),
-      home: MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class GeneratorPage extends StatefulWidget {
+  const GeneratorPage({super.key});
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  State<GeneratorPage> createState() => _GeneratorPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _latitudeController = TextEditingController();
-  final TextEditingController _longitudeController = TextEditingController();
-  String _response = '';
-
-  Future<void> _getLocation() async {
-    final String latitude = _latitudeController.text;
-    final String longitude = _longitudeController.text;
-    final String url = 'http://10.0.2.2:8080/api/gps/location?latitude=$latitude&longitude=$longitude';
-
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        setState(() {
-          _response = response.body;
-        });
-      } else {
-        setState(() {
-          _response = 'Error: ${response.reasonPhrase}';
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _response = 'Error: $e';
-      });
-    }
-  }
+class _GeneratorPageState extends State<GeneratorPage> {
+  var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('GPS Application'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
+    Widget page;
+    switch (selectedIndex) {
+      case 0:
+        page = const StartPage();
+      default:
+        throw UnimplementedError('no widget for $selectedIndex');
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
           children: [
-            TextField(
-              controller: _latitudeController,
-              decoration: InputDecoration(
-                labelText: 'Latitude',
+            Expanded(
+              child: Container(
+                //color: Theme.of(context).colorScheme.primaryContainer, //Queda comentado hasta solucionar problemas con colores
+                child: page,
               ),
             ),
-            TextField(
-              controller: _longitudeController,
-              decoration: InputDecoration(
-                labelText: 'Longitude',
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getLocation,
-              child: Text('Get Location'),
-            ),
-            SizedBox(height: 20),
-            Text(_response),
           ],
         ),
-      ),
-    );
+      );
+    });
   }
 }
+
+class MyAppState extends ChangeNotifier {
+
+}
+
