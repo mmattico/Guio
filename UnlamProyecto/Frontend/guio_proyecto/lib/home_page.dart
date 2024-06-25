@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:carousel_slider/carousel_slider.dart';
+//import 'package:dropdown_search/dropdown_search.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -41,7 +43,7 @@ class HomePage extends StatelessWidget {
               children: [
                 _heading(context),
                 const SizedBox(height: 10),
-                //_searchBar(context),
+                _searchBar(context),
                 const SizedBox(height: 10),
                 _mostVisited(context),
                 const SizedBox(height: 10),
@@ -76,6 +78,25 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _searchBar(context){
+    String selectedValue = "Cardiología";
+    return Column(children: <Widget>[
+    DropdownButtonFormField(
+        decoration: InputDecoration(
+            enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey, width: 1),
+            borderRadius: BorderRadius.circular(20),
+            ),
+        ),
+        value: selectedValue,
+        items: dropdownItems,
+         onChanged: (value) {  },
+        isExpanded: true,
+      )
+    ]);
+
   }
 
   _mostVisited(context){ //Ver como hacer para ponerlo a la izquierda
@@ -138,4 +159,18 @@ class HomePage extends StatelessWidget {
     );
   }
 
+}
+
+List<DropdownMenuItem<String>> get dropdownItems{
+  List<DropdownMenuItem<String>> menuItems = [
+    const DropdownMenuItem(child: Text("Cardiología"),value: "Cardiología"),
+    const DropdownMenuItem(child: Text("Traumatología"),value: "Traumatología"),
+    const DropdownMenuItem(child: Text("Oftalmología"),value: "Oftalmología"),
+    const DropdownMenuItem(child: Text("Clinica Médica"),value: "Clinica Médica"),
+    const DropdownMenuItem(child: Text("Obstetricia"),value: "Obstetricia"),
+    const DropdownMenuItem(child: Text("Cirujía"),value: "Cirujía"),
+    const DropdownMenuItem(child: Text("Internaciones"),value: "Internaciones"),
+    const DropdownMenuItem(child: Text("Guardia Médica"),value: "Guardia Médica"),
+  ];
+  return menuItems;
 }
