@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:carousel_slider/carousel_slider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 //import 'package:dropdown_search/dropdown_search.dart';
 
 
@@ -47,11 +47,11 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: 10),
                 _mostVisited(context),
                 const SizedBox(height: 10),
-                //_carrouselAreas(context),
+                _carouselAreas(context),
                 const SizedBox(height: 10),
                 _services(context),
                 const SizedBox(height: 10),
-                //_carrouselServices(context),
+                //_carouselServices(context),
                 const SizedBox(height: 10),
                 _emergencyButton(context),
               ],
@@ -115,6 +115,31 @@ class HomePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  _carouselAreas(context){
+    return CarouselSlider(
+      options: CarouselOptions(height: 100.0,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: true),
+      items: [1,2,3,4,5].map((i) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+                width: 100, //MediaQuery.of(context).size.width
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.lightBlueAccent
+                ),
+                child: Text('ÁREA $i', style: TextStyle(fontSize: 16.0),)
+            );
+          },
+        );
+      }).toList(),
+    );
+
+
   }
 
   _services(context){ //Ver como hacer para ponerlo a la izquierda
