@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 //import 'package:dropdown_search/dropdown_search.dart';
+import 'package:carousel_indicator/carousel_indicator.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -11,11 +12,10 @@ class HomePage extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          //title: const Text("GUIO App"), // Agregar logo
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.network(
-              'https://cdn.logo.com/hotlink-ok/logo-social.png',
+              'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar por logo de GUIO
               //Reemplazar con Icon de GUIO
               height: 50,
             ),
@@ -36,7 +36,8 @@ class HomePage extends StatelessWidget {
             onPressed: () {},
           ),
         ),
-        body: Container(
+        body: SingleChildScrollView(
+        child: Container(
             margin: const EdgeInsets.fromLTRB(24, 10, 24, 24),
             child:
             Column(
@@ -46,9 +47,9 @@ class HomePage extends StatelessWidget {
                 _searchBar(context),
                 const SizedBox(height: 10),
                 _mostVisited(context),
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
                 _carouselAreas(context),
-                const SizedBox(height: 10),
+                //const SizedBox(height: 10),
                 _services(context),
                 const SizedBox(height: 10),
                 //_carouselServices(context),
@@ -57,6 +58,7 @@ class HomePage extends StatelessWidget {
               ],
             )
         ),
+      ),
       ),
       debugShowCheckedModeBanner: false, //Removing Debug Banner
     );
@@ -119,27 +121,35 @@ class HomePage extends StatelessWidget {
 
   _carouselAreas(context){
     return CarouselSlider(
-      options: CarouselOptions(height: 100.0,
-        enableInfiniteScroll: true,
-        enlargeCenterPage: true),
+      options: CarouselOptions(height: 170.0,
+        //enableInfiniteScroll: true,
+        enlargeCenterPage: true,
+        viewportFraction: 0.4
+      ),
       items: [1,2,3,4,5].map((i) {
         return Builder(
           builder: (BuildContext context) {
             return Container(
-                width: 100, //MediaQuery.of(context).size.width
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                width: 170, //MediaQuery.of(context).size.width
+                margin: EdgeInsets.symmetric(horizontal: 3.0),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.lightBlueAccent
                 ),
-                child: Text('ÁREA $i', style: TextStyle(fontSize: 16.0),)
+                child: Center(
+                    child:
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child:
+                      Text('ÁREA $i', style: TextStyle(fontSize: 16.0, color: Colors.black)),
+                    )
+                )
+
             );
           },
         );
       }).toList(),
     );
-
-
   }
 
   _services(context){ //Ver como hacer para ponerlo a la izquierda
