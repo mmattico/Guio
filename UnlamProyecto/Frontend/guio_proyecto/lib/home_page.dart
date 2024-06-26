@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-//import 'package:dropdown_search/dropdown_search.dart';
-import 'package:carousel_indicator/carousel_indicator.dart';
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -88,7 +85,7 @@ class HomePage extends StatelessWidget {
     DropdownButtonFormField(
         decoration: InputDecoration(
             enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey, width: 1),
+            borderSide: const BorderSide(color: Colors.grey, width: 1),
             borderRadius: BorderRadius.circular(20),
             ),
         ),
@@ -131,8 +128,8 @@ class HomePage extends StatelessWidget {
           builder: (BuildContext context) {
             return Container(
                 width: 170, //MediaQuery.of(context).size.width
-                margin: EdgeInsets.symmetric(horizontal: 3.0),
-                decoration: BoxDecoration(
+                margin: const EdgeInsets.symmetric(horizontal: 3.0),
+                decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.lightBlueAccent
                 ),
@@ -141,7 +138,7 @@ class HomePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 50.0),
                       child:
-                      Text('ÁREA $i', style: TextStyle(fontSize: 16.0, color: Colors.black)),
+                      Text('ÁREA $i', style: const TextStyle(fontSize: 16.0, color: Colors.black)),
                     )
                 )
 
@@ -178,6 +175,7 @@ class HomePage extends StatelessWidget {
             height: 60,
             child:ElevatedButton(
               onPressed: () {
+                _emergencyPopUp(context);
               },
               style: ElevatedButton.styleFrom(
                 shape: const StadiumBorder(),
@@ -194,18 +192,107 @@ class HomePage extends StatelessWidget {
     );
   }
 
+
+  /*_emergencyPopUp(context) {
+    return Alert(
+      context: context,
+      type: AlertType.warning,
+      title: "ALERTA ENVIADA",
+      desc: "¡Por favor, quédate en la misma ubicación hasta recibir asistencia!",
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Emergencia Solucionada",
+            style: TextStyle(color: Colors.white, fontSize: 19),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+          height: 60,
+        ),
+        DialogButton(
+          child: Text(
+            "Cancelar",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+          height: 60,
+        ),
+      ],
+    ).show();
+  }*/
+
+  Future<void> _emergencyPopUp(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Column(
+            children: <Widget>[
+              Icon(
+                Icons.info_outline, // Icono grande
+                size: 80, // Tamaño del icono
+                color: Colors.red
+              ),
+              SizedBox(height: 10), // Espacio entre el icono y el título
+              Text(
+                'ALERTA ENVIADA',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+          content: const Text(
+            '¡Por favor, quédate en la\n'
+            'misma ubicación hasta recibir asistencia!\n',
+              textAlign: TextAlign.center
+          ),
+          actions: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Column(
+                //mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                      //backgroundColor: const Color.fromRGBO(145, 197, 148, 75)
+                    ),
+                    child: const Text('Emergencia Solucionada'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      textStyle: Theme.of(context).textTheme.labelLarge,
+                      //backgroundColor: Colors.grey
+                    ),
+                    child: const Text('Cancelar'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
 
 List<DropdownMenuItem<String>> get dropdownItems{
   List<DropdownMenuItem<String>> menuItems = [
-    const DropdownMenuItem(child: Text("Cardiología"),value: "Cardiología"),
-    const DropdownMenuItem(child: Text("Traumatología"),value: "Traumatología"),
-    const DropdownMenuItem(child: Text("Oftalmología"),value: "Oftalmología"),
-    const DropdownMenuItem(child: Text("Clinica Médica"),value: "Clinica Médica"),
-    const DropdownMenuItem(child: Text("Obstetricia"),value: "Obstetricia"),
-    const DropdownMenuItem(child: Text("Cirujía"),value: "Cirujía"),
-    const DropdownMenuItem(child: Text("Internaciones"),value: "Internaciones"),
-    const DropdownMenuItem(child: Text("Guardia Médica"),value: "Guardia Médica"),
+    const DropdownMenuItem(value: "Cardiología", child: Text("Cardiología")),
+    const DropdownMenuItem(value: "Traumatología", child: Text("Traumatología")),
+    const DropdownMenuItem(value: "Oftalmología", child: Text("Oftalmología")),
+    const DropdownMenuItem(value: "Clinica Médica", child: Text("Clinica Médica")),
+    const DropdownMenuItem(value: "Obstetricia", child: Text("Obstetricia")),
+    const DropdownMenuItem(value: "Cirujía", child: Text("Cirujía")),
+    const DropdownMenuItem(value: "Internaciones", child: Text("Internaciones")),
+    const DropdownMenuItem(value: "Guardia Médica", child: Text("Guardia Médica")),
   ];
   return menuItems;
 }
