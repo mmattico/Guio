@@ -15,7 +15,17 @@ class StartPage extends StatelessWidget {
             'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar con Icon de GUIO
             height: 150,
           ),
-          const SizedBox(height: 10),
+          const Text("Guío"),
+          const SizedBox(height: 50),
+          const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("Bienvenido"),
+              Text("Inicia sesión para disfrutar de todas \n"
+                  "las opciones que ofrece Guío"),
+            ]
+          ),
+          const SizedBox(height: 200),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -51,11 +61,12 @@ class StartPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
+                    backgroundColor: Colors.white,
+                    overlayColor: Colors.blue,
                   ),
                   child: const Text(
                     "Registrate",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: TextStyle(fontSize: 20, color: Color.fromRGBO(65, 105, 225, 1)),
                   ),
                 ),
               ),

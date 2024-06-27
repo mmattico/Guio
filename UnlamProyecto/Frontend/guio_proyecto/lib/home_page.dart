@@ -1,284 +1,259 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+//import 'package:carousel_slider/carousel_slider.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool areaIsDisabled = false;
+  int? selectedIconIndexArea;
+
+  bool serviceIsDisabled = false;
+  int? selectedIconIndexService;
+
+  void onIconPressedArea(int index) {
+    setState(() {
+      if (selectedIconIndexArea == index) {
+        areaIsDisabled = !areaIsDisabled;
+      } else {
+        areaIsDisabled = true;
+        selectedIconIndexArea = index;
+      }
+
+      if (!areaIsDisabled) {
+        selectedIconIndexArea = null;
+      }
+    });
+  }
+
+  void onIconPressedService(int index) {
+    setState(() {
+      if (selectedIconIndexService == index) {
+        serviceIsDisabled = !serviceIsDisabled;
+      } else {
+        serviceIsDisabled = true;
+        selectedIconIndexService = index;
+      }
+
+      if (!areaIsDisabled) {
+        selectedIconIndexArea = null;
+      }
+    });
+  }
+
+  List<String> areaTexts = [
+    'Cardiología',
+    'Neurología',
+    'Dermatología',
+    'Pediatría',
+    'Clinica Medica',
+    'Ginecología'
+  ];
+
+  List<String> serviceTexts = [
+    'Baño',
+    'Snack',
+    'Ventanilla'
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Image.network(
-              'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar por logo de GUIO
-              //Reemplazar con Icon de GUIO
-              height: 50,
-            ),
-          ),
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.help),
-              tooltip: 'Help Icon',
-              onPressed: () {},
-            ),
-          ],
-          backgroundColor: Colors.grey,
-          elevation: 50.0,
-          leading: IconButton(
-            icon: const Icon(Icons.person),
-            tooltip: 'Profile',
-            onPressed: () {},
+    return Scaffold(
+      appBar: AppBar(
+        title: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.network(
+            'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar por logo de GUIO
+            //Reemplazar con Icon de GUIO
+            height: 50,
           ),
         ),
-        body: SingleChildScrollView(
-        child: Container(
-            margin: const EdgeInsets.fromLTRB(24, 10, 24, 24),
-            child:
-            Column(
-              children: [
-                _heading(context),
-                const SizedBox(height: 10),
-                _searchBar(context),
-                const SizedBox(height: 10),
-                _mostVisited(context),
-                //const SizedBox(height: 10),
-                _carouselAreas(context),
-                //const SizedBox(height: 10),
-                _services(context),
-                const SizedBox(height: 10),
-                //_carouselServices(context),
-                const SizedBox(height: 10),
-                _emergencyButton(context),
-              ],
+        centerTitle: true,
+        //backgroundColor: Colors.grey[200],
+        elevation: 50.0,
+        leading: IconButton(
+          icon: const Icon(Icons.person),
+          tooltip: 'Profile',
+          onPressed: () {},
+        ),
+      ),
+      body:
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              '¿A dónde desea ir?',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 1),
+            _searchBar(context),
+            const SizedBox(height: 20),
+            const Text(
+              'Áreas más visitadas',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 5,
+                children: List.generate(areaTexts.length, (index) {
+                  return InkWell(
+                      onTap: areaIsDisabled && selectedIconIndexArea != index
+                          ? null
+                          : () => onIconPressedArea(index),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: areaIsDisabled && selectedIconIndexArea != index
+                              ? Colors.grey
+                              : Colors.blue[100],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.favorite,
+                          size: 40,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        areaTexts[index],
+                        style: TextStyle(
+                          color: areaIsDisabled && selectedIconIndexArea != index
+                              ? Colors.grey
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  );
+                }),
+              ),
+            ),
+            //const SizedBox(height: 10),
+            const SizedBox(height: 20),
+            const Text(
+              'Servicios',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 5,
+                children: List.generate(serviceTexts.length, (index) {
+                  return InkWell(
+                    onTap: serviceIsDisabled && selectedIconIndexService != index
+                        ? null
+                        : () => onIconPressedService(index),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            color: serviceIsDisabled && selectedIconIndexService != index
+                                ? Colors.grey
+                                : Colors.blue[100],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Icon(
+                            Icons.favorite,
+                            size: 40,
+                            color: serviceIsDisabled && selectedIconIndexService != index
+                                ? Colors.grey
+                                : Colors.blue,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          serviceTexts[index],
+                          style: TextStyle(
+                            color: serviceIsDisabled && selectedIconIndexService != index
+                                ? Colors.grey
+                                : Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child:
+              SizedBox(
+                  width: 250,
+                  height: 60,
+                  child:ElevatedButton(
+                    onPressed: () {
+                      //Agregar accion
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      backgroundColor: Colors.blue[100],
+                    ),
+                    child: const Text(
+                      "IR",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),
+                  )
+              ),
             )
+          ],
         ),
       ),
-      ),
-      debugShowCheckedModeBanner: false, //Removing Debug Banner
     );
   }
 
-  _heading(context){ //Ver como hacer para ponerlo a la izquierda
-    return const
-    Center(
-      child: Column(
-        children: [
-          Text(
-            "Bienvenido",
-            style: TextStyle(fontSize: 60, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "¿A donde quiere ir?",
-            style: TextStyle(fontSize: 20),
-          ),
-        ],
-      ),
-    );
-  }
 
-  _searchBar(context){
+  _searchBar(BuildContext context) {
     String selectedValue = "Cardiología";
     return Column(children: <Widget>[
-    DropdownButtonFormField(
+      DropdownButtonFormField(
         decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
+          enabledBorder: OutlineInputBorder(
             borderSide: const BorderSide(color: Colors.grey, width: 1),
             borderRadius: BorderRadius.circular(20),
-            ),
+          ),
         ),
         value: selectedValue,
         items: dropdownItems,
-         onChanged: (value) {  },
+        onChanged: (value) {  },
         isExpanded: true,
       )
     ]);
 
-  }
-
-  _mostVisited(context){ //Ver como hacer para ponerlo a la izquierda
-    return const
-    Center(
-      child: Column(
-        children: [
-          Text(
-            "Lugares más visitados",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "Seleccione un área",
-            style: TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _carouselAreas(context){
-    return CarouselSlider(
-      options: CarouselOptions(height: 170.0,
-        //enableInfiniteScroll: true,
-        enlargeCenterPage: true,
-        viewportFraction: 0.4
-      ),
-      items: [1,2,3,4,5].map((i) {
-        return Builder(
-          builder: (BuildContext context) {
-            return Container(
-                width: 170, //MediaQuery.of(context).size.width
-                margin: const EdgeInsets.symmetric(horizontal: 3.0),
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.lightBlueAccent
-                ),
-                child: Center(
-                    child:
-                    Padding(
-                      padding: const EdgeInsets.only(top: 50.0),
-                      child:
-                      Text('ÁREA $i', style: const TextStyle(fontSize: 16.0, color: Colors.black)),
-                    )
-                )
-
-            );
-          },
-        );
-      }).toList(),
-    );
-  }
-
-  _services(context){ //Ver como hacer para ponerlo a la izquierda
-    return const
-    Center(
-      child: Column(
-        children: [
-          Text(
-            "Servicios",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            "Seleccione un servicio",
-            style: TextStyle(fontSize: 15, color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _emergencyButton(context){
-    return Column(
-      children: [
-        SizedBox(
-            width: 250,
-            height: 60,
-            child:ElevatedButton(
-              onPressed: () {
-                _emergencyPopUp(context);
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.red,
-              ),
-              child: const Text(
-                "EMERGENCIA",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-            )
-        ),
-      ],
-    );
-  }
-
-
-  /*_emergencyPopUp(context) {
-    return Alert(
-      context: context,
-      type: AlertType.warning,
-      title: "ALERTA ENVIADA",
-      desc: "¡Por favor, quédate en la misma ubicación hasta recibir asistencia!",
-      buttons: [
-        DialogButton(
-          child: Text(
-            "Emergencia Solucionada",
-            style: TextStyle(color: Colors.white, fontSize: 19),
-          ),
-          onPressed: () => Navigator.pop(context),
-          width: 120,
-          height: 60,
-        ),
-        DialogButton(
-          child: Text(
-            "Cancelar",
-            style: TextStyle(color: Colors.white, fontSize: 20),
-          ),
-          onPressed: () => Navigator.pop(context),
-          width: 120,
-          height: 60,
-        ),
-      ],
-    ).show();
-  }*/
-
-  Future<void> _emergencyPopUp(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Column(
-            children: <Widget>[
-              Icon(
-                Icons.info_outline, // Icono grande
-                size: 80, // Tamaño del icono
-                color: Colors.red
-              ),
-              SizedBox(height: 10), // Espacio entre el icono y el título
-              Text(
-                'ALERTA ENVIADA',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          content: const Text(
-            '¡Por favor, quédate en la\n'
-            'misma ubicación hasta recibir asistencia!\n',
-              textAlign: TextAlign.center
-          ),
-          actions: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                //mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.labelLarge,
-                      //backgroundColor: const Color.fromRGBO(145, 197, 148, 75)
-                    ),
-                    child: const Text('Emergencia Solucionada'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.labelLarge,
-                      //backgroundColor: Colors.grey
-                    ),
-                    child: const Text('Cancelar'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    );
   }
 
 }
@@ -296,3 +271,4 @@ List<DropdownMenuItem<String>> get dropdownItems{
   ];
   return menuItems;
 }
+
