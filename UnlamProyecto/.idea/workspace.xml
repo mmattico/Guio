@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
