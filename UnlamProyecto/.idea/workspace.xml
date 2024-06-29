@@ -1,33 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AutoImportSettings">
-    <option name="autoReloadType" value="NONE" />
+    <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4ef1ecb7-3190-456c-b412-8e2705d94626" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__com_vaadin_external_google_android_json_0_0_20131108_vaadin1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_hamcrest_hamcrest_2_2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_skyscreamer_jsonassert_1_5_1.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/runConfigurations.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/PingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Ping.java" afterDir="false" />
+    <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Nodo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Nodo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ClangdSettings">
-    <option name="formatViaClangd" value="false" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -39,7 +30,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectId" id="2i9ve5x1cMiDi9a2H2ou3vU0Brp" />
+  <component name="ProjectId" id="2iXDSYsaWd34UcxjKjGSSdNZ3gC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
   </component>
@@ -50,21 +41,10 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Descargas/Dijkstra.java" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.other" />
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\UnlamProyecto\Backend\guio\src\main\java\com\guio\guio\service" />
-      <recent name="C:\UnlamProyecto\Backend\guio\src\main\java\com\guio\guio\controler" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.guio.guio.controller" />
-    </key>
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="RunManager">
-    <configuration name="guio" type="Application" factoryName="Application">
+    <configuration name="Guio" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="com.guio.guio.GuioApplication" />
       <module name="guio" />
       <extension name="coverage">
@@ -81,11 +61,11 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="4ef1ecb7-3190-456c-b412-8e2705d94626" name="Changes" comment="" />
-      <created>1718915700013</created>
+      <changelist id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="" />
+      <created>1719628028696</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1718915700013</updated>
+      <updated>1719628028696</updated>
     </task>
     <servers />
   </component>
