@@ -279,7 +279,7 @@ class _HomePageState extends State<HomePage> {
                 width: 250,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: selectedService.isEmpty && selectedArea.isEmpty ? null : () {
                     // Agregar accion
                   },
                   style: ElevatedButton.styleFrom(
