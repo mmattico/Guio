@@ -83,9 +83,9 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {},
         ),
       ),
-      body:
-      Padding(
+        body: Padding(
         padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -112,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                       });
                     }
                   },
-                  child: Text('¿A dónde desea ir?'),
+                  child: const Text('¿A dónde desea ir?'),
                 ),
             ),
 
@@ -126,14 +126,14 @@ class _HomePageState extends State<HomePage> {
                       const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,),),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
                           selectedValue = '';
                         });
                       },
-                      child: Text('Limpiar'),
+                      child: const Text('Limpiar'),
                     ),
                   ],
                 ),
@@ -215,7 +215,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),*/
             //const SizedBox(height: 10),
-            const SizedBox(height: 20),
             const Text(
               'Servicios',
               style: TextStyle(
@@ -224,123 +223,100 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 5,
-                children: List.generate(serviceTexts.length, (index) {
-                  return InkWell(
-                    onTap: serviceIsDisabled && selectedIconIndexService != index
-                        ? null
-                        : () => onIconPressedService(index),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            color: serviceIsDisabled && selectedIconIndexService != index
-                                ? Colors.grey
-                                : Colors.blue[100],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            Icons.favorite,
-                            size: 40,
-                            color: serviceIsDisabled && selectedIconIndexService != index
-                                ? Colors.grey
-                                : Colors.blue,
-                          ),
+            GridView.count(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 5,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              children: List.generate(serviceTexts.length, (index) {
+                return InkWell(
+                  onTap: serviceIsDisabled && selectedIconIndexService != index
+                      ? null
+                      : () => onIconPressedArea(index),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: serviceIsDisabled && selectedIconIndexService != index
+                              ? Colors.grey
+                              : Colors.blue[100],
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          serviceTexts[index],
-                          style: TextStyle(
-                            color: serviceIsDisabled && selectedIconIndexService != index
-                                ? Colors.grey
-                                : Colors.black,
-                          ),
+                        child: const Icon(
+                          Icons.favorite,
+                          size: 40,
+                          color: Colors.blue,
                         ),
-                      ],
-                    ),
-                  );
-                }),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        serviceTexts[index],
+                        style: TextStyle(
+                          color: serviceIsDisabled && selectedIconIndexService != index
+                              ? Colors.grey
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 50),
+            Center(
+              child: SizedBox(
+                width: 250,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Agregar accion
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.blue[100],
+                  ),
+                  child: const Text(
+                    "IR",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
               ),
             ),
-            _emergencyButton(context),
             const SizedBox(height: 20),
             Center(
-              child:
-              SizedBox(
-                  width: 250,
-                  height: 60,
-                  child:ElevatedButton(
-                    onPressed: () {
-                      //Agregar accion
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.blue[100],
-                    ),
-                    child: const Text(
-                      "IR",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
-                    ),
-                  )
-              ),
-
-            )
-
+              child: _emergencyButton(context),
+            ),
           ],
-
-
         ),
-      ),
+        ),
+        ),
     );
   }
 
-
-  _searchBar(BuildContext context) {
-    String selectedValue = "Cardiología";
-    return Column(children: <Widget>[
-      DropdownButtonFormField(
-        decoration: InputDecoration(
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(color: Colors.grey, width: 1),
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        value: selectedValue,
-        items: dropdownItems,
-        onChanged: (value) {  },
-        isExpanded: true,
-      )
-    ]);
-
-  }
-
-  _emergencyButton(context){
+  Widget _emergencyButton(BuildContext context) {
     return Column(
       children: [
         SizedBox(
-            width: 250,
-            height: 60,
-            child:ElevatedButton(
-              onPressed: () {
-                _emergencyPopUp(context);
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Colors.red,
-              ),
-              child: const Text(
-                "EMERGENCIA",
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-            )
+          width: 250,
+          height: 60,
+          child: ElevatedButton(
+            onPressed: () {
+              _emergencyPopUp(context);
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const StadiumBorder(),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: Colors.red,
+            ),
+            child: const Text(
+              "EMERGENCIA",
+              style: TextStyle(fontSize: 20, color: Colors.white),
+            ),
+          ),
         ),
       ],
     );
@@ -354,9 +330,9 @@ class _HomePageState extends State<HomePage> {
           title: const Column(
             children: <Widget>[
               Icon(
-                  Icons.info_outline, // Icono grande
-                  size: 80, // Tamaño del icono
-                  color: Colors.red
+                Icons.info_outline, // Icono grande
+                size: 80, // Tamaño del icono
+                color: Colors.red,
               ),
               SizedBox(height: 10), // Espacio entre el icono y el título
               Text(
@@ -366,20 +342,18 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           content: const Text(
-              '¡Por favor, quédate en la\n'
-                  'misma ubicación hasta recibir asistencia!\n',
-              textAlign: TextAlign.center
+            '¡Por favor, quédate en la\n'
+                'misma ubicación hasta recibir asistencia!\n',
+            textAlign: TextAlign.center,
           ),
           actions: <Widget>[
             Container(
               alignment: Alignment.center,
               child: Column(
-                //mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextButton(
                     style: TextButton.styleFrom(
                       textStyle: Theme.of(context).textTheme.labelLarge,
-                      //backgroundColor: const Color.fromRGBO(145, 197, 148, 75)
                     ),
                     child: const Text('Emergencia Solucionada'),
                     onPressed: () {
@@ -389,7 +363,6 @@ class _HomePageState extends State<HomePage> {
                   TextButton(
                     style: TextButton.styleFrom(
                       textStyle: Theme.of(context).textTheme.labelLarge,
-                      //backgroundColor: Colors.grey
                     ),
                     child: const Text('Cancelar'),
                     onPressed: () {
@@ -404,10 +377,8 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
-
 }
+
 
 List<DropdownMenuItem<String>> get dropdownItems{
   List<DropdownMenuItem<String>> menuItems = [
@@ -444,7 +415,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         onPressed: () {
           query = '';
         },
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
       ),
     ];
   }
@@ -456,7 +427,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       onPressed: () {
         close(context, ''); // Devuelve una cadena vacía en lugar de null
       },
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
     );
   }
 
