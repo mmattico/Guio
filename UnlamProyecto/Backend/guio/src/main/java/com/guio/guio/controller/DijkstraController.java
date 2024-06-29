@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/gps")
+@RequestMapping("/api/dijktra")
 public class DijkstraController {
 
-	@GetMapping("/dijktra")
+	@GetMapping("/mascorto")
 	/*
 	http://localhost:8080/api/gps/dijktra?ORIGEN=1&DESTINO=11
 	* */
@@ -22,6 +22,15 @@ public class DijkstraController {
 		Grafo grafo = DijkstraService.obtenerGrafo();
 		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen);
 		Camino camino = DijkstraService.convertirGrafoACamino(grafo, nodoNombreDestino);
+		return new ResponseEntity<>(camino, HttpStatus.OK);
+	}
+
+	@GetMapping("/portipo")
+	public ResponseEntity<?> getCaminoMasCortoPorTipo(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
+											   @RequestParam(name = "TIPO") String tipoNodoDestino) {
+		Grafo grafo = DijkstraService.obtenerGrafo();
+		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen);
+		Camino camino = DijkstraService.convertirGrafoACaminoPorTipo(grafo, tipoNodoDestino);
 		return new ResponseEntity<>(camino, HttpStatus.OK);
 	}
 }

@@ -1,5 +1,6 @@
 package com.guio.guio.service;
 
+import com.guio.guio.constantes.NodoCTE;
 import com.guio.guio.model.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -97,7 +98,10 @@ public class DijkstraService {
     private static void addInstruccionACamino(Camino camino, Nodo nodo) {
         Instruccion instruccion;
         instruccion = new Instruccion();
-        instruccion.setCommando("El nodo " + nodo.getNombre() + " esta a una distancia de " + nodo.getArista().getDistancia() + " metros");
+        instruccion.setExistePuerta(nodo.getArista().isExistePuerta());
+        instruccion.setSiguienteNodo(nodo.getNombre());
+        instruccion.setDistancia(nodo.getArista().getDistancia());
+        instruccion.setHaygiro(false);
         camino.addInstruccion(instruccion);
     }
 
@@ -110,14 +114,16 @@ public class DijkstraService {
                 || (orientacionFinal.equals("S") && orientacionDestino.equals("E"))
                 || (orientacionFinal.equals("E") && orientacionDestino.equals("N"))){
             instruccion = new Instruccion();
-            instruccion.setCommando("Girar a la derecha");
+            instruccion.setHaygiro(true);
+            instruccion.setSentido("Derecha");
             camino.addInstruccion(instruccion);
         }else if((orientacionFinal.equals("N") && orientacionDestino.equals("E"))
                 || (orientacionFinal.equals("E") && orientacionDestino.equals("S"))
                 || (orientacionFinal.equals("S") && orientacionDestino.equals("O"))
                 || (orientacionFinal.equals("O") && orientacionDestino.equals("N"))){
             instruccion = new Instruccion();
-            instruccion.setCommando("Girar a la izquierda");
+            instruccion.setHaygiro(true);
+            instruccion.setSentido("Izquierda");
             camino.addInstruccion(instruccion);
         }
     }
@@ -142,58 +148,58 @@ public class DijkstraService {
     public static Grafo obtenerGrafo() {
         Grafo grafo = new Grafo();
 
-        Nodo Nodo1 = new Nodo("1");
-        Nodo Nodo2 = new Nodo("2");
-        Nodo Nodo3 = new Nodo("3");
-        Nodo Nodo4 = new Nodo("4");
-        Nodo Nodo5 = new Nodo("5");
-        Nodo Nodo6 = new Nodo("6");
-        Nodo Nodo7 = new Nodo("7");
-        Nodo Nodo8 = new Nodo("8");
-        Nodo Nodo9 = new Nodo("9");
-        Nodo Nodo10 = new Nodo("10");
-        Nodo Nodo11 = new Nodo("11");
-        Nodo Nodo12 = new Nodo("12");
-        Nodo Nodo13 = new Nodo("13");
+        Nodo Nodo1 = new Nodo("1", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo2 = new Nodo("2", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo3 = new Nodo("3", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo4 = new Nodo("4", NodoCTE.NODO_TIPO_BAÑO);
+        Nodo Nodo5 = new Nodo("5", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo6 = new Nodo("6", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo7 = new Nodo("7", NodoCTE.NODO_TIPO_BAÑO);
+        Nodo Nodo8 = new Nodo("8", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo9 = new Nodo("9", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo10 = new Nodo("10", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo11 = new Nodo("11", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo12 = new Nodo("12", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo13 = new Nodo("13", NodoCTE.NODO_TIPO_NADA);
 
-        Nodo1.addDestination(Nodo2, new Arista(2,"S","N"));
+        Nodo1.addDestination(Nodo2, new Arista(2,"S","N",true));
 
-        Nodo2.addDestination(Nodo1, new Arista(2,"N","S"));
-        Nodo2.addDestination(Nodo3, new Arista(3,"E","O"));
+        Nodo2.addDestination(Nodo1, new Arista(2,"N","S",true));
+        Nodo2.addDestination(Nodo3, new Arista(3,"E","O", false));
 
-        Nodo3.addDestination(Nodo4, new Arista(4,"N","S"));
-        Nodo3.addDestination(Nodo6, new Arista(5,"E","O"));
-        Nodo3.addDestination(Nodo2, new Arista(3,"O","E"));
-        Nodo3.addDestination(Nodo5, new Arista(4,"S","N"));
+        Nodo3.addDestination(Nodo4, new Arista(4,"N","S", false));
+        Nodo3.addDestination(Nodo6, new Arista(5,"E","O", false));
+        Nodo3.addDestination(Nodo2, new Arista(3,"O","E", false));
+        Nodo3.addDestination(Nodo5, new Arista(4,"S","N", false));
 
-        Nodo4.addDestination(Nodo3, new Arista(4,"S","N"));
+        Nodo4.addDestination(Nodo3, new Arista(4,"S","N", false));
 
-        Nodo5.addDestination(Nodo3, new Arista(4,"N","S"));
+        Nodo5.addDestination(Nodo3, new Arista(4,"N","S", false));
 
-        Nodo6.addDestination(Nodo3, new Arista(5,"O","E"));
-        Nodo6.addDestination(Nodo13, new Arista(4,"S","N"));
-        Nodo6.addDestination(Nodo7, new Arista(4,"E","O"));
+        Nodo6.addDestination(Nodo3, new Arista(5,"O","E", false));
+        Nodo6.addDestination(Nodo13, new Arista(4,"S","N", false));
+        Nodo6.addDestination(Nodo7, new Arista(4,"E","O", false));
 
-        Nodo7.addDestination(Nodo6, new Arista(4,"O","E"));
-        Nodo7.addDestination(Nodo12, new Arista(4,"S","N"));
+        Nodo7.addDestination(Nodo6, new Arista(4,"O","E", false));
+        Nodo7.addDestination(Nodo12, new Arista(4,"S","N", false));
 
-        Nodo8.addDestination(Nodo9, new Arista(2,"E","O"));
+        Nodo8.addDestination(Nodo9, new Arista(2,"E","O", true));
 
-        Nodo9.addDestination(Nodo8, new Arista(2,"O","E"));
-        Nodo9.addDestination(Nodo13, new Arista(1,"N","S"));
-        Nodo9.addDestination(Nodo10, new Arista(5,"S","N"));
+        Nodo9.addDestination(Nodo8, new Arista(2,"O","E",true));
+        Nodo9.addDestination(Nodo13, new Arista(1,"N","S", false));
+        Nodo9.addDestination(Nodo10, new Arista(5,"S","N", false));
 
-        Nodo10.addDestination(Nodo6, new Arista(5,"N","S"));
-        Nodo10.addDestination(Nodo11, new Arista(4,"E","O"));
+        Nodo10.addDestination(Nodo6, new Arista(5,"N","S", false));
+        Nodo10.addDestination(Nodo11, new Arista(4,"E","O", false));
 
-        Nodo11.addDestination(Nodo10, new Arista(4,"O","E"));
-        Nodo11.addDestination(Nodo12, new Arista(5,"N","S"));
+        Nodo11.addDestination(Nodo10, new Arista(4,"O","E", false));
+        Nodo11.addDestination(Nodo12, new Arista(5,"N","S", false));
 
-        Nodo12.addDestination(Nodo6, new Arista(4,"N","S"));
-        Nodo12.addDestination(Nodo11, new Arista(5,"S","N"));
+        Nodo12.addDestination(Nodo6, new Arista(4,"N","S", false));
+        Nodo12.addDestination(Nodo11, new Arista(5,"S","N", false));
 
-        Nodo13.addDestination(Nodo6, new Arista(4,"N","S"));
-        Nodo13.addDestination(Nodo9, new Arista(1,"S","N"));
+        Nodo13.addDestination(Nodo6, new Arista(4,"N","S", false));
+        Nodo13.addDestination(Nodo9, new Arista(1,"S","N", false));
 
         grafo.addNode(Nodo1);
         grafo.addNode(Nodo2);
@@ -209,5 +215,24 @@ public class DijkstraService {
         grafo.addNode(Nodo12);
         grafo.addNode(Nodo13);
         return grafo;
+    }
+
+    public static Camino convertirGrafoACaminoPorTipo(Grafo grafo, String tipoNodoDestino) {
+        Nodo nodoDestino = getNodoWithTypeFromGrafo(grafo, tipoNodoDestino);
+        Camino camino = obtenerInstrucciones(nodoDestino);
+        return camino;
+    }
+
+    private static Nodo getNodoWithTypeFromGrafo(Grafo grafo, String tipoNodoDestino) {
+        Nodo nodoDestino = new Nodo();
+        Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
+        for (Nodo nodo: grafo.getNodos()){
+            if(nodo.getTipo().equals(tipoNodoDestino)
+                    && nodo.getDistancia() < distanciaMenor){
+                nodoDestino = nodo;
+                distanciaMenor = nodo.getDistancia();
+            }
+        }
+        return nodoDestino;
     }
 }

@@ -1,5 +1,7 @@
 package com.guio.guio.model;
 
+import com.guio.guio.constantes.NodoCTE;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +10,8 @@ import java.util.Map;
 public class Nodo {
 
     private String nombre;
-    private Integer distancia = Integer.MAX_VALUE;
+    private String tipo;
+    private Integer distancia = NodoCTE.DISTANCIA_DEFAULT;
     private Arista arista = new Arista();
     private List<Nodo> caminoCorto = new LinkedList<>();
     Map<Nodo, Arista> nodosVecinos = new HashMap<>();
@@ -20,8 +23,9 @@ public class Nodo {
     public Nodo() {
     }
 
-    public Nodo(String nombre) {
+    public Nodo(String nombre, String tipo) {
         this.nombre = nombre;
+        this.tipo = tipo;
     }
 
     public String getNombre() {
@@ -62,5 +66,13 @@ public class Nodo {
 
     public void setArista(Arista arista) {
         this.arista = arista;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
