@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'package:carousel_slider/carousel_slider.dart';
+import 'navigation_preview.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -37,16 +37,21 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       if (selectedIconIndexService == index) {
         serviceIsDisabled = !serviceIsDisabled;
-        selectedService = '';
+        if (selectedService.isEmpty){
+          selectedService = serviceTexts[index];
+        } else {
+          selectedService = '';
+        }
       } else {
         serviceIsDisabled = true;
         selectedIconIndexService = index;
         selectedService = serviceTexts[index];
       }
 
-      if (!areaIsDisabled) {
-        selectedIconIndexArea = null;
+      if (!serviceIsDisabled) {
+        selectedIconIndexService = null;
       }
+
     });
     print('Selected service: $selectedService');
   }
@@ -280,7 +285,12 @@ class _HomePageState extends State<HomePage> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: selectedService.isEmpty && selectedArea.isEmpty ? null : () {
-                    // Agregar accion
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NavigationPreview(selectedArea: selectedArea, selectedService: selectedService),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
