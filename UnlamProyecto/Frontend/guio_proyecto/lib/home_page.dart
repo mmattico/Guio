@@ -9,6 +9,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String selectedArea = '';
+  String selectedService = '';
+
   bool areaIsDisabled = false;
   int? selectedIconIndexArea;
 
@@ -34,15 +37,18 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       if (selectedIconIndexService == index) {
         serviceIsDisabled = !serviceIsDisabled;
+        selectedService = '';
       } else {
         serviceIsDisabled = true;
         selectedIconIndexService = index;
+        selectedService = serviceTexts[index];
       }
 
       if (!areaIsDisabled) {
         selectedIconIndexArea = null;
       }
     });
+    print('Selected service: $selectedService');
   }
 
   List<String> areaTexts = [
@@ -59,8 +65,6 @@ class _HomePageState extends State<HomePage> {
     'Snack',
     'Ventanilla'
   ];
-
-  String selectedValue = '';
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                     );
                     if (result != null && result.isNotEmpty) {
                       setState(() {
-                        selectedValue = result;
+                        selectedArea = result;
                       });
                     }
                   },
@@ -116,12 +120,14 @@ class _HomePageState extends State<HomePage> {
                 ),
             ),
 
-            if (selectedValue.isNotEmpty)
+            const SizedBox(height: 10),
+
+            if (selectedArea.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text('Usted ha seleccionado: $selectedValue',
+                    Text('Usted ha seleccionado: $selectedArea',
                       style:
                       const TextStyle(
                         fontSize: 20,
@@ -130,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          selectedValue = '';
+                          selectedArea = '';
                         });
                       },
                       child: const Text('Limpiar'),
@@ -139,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-            if (selectedValue.isEmpty)
+            if (selectedArea.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text('Aún no ha seleccionado ningún area',
@@ -233,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                 return InkWell(
                   onTap: serviceIsDisabled && selectedIconIndexService != index
                       ? null
-                      : () => onIconPressedArea(index),
+                      : () => onIconPressedService(index),
                   child: Column(
                     children: [
                       Container(
@@ -245,10 +251,12 @@ class _HomePageState extends State<HomePage> {
                               : Colors.blue[100],
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.favorite,
                           size: 40,
-                          color: Colors.blue,
+                          color: serviceIsDisabled && selectedIconIndexService != index
+                              ? Colors.grey
+                              : Colors.blue,
                         ),
                       ),
                       const SizedBox(height: 4),
