@@ -1,8 +1,6 @@
 package com.guio.guio.controller;
 
-import com.guio.guio.model.Arista;
-import com.guio.guio.model.Grafo;
-import com.guio.guio.model.Nodo;
+import com.guio.guio.model.*;
 import com.guio.guio.service.DijkstraService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +84,10 @@ public class DijkstraController {
 		grafo.addNode(Nodo12);
 		grafo.addNode(Nodo13);
 
-		grafo = DijkstraService.calculateShortestPathFromSource(grafo, Nodo1);
-		return new ResponseEntity<>(grafo, HttpStatus.OK);
+		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, Nodo1);
+
+		Camino camino = new Camino();
+		camino = DijkstraService.convertirGrafoACamino(grafo, "9");
+		return new ResponseEntity<>(camino, HttpStatus.OK);
 	}
 }

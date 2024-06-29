@@ -1,8 +1,6 @@
 package com.guio.guio.service;
 
-import com.guio.guio.model.Arista;
-import com.guio.guio.model.Grafo;
-import com.guio.guio.model.Nodo;
+import com.guio.guio.model.*;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.util.HashSet;
@@ -13,35 +11,34 @@ import java.util.Set;
 @SpringBootApplication
 public class DijkstraService {
 
-    public static Grafo calculateShortestPathFromSource(Grafo grafo, Nodo fuente) {
+    public static Grafo calcularCaminoMasCortoDesdeFuente(Grafo grafo, Nodo fuente) {
         fuente.setDistancia(0);
 
-        Set<Nodo> settledNodos = new HashSet<>();
-        Set<Nodo> unsettledNodos = new HashSet<>();
+        Set<Nodo> nodosRevisados = new HashSet<>();
+        Set<Nodo> NodosNoRevisados = new HashSet<>();
 
-        unsettledNodos.add(fuente);
+        NodosNoRevisados.add(fuente);
 
-        while (unsettledNodos.size() != 0) {
-            Nodo currentNodo = getDistanciaMenorNodo(unsettledNodos);
-            unsettledNodos.remove(currentNodo);
-            for (Map.Entry<Nodo, Arista> adjacencyPair:
-                    currentNodo.getNodosVecinos().entrySet()) {
-                Nodo nodoVecino = adjacencyPair.getKey();
-                Arista arista = adjacencyPair.getValue();
-                if (!settledNodos.contains(nodoVecino)) {
+        while (NodosNoRevisados.size() != 0) {
+            Nodo currentNodo = getDistanciaMenorNodo(NodosNoRevisados);
+            NodosNoRevisados.remove(currentNodo);
+            for (Map.Entry<Nodo, Arista> parDeAdjacencia:currentNodo.getNodosVecinos().entrySet()) {
+                Nodo nodoVecino = parDeAdjacencia.getKey();
+                Arista arista = parDeAdjacencia.getValue();
+                if (!nodosRevisados.contains(nodoVecino)) {
                     CalcularDistanciaMinima(nodoVecino, arista, currentNodo);
-                    unsettledNodos.add(nodoVecino);
+                    NodosNoRevisados.add(nodoVecino);
                 }
             }
-            settledNodos.add(currentNodo);
+            nodosRevisados.add(currentNodo);
         }
         return grafo;
     }
 
-    private static Nodo getDistanciaMenorNodo(Set<Nodo> unsettledNodos) {
+    private static Nodo getDistanciaMenorNodo(Set<Nodo> nodosNoRevisados) {
         Nodo distanciaMenorNodo = null;
         int distanciaMenor = Integer.MAX_VALUE;
-        for (Nodo nodo: unsettledNodos) {
+        for (Nodo nodo: nodosNoRevisados) {
             int nodoDistancia = nodo.getDistancia();
             if (nodoDistancia < distanciaMenor) {
                 distanciaMenor = nodoDistancia;
@@ -62,5 +59,36 @@ public class DijkstraService {
             caminoMasCorto.add(nodoFuente);
             nodoPrueba.setCaminoCorto(caminoMasCorto);
         }
+    }
+
+    public static Camino convertirGrafoACamino(Grafo grafo, String nodoDestinoNombre) {
+
+        Camino camino = new Camino();
+        Nodo nodoDestino = new Nodo();
+        for (Nodo nodo: grafo.getNodos()){
+            if(nodo.getNombre().equals(nodoDestinoNombre)){
+                nodoDestino = nodo;
+                break;
+            }
+        }
+        Instruccion instruccion = new Instruccion();
+        instruccion.setCommando("El objetivo esta a una distancia de "+nodoDestino.getDistancia()+" metros");
+        camino.addInstruccion(instruccion);
+
+        for (Nodo nodo: nodoDestino.getCaminoCorto()){
+            if(nodo.getArista().getDistancia().compareTo(0) > 0) {
+                instruccion = new Instruccion();
+                instruccion.setCommando("El nodo "+nodo.getNombre()+" esta a una distancia de " + nodo.getArista().getDistancia() + " metros");
+                camino.addInstruccion(instruccion);
+            }
+        }
+
+        if(nodoDestino.getArista().getDistancia().compareTo(0) > 0) {
+            instruccion = new Instruccion();
+            instruccion.setCommando("El nodo "+nodoDestino.getNombre()+" esta a una distancia de " + nodoDestino.getArista().getDistancia() + " metros");
+            camino.addInstruccion(instruccion);
+        }
+
+        return camino;
     }
 }

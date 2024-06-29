@@ -17,6 +17,9 @@ public class Nodo {
         nodosVecinos.put(destino, arista);
     }
 
+    public Nodo() {
+    }
+
     public Nodo(String nombre) {
         this.nombre = nombre;
     }

@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Nodo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Nodo.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" afterDir="false" />
@@ -79,5 +74,31 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
+          <line>65</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
+          <line>89</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
+          <line>73</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java</url>
+          <line>90</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
