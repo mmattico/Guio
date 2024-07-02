@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String selectedArea = '';
   String selectedService = '';
+  String selectedOrigin = '';
 
   bool areaIsDisabled = false;
   int? selectedIconIndexArea;
@@ -106,6 +107,25 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
+            SizedBox(
+              width: 350,
+              child:
+              OutlinedButton(
+                onPressed: () async {
+                  final resultOrigin = await showSearch<String>(
+                    context: context,
+                    delegate: CustomSearchDelegate(),
+                  );
+                  if (resultOrigin != null && resultOrigin.isNotEmpty) {
+                    setState(() {
+                      selectedOrigin = resultOrigin;
+                    });
+                  }
+                },
+                child: const Text('Seleccione su origen'),
+              ),
+            ),
+
              SizedBox(
               width: 350,
               child:
@@ -127,12 +147,59 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 10),
 
+            if((selectedArea == selectedOrigin) && (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('El lugar de origen y destino deben ser diferentes',
+                  style:
+                  TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,),
+                ),
+
+              ),
+
+            if (selectedOrigin.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text('Aún no ha seleccionado ningún area origen',
+                  style:
+                  TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,),
+                ),
+
+              ),
+
+            if (selectedOrigin.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text('Origen: $selectedOrigin',
+                      style:
+                      const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,),),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedOrigin = '';
+                        });
+                      },
+                      child: const Text('Limpiar Origen'),
+                    ),
+                  ],
+                ),
+              ),
+
             if (selectedArea.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
-                    Text('Usted ha seleccionado: $selectedArea',
+                    Text('Destino: $selectedArea',
                       style:
                       const TextStyle(
                         fontSize: 20,
@@ -144,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                           selectedArea = '';
                         });
                       },
-                      child: const Text('Limpiar'),
+                      child: const Text('Limpiar Destino'),
                     ),
                   ],
                 ),
@@ -153,7 +220,7 @@ class _HomePageState extends State<HomePage> {
             if (selectedArea.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Text('Aún no ha seleccionado ningún area',
+                child: Text('Aún no ha seleccionado ningún area destino',
                   style:
                   TextStyle(
                     fontSize: 20,
@@ -239,7 +306,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisSpacing: 10,
               mainAxisSpacing: 5,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               children: List.generate(serviceTexts.length, (index) {
                 return InkWell(
                   onTap: serviceIsDisabled && selectedIconIndexService != index
@@ -284,11 +351,11 @@ class _HomePageState extends State<HomePage> {
                 width: 250,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: selectedService.isEmpty && selectedArea.isEmpty ? null : () {
+                  onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty) || (selectedOrigin == selectedArea)) ? null : () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NavigationPreview(selectedArea: selectedArea, selectedService: selectedService),
+                        builder: (context) => NavigationPreview(selectedOrigin: selectedOrigin, selectedArea: selectedArea, selectedService: selectedService),
                       ),
                     );
                   },

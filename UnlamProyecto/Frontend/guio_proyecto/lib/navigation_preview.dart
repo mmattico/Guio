@@ -4,8 +4,9 @@ import 'home_page.dart';
 class NavigationPreview extends StatefulWidget {
   final String? selectedService;
   final String? selectedArea;
+  final String? selectedOrigin;
 
-  const NavigationPreview({Key? key, required this.selectedArea, required this.selectedService}) : super(key: key);
+  const NavigationPreview({Key? key, required this.selectedOrigin, required this.selectedArea, required this.selectedService}) : super(key: key);
 
   @override
   _NavigationPreviewState createState() => _NavigationPreviewState();
@@ -74,7 +75,18 @@ class _NavigationPreviewState extends State<NavigationPreview> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Indicaciones para ir hacia:',
+                'Indicaciones para ir desde: ' ,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Text(
+                  '${widget.selectedOrigin}',
+                style: const TextStyle(fontSize: 35),
+              ),
+              const Text(
+                'Hacia:',
                 style: TextStyle(
                   fontSize: 25,
                   fontWeight: FontWeight.bold,
@@ -88,7 +100,7 @@ class _NavigationPreviewState extends State<NavigationPreview> {
                   : (widget.selectedArea != '')
                   ? '${widget.selectedArea}'
                   : 'None',
-              style: TextStyle(fontSize: 35),
+              style: const TextStyle(fontSize: 35),
             ),
               const SizedBox(height: 10),
               Image.network(
@@ -111,7 +123,7 @@ class _NavigationPreviewState extends State<NavigationPreview> {
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 5,
                 shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: List.generate(serviceTexts.length, (index) {
                   return InkWell(
                     onTap: preferenceIsDisabled && selectedIconIndexPreference != index
@@ -156,14 +168,14 @@ class _NavigationPreviewState extends State<NavigationPreview> {
                   width: 250,
                   height: 60,
                   child: ElevatedButton(
-                    onPressed: /*selectedService.isEmpty && selectedArea.isEmpty ? null : () {
+                    onPressed: selectedPreference.isEmpty ? null : () /*{
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => NavigationPreview(selectedService: selectedService),
                         ),
                       );
-                    },*/ () {},
+                    },*/ {},
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(vertical: 16),
