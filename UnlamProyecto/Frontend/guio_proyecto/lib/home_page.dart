@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'navigation_preview.dart';
+import 'navigation_confirmation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,12 +12,16 @@ class _HomePageState extends State<HomePage> {
   String selectedArea = '';
   String selectedService = '';
   String selectedOrigin = '';
+  String selectedPreference = '';
 
   bool areaIsDisabled = false;
   int? selectedIconIndexArea;
 
   bool serviceIsDisabled = false;
   int? selectedIconIndexService;
+
+  bool preferenceIsDisabled = false;
+  int? selectedIconIndexPreference;
 
   void onIconPressedArea(int index) {
     setState(() {
@@ -56,6 +60,35 @@ class _HomePageState extends State<HomePage> {
     });
     print('Selected service: $selectedService');
   }
+
+  void onIconPressedAccesibility(int index) {
+    setState(() {
+      if (selectedIconIndexPreference == index) {
+        preferenceIsDisabled = !preferenceIsDisabled;
+        if (selectedPreference.isEmpty){
+          selectedPreference = accesibilityTexts[index];
+        } else {
+          selectedPreference = '';
+        }
+      } else {
+        preferenceIsDisabled = true;
+        selectedIconIndexPreference = index;
+        selectedPreference = accesibilityTexts[index];
+      }
+
+      if (!preferenceIsDisabled) {
+        selectedIconIndexPreference = null;
+      }
+
+    });
+    print('Selected service: $selectedPreference');
+  }
+
+  List<String> accesibilityTexts = [
+    'Escaleras',
+    'Ascensor',
+    'Indiferente'
+  ];
 
   List<String> areaTexts = [
     'Cardiología',
@@ -99,50 +132,53 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Bienvenido',
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            printHeader(),
+            Center(
+              child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 150,
+                      child:
+                      OutlinedButton(
+                        onPressed: () async {
+                          final resultOrigin = await showSearch<String>(
+                            context: context,
+                            delegate: CustomSearchDelegate(),
+                          );
+                          if (resultOrigin != null && resultOrigin.isNotEmpty) {
+                            setState(() {
+                              selectedOrigin = resultOrigin;
+                            });
+                          }
+                        },
+                        child: const Text('Origen'),
+                      ),
+                    ),
 
-            SizedBox(
-              width: 350,
-              child:
-              OutlinedButton(
-                onPressed: () async {
-                  final resultOrigin = await showSearch<String>(
-                    context: context,
-                    delegate: CustomSearchDelegate(),
-                  );
-                  if (resultOrigin != null && resultOrigin.isNotEmpty) {
-                    setState(() {
-                      selectedOrigin = resultOrigin;
-                    });
-                  }
-                },
-                child: const Text('Seleccione su origen'),
-              ),
-            ),
+                    const SizedBox(width: 20),
 
-             SizedBox(
-              width: 350,
-              child:
-                OutlinedButton(
-                  onPressed: () async {
-                    final result = await showSearch<String>(
-                      context: context,
-                      delegate: CustomSearchDelegate(),
-                    );
-                    if (result != null && result.isNotEmpty) {
-                      setState(() {
-                        selectedArea = result;
-                      });
-                    }
-                  },
-                  child: const Text('¿A dónde desea ir?'),
-                ),
+                    SizedBox(
+                      width: 150,
+                      child:
+                      OutlinedButton(
+                        onPressed: () async {
+                          final result = await showSearch<String>(
+                            context: context,
+                            delegate: CustomSearchDelegate(),
+                          );
+                          if (result != null && result.isNotEmpty) {
+                            setState(() {
+                              selectedArea = result;
+                            });
+                          }
+                        },
+                        child: const Text('Destino'),
+                      ),
+                    ),
+                  ]
+
+              ),
             ),
 
             const SizedBox(height: 10),
@@ -161,14 +197,25 @@ class _HomePageState extends State<HomePage> {
 
             if (selectedOrigin.isEmpty)
               const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Aún no ha seleccionado ningún area origen',
+                padding: EdgeInsets.all(5.0),
+                child: Text('Aún no ha indicado su origen',
                   style:
                   TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,),
                 ),
 
+              ),
+
+            if (selectedArea.isEmpty)
+              const Padding(
+                padding: EdgeInsets.all(5.0),
+                child: Text('Aún no ha seleccionado ningún destino',
+                  style:
+                  TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,),
+                ),
               ),
 
             if (selectedOrigin.isNotEmpty)
@@ -217,81 +264,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-            if (selectedArea.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Text('Aún no ha seleccionado ningún area destino',
-                  style:
-                  TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,),
-                ),
-
-              ),
-
             const SizedBox(height: 20),
 
-
-            /*const Text(
-              '¿A dónde desea ir?',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 1),
-            _searchBar(context),
-            const SizedBox(height: 20),
-            const Text(
-              'Áreas más visitadas',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 5,
-                children: List.generate(areaTexts.length, (index) {
-                  return InkWell(
-                      onTap: areaIsDisabled && selectedIconIndexArea != index
-                          ? null
-                          : () => onIconPressedArea(index),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 80,
-                        width: 80,
-                        decoration: BoxDecoration(
-                          color: areaIsDisabled && selectedIconIndexArea != index
-                              ? Colors.grey
-                              : Colors.blue[100],
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(
-                          Icons.favorite,
-                          size: 40,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        areaTexts[index],
-                        style: TextStyle(
-                          color: areaIsDisabled && selectedIconIndexArea != index
-                              ? Colors.grey
-                              : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  );
-                }),
-              ),
-            ),*/
             //const SizedBox(height: 10),
             const Text(
               'Servicios',
@@ -345,17 +319,73 @@ class _HomePageState extends State<HomePage> {
                 );
               }),
             ),
-            const SizedBox(height: 50),
+
+            const SizedBox(height: 20),
+            const Text(
+              'Accesibilidad',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
+            GridView.count(
+              crossAxisCount: 3,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 5,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: List.generate(accesibilityTexts.length, (index) {
+                return InkWell(
+                  onTap: preferenceIsDisabled && selectedIconIndexPreference != index
+                      ? null
+                      : () => onIconPressedAccesibility(index),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          color: preferenceIsDisabled && selectedIconIndexPreference != index
+                              ? Colors.grey
+                              : Colors.blue[100],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Icon(
+                          Icons.favorite,
+                          size: 40,
+                          color: preferenceIsDisabled && selectedIconIndexPreference != index
+                              ? Colors.grey
+                              : Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        accesibilityTexts[index],
+                        style: TextStyle(
+                          color: preferenceIsDisabled && selectedIconIndexPreference != index
+                              ? Colors.grey
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 30),
             Center(
               child: SizedBox(
                 width: 250,
                 height: 60,
                 child: ElevatedButton(
-                  onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty) || (selectedOrigin == selectedArea)) ? null : () {
+                  onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty)
+                      || (selectedOrigin == selectedArea) || selectedPreference.isEmpty) ? null : () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => NavigationPreview(selectedOrigin: selectedOrigin, selectedArea: selectedArea, selectedService: selectedService),
+                        builder: (context) => NavigationConfirmation(selectedOrigin: selectedOrigin,
+                            selectedArea: selectedArea, selectedService: selectedService, selectedPreference: selectedPreference),
                       ),
                     );
                   },
@@ -379,87 +409,6 @@ class _HomePageState extends State<HomePage> {
         ),
         ),
         ),
-    );
-  }
-
-  Widget _emergencyButton(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          width: 250,
-          height: 60,
-          child: ElevatedButton(
-            onPressed: () {
-              _emergencyPopUp(context);
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.red,
-            ),
-            child: const Text(
-              "EMERGENCIA",
-              style: TextStyle(fontSize: 20, color: Colors.white),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Future<void> _emergencyPopUp(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Column(
-            children: <Widget>[
-              Icon(
-                Icons.info_outline, // Icono grande
-                size: 80, // Tamaño del icono
-                color: Colors.red,
-              ),
-              SizedBox(height: 10), // Espacio entre el icono y el título
-              Text(
-                'ALERTA ENVIADA',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-          content: const Text(
-            '¡Por favor, quédate en la\n'
-                'misma ubicación hasta recibir asistencia!\n',
-            textAlign: TextAlign.center,
-          ),
-          actions: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              child: Column(
-                children: <Widget>[
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    child: const Text('Emergencia Solucionada'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    child: const Text('Cancelar'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
@@ -561,4 +510,95 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       },
     );
   }
+}
+
+Widget printHeader(){
+  return const Text(
+    'Bienvenido',
+    style: TextStyle(
+      fontSize: 40,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+}
+
+Widget _emergencyButton(BuildContext context) {
+  return Column(
+    children: [
+      SizedBox(
+        width: 250,
+        height: 60,
+        child: ElevatedButton(
+          onPressed: () {
+            _emergencyPopUp(context);
+          },
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: Colors.red,
+          ),
+          child: const Text(
+            "EMERGENCIA",
+            style: TextStyle(fontSize: 20, color: Colors.white),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Future<void> _emergencyPopUp(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Column(
+          children: <Widget>[
+            Icon(
+              Icons.info_outline, // Icono grande
+              size: 80, // Tamaño del icono
+              color: Colors.red,
+            ),
+            SizedBox(height: 10), // Espacio entre el icono y el título
+            Text(
+              'ALERTA ENVIADA',
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        content: const Text(
+          '¡Por favor, quédate en la\n'
+              'misma ubicación hasta recibir asistencia!\n',
+          textAlign: TextAlign.center,
+        ),
+        actions: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              children: <Widget>[
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Emergencia Solucionada'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    textStyle: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  child: const Text('Cancelar'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
