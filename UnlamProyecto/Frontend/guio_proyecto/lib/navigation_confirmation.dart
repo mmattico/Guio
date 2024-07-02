@@ -17,26 +17,7 @@ class NavigationConfirmation extends StatefulWidget {
 class _NavigationConfirmationState extends State<NavigationConfirmation> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.all(7.0),
-          child: Image.network(
-            'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar por logo de GUIO
-            //Reemplazar con Icon de GUIO
-            height: 50,
-          ),
-        ),
-        centerTitle: true,
-        //backgroundColor: Colors.grey[200],
-        elevation: 50.0,
-        leading: IconButton(
-          icon: const Icon(Icons.person),
-          tooltip: 'Profile',
-          onPressed: () {},
-        ),
-      ),
-      body: Padding(
+    return  Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -45,52 +26,45 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
               const Text(
                 'Usted ha seleccionado origen ' ,
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Center(
-                child: Text(
+              Text(
                   '${widget.selectedOrigin}',
-                  style: const TextStyle(fontSize: 30),
+                  style: const TextStyle(fontSize: 20),
                 ),
-              ),
               const SizedBox(height: 20),
               const Text(
                 'Con destino a ',
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
-              ),
-              Center(
-                child: Text(
+              ), Text(
                   (widget.selectedArea != '' && widget.selectedService != '')
-                      ? '${widget.selectedArea} y \n${widget.selectedService}'
+                      ? '${widget.selectedArea} y ${widget.selectedService}'
                       : (widget.selectedService != '')
                       ? '${widget.selectedService}'
                       : (widget.selectedArea != '')
                       ? '${widget.selectedArea}'
                       : 'None',
-                  style: const TextStyle(fontSize: 30),
+                  style: const TextStyle(fontSize: 20),
                 ),
-              ),
               const SizedBox(height: 20),
               const Text(
                 'Utilizando ' ,
                 style: TextStyle(
-                  fontSize: 25,
+                  fontSize: 15,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Center(
-                child: Text(
+          Text(
                   '${widget.selectedPreference}',
-                  style: const TextStyle(fontSize: 30),
+                  style: const TextStyle(fontSize: 20),
                 ),
-              ),
 
-              const SizedBox(height: 100),
+              const SizedBox(height: 30),
               Center(
                 child: SizedBox(
                   width: 250,
@@ -141,7 +115,6 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ],
           ),
         ),
-      ),
     );
   }
 }

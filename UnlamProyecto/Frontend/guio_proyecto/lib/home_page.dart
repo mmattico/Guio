@@ -381,12 +381,37 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                   onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty)
                       || (selectedOrigin == selectedArea) || selectedPreference.isEmpty) ? null : () {
-                    Navigator.push(
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => NavigationConfirmation(selectedOrigin: selectedOrigin,
-                            selectedArea: selectedArea, selectedService: selectedService, selectedPreference: selectedPreference),
+const                             selectedArea: selectedArea, selectedService: selectedService, selectedPreference: selectedPreference),
                       ),
+                    );*/
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Confirmación'),
+                          content: NavigationConfirmation(
+                            selectedOrigin: selectedOrigin,
+                            selectedArea: selectedArea,
+                            selectedService: selectedService,
+                            selectedPreference: selectedPreference,
+                          ),
+                          actions: [
+                            Center(
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Cierra el diálogo
+                                },
+                                child: const Text('Modificar',
+                                  style: TextStyle(fontSize: 20, color: Colors.black),),
+                              ),
+                            )
+                          ],
+                        );
+                      },
                     );
                   },
                   style: ElevatedButton.styleFrom(
