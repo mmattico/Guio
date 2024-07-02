@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
+import 'navigation.dart';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
@@ -24,7 +25,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Usted ha seleccionado origen ' ,
+                'Usted ha seleccionado: \nOrigen ' ,
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.bold,
@@ -70,14 +71,19 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   width: 250,
                   height: 60,
                   child: ElevatedButton(
-                    onPressed: () /*{
+                    onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => NavigationPreview(selectedService: selectedService),
+                          builder: (context) => Navigation(
+                            selectedOrigin: widget.selectedOrigin,
+                            selectedArea: widget.selectedArea,
+                            selectedService: widget.selectedService,
+                            selectedPreference: widget.selectedPreference,
+                          ),
                         ),
                       );
-                    },*/ {},
+                    },
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(vertical: 16),
