@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'signup.dart';
-//import 'home_page.dart';
+import 'login.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
   'guioapp@gmail.com': 'guioapp',
 };*/
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatelessWidget {
+  const SignupPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +18,18 @@ class LoginPage extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: Column(
             //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _back(context),
-              const SizedBox(height: 10),
-              _header(context),
-              const SizedBox(height: 50),
-              _inputField(context),
-              const SizedBox(height: 20),
-              _forgotPassword(context),
-              const SizedBox(height: 50),
-              _signup(context),
-            ],
+              children: [
+                _back(context),
+                const SizedBox(height: 10),
+                _headerSignUp(context),
+                const SizedBox(height: 30),
+                _inputSignUp(context),
+                const SizedBox(height: 20),
+                _forgotPassword(context),
+                const SizedBox(height: 50),
+                _logIn(context)
+              ]
+
           ),
         ),
       ),
@@ -48,29 +48,29 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _header(context) {
+  _headerSignUp(context){
     return const
     Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "¡Bienvenido Nuevamente!",
+            "¡Bienvenido!",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
           ),
-          Text("Inicia sesión en tu cuenta"),
+          Text("Crea tu cuenta en GUIO App"),
         ],
       ),
     );
   }
 
-  _inputField(context) {
+  _inputSignUp(context){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
           decoration: InputDecoration(
-              hintText: "Correo Electrónico",
+              hintText: "Nombre y Apellido",
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(18),
                   borderSide: BorderSide.none
@@ -79,7 +79,19 @@ class LoginPage extends StatelessWidget {
               filled: true,
               prefixIcon: const Icon(Icons.person)),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
+        TextField(
+          decoration: InputDecoration(
+              hintText: "Email",
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide.none
+              ),
+              fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+              filled: true,
+              prefixIcon: const Icon(Icons.email)),
+        ),
+        const SizedBox(height: 20),
         TextField(
           decoration: InputDecoration(
             hintText: "Contraseña",
@@ -92,10 +104,23 @@ class LoginPage extends StatelessWidget {
           ),
           obscureText: true,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
+        TextField(
+          decoration: InputDecoration(
+            hintText: "Repetir Contraseña",
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none),
+            fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+            filled: true,
+            prefixIcon: const Icon(Icons.password),
+          ),
+          obscureText: true,
+        ),
+        const SizedBox(height: 20),
+
         ElevatedButton(
           onPressed: () {
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
           },
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
@@ -103,7 +128,7 @@ class LoginPage extends StatelessWidget {
             backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
           ),
           child: const Text(
-            "Iniciar Sesión",
+            "Registrate",
             style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         )
@@ -111,7 +136,7 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _forgotPassword(context) {
+  _forgotPassword(context){
     return TextButton(
       onPressed: () {},
       child: const Text("¿Haz olvidado la contraseña?",
@@ -120,18 +145,19 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _signup(context) {
+  _logIn(context){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("¿No tienes cuenta?"),
+        const Text("¿Ya tienes cuenta?"),
         TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupPage()),);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
             },
-            child: const Text("Registrate", style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),)
+            child: const Text("Iniciar Sesión", style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),)
         )
       ],
     );
   }
 }
+
