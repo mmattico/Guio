@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 //import 'dashboard_screen.dart';
-//import 'login.dart';
+import 'login.dart';
 //import 'signup.dart';
 import 'start_page.dart';
 
@@ -46,7 +46,7 @@ class _GeneratorPageState extends State<GeneratorPage> {
       case 0:
         page = const StartPage();
       case 1:
-        //page = const LoginPage();
+        page = const LoginPage();
       case 2:
         //page = const SignupPage();
       default:
