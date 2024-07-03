@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
-//import 'home_page.dart';
+import 'home_page.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -95,7 +95,7 @@ class LoginPage extends StatelessWidget {
         const SizedBox(height: 10),
         ElevatedButton(
           onPressed: () {
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
           },
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
