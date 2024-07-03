@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-//import 'navigation.dart';
+import 'navigation.dart';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
@@ -72,7 +72,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 height: 60,
                 child: ElevatedButton(
                   onPressed: () {
-                    /*Navigator.push(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => Navigation(
@@ -82,7 +82,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                           selectedPreference: widget.selectedPreference,
                         ),
                       ),
-                    );*/
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),

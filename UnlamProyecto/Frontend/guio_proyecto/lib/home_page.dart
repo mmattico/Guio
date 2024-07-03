@@ -381,13 +381,6 @@ class _HomePageState extends State<HomePage> {
                   child: ElevatedButton(
                     onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty)
                         || (selectedOrigin == selectedArea) || selectedPreference.isEmpty) ? null : () {
-                      /*Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NavigationConfirmation(selectedOrigin: selectedOrigin,
-const                             selectedArea: selectedArea, selectedService: selectedService, selectedPreference: selectedPreference),
-                      ),
-                    );*/
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
