@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//import 'navigation_confirmation.dart';
+import 'navigation_confirmation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -393,12 +393,12 @@ const                             selectedArea: selectedArea, selectedService: s
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: const Text('Confirmación'),
-                            /*content: NavigationConfirmation(
+                            content: NavigationConfirmation(
                               selectedOrigin: selectedOrigin,
                               selectedArea: selectedArea,
                               selectedService: selectedService,
                               selectedPreference: selectedPreference,
-                            ),*/
+                            ),
                             actions: [
                               Center(
                                 child: TextButton(
