@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/home_page.dart';
 import 'package:provider/provider.dart';
 //import 'dashboard_screen.dart';
 import 'login.dart';
 import 'signup.dart';
 import 'start_page.dart';
+//import 'navigation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,9 +48,12 @@ class _GeneratorPageState extends State<GeneratorPage> {
       case 0:
         page = const StartPage();
       case 1:
-        page = const LoginPage();
+        page = LoginPage();
       case 2:
-        page = const SignupPage();
+        page = SignupPage();
+      case 3:
+        page = HomePage();
+
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -73,4 +78,5 @@ class _GeneratorPageState extends State<GeneratorPage> {
 class MyAppState extends ChangeNotifier {
 
 }
+
 
