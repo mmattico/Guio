@@ -17,15 +17,15 @@ class StartPage extends StatelessWidget {
           ),
           const Text("Guío"),
           const SizedBox(height: 50),
-          const Column(
+          /*const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text("Bienvenido"),
                 Text("Inicia sesión para disfrutar de todas \n"
                     "las opciones que ofrece Guío"),
               ]
-          ),
-          const SizedBox(height: 200),
+          ),*/
+          const SizedBox(height: 100),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [

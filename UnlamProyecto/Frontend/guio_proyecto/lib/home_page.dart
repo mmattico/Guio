@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'navigation_confirmation.dart';
+import '/navigation_confirmation.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       if (selectedIconIndexService == index) {
         serviceIsDisabled = !serviceIsDisabled;
-        if (selectedService.isEmpty){
+        if (selectedService.isEmpty) {
           selectedService = serviceTexts[index];
         } else {
           selectedService = '';
@@ -56,7 +56,6 @@ class _HomePageState extends State<HomePage> {
       if (!serviceIsDisabled) {
         selectedIconIndexService = null;
       }
-
     });
     print('Selected service: $selectedService');
   }
@@ -65,7 +64,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       if (selectedIconIndexPreference == index) {
         preferenceIsDisabled = !preferenceIsDisabled;
-        if (selectedPreference.isEmpty){
+        if (selectedPreference.isEmpty) {
           selectedPreference = accesibilityTexts[index];
         } else {
           selectedPreference = '';
@@ -79,15 +78,16 @@ class _HomePageState extends State<HomePage> {
       if (!preferenceIsDisabled) {
         selectedIconIndexPreference = null;
       }
-
     });
     print('Selected service: $selectedPreference');
   }
 
-  List<String> accesibilityTexts = [
-    'Escaleras',
-    'Ascensor',
-    'Indiferente'
+  List<String> accesibilityTexts = ['Escaleras', 'Ascensor', 'Indiferente'];
+
+  List<String> accesibilityIcons = [
+    "assets/images/escalera.png",
+    "assets/images/elevator.png",
+    "assets/images/thumbs-up.png"
   ];
 
   List<String> areaTexts = [
@@ -99,16 +99,18 @@ class _HomePageState extends State<HomePage> {
     'Ginecología'
   ];
 
-  List<String> serviceTexts = [
-    'Baño',
-    'Snack',
-    'Ventanilla'
+  List<String> serviceTexts = ['Baño', 'Snack', 'Ventanilla'];
+
+  List<String> seriviceIcons = [
+    "assets/images/toilet.png",
+    "assets/images/snack.png",
+    "assets/images/receptionist.png"
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.network(
@@ -125,15 +127,200 @@ class _HomePageState extends State<HomePage> {
           tooltip: 'Profile',
           onPressed: () {},
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              printHeader(),
-              Center(
+      ),*/
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          CustomPaint(
+            painter: BluePainter(),
+            child: Container(
+              height: 400,
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          Icons.more_horiz,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        Icon(
+                          Icons.account_circle,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    //printHeader(),
+                    const Text(
+                      'Bienvenido',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 45,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    const Text(
+                      'Seleccione su origen y destino para comenzar a navegar',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+                    Card(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(25, 18, 10, 18),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on,
+                                  color: Colors.green,
+                                  size: 35,
+                                ),
+                                SizedBox(width: 4),
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () async {
+                                        final resultOrigin =
+                                            await showSearch<String>(
+                                          context: context,
+                                          delegate: CustomSearchDelegate(),
+                                        );
+                                        if (resultOrigin != null &&
+                                            resultOrigin.isNotEmpty) {
+                                          setState(() {
+                                            selectedOrigin = resultOrigin;
+                                          });
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Origen',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    if (selectedOrigin.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '$selectedOrigin',
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.blue,
+                                              size: 25,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                selectedOrigin = '';
+                                              });
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 15),
+                            Divider(),
+                            SizedBox(height: 15),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Colors.blue,
+                                  size: 35,
+                                ),
+                                SizedBox(width: 4),
+                                Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () async {
+                                        final result = await showSearch<String>(
+                                          context: context,
+                                          delegate: CustomSearchDelegate(),
+                                        );
+                                        if (result != null &&
+                                            result.isNotEmpty) {
+                                          setState(() {
+                                            selectedArea = result;
+                                          });
+                                        }
+                                      },
+                                      child: const Text(
+                                        'Destino',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    if (selectedArea.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          Text(
+                                            '$selectedArea',
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          //SizedBox(width: 8),
+                                          //Icon(Icons.close, color: Colors.blue, size: 35,),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.blue,
+                                              size: 25,
+                                            ),
+                                            onPressed: () {
+                                              setState(() {
+                                                selectedArea = '';
+                                              });
+                                            },
+                                          )
+                                        ],
+                                      )
+                                  ],
+                                ),
+
+                                Spacer(),
+                                //Icon(Icons.swap_vert, color: Colors.blue, size: 35,),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    //const SizedBox(height: 50),
+                    /*Center(
                 child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -179,23 +366,24 @@ class _HomePageState extends State<HomePage> {
                     ]
 
                 ),
-              ),
+              ),*/
 
-              const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
-              if((selectedArea == selectedOrigin) && (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text('El lugar de origen y destino deben ser diferentes',
-                    style:
-                    TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,),
-                  ),
+                    if ((selectedArea == selectedOrigin) &&
+                        (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
+                      const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Text(
+                          'El lugar de origen y destino deben ser diferentes',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
 
-                ),
-
-              if (selectedOrigin.isEmpty)
+                    /*if (selectedOrigin.isEmpty)
                 const Padding(
                   padding: EdgeInsets.all(5.0),
                   child: Text('Aún no ha indicado su origen',
@@ -262,192 +450,216 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
-                ),
+                ),*/
 
-              const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-              //const SizedBox(height: 10),
-              const Text(
-                'Servicios',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 5,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: List.generate(serviceTexts.length, (index) {
-                  return InkWell(
-                    onTap: serviceIsDisabled && selectedIconIndexService != index
-                        ? null
-                        : () => onIconPressedService(index),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
+                    //const SizedBox(height: 10),
+                    const Text(
+                      'Servicios',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 5,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: List.generate(serviceTexts.length, (index) {
+                        return InkWell(
+                          onTap: serviceIsDisabled &&
+                                  selectedIconIndexService != index
+                              ? null
+                              : () => onIconPressedService(index),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 80,
+                                width: 80,
+                                /*decoration: BoxDecoration(
                             color: serviceIsDisabled && selectedIconIndexService != index
                                 ? Colors.grey
                                 : Colors.blue[100],
                             borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
+                          ),*/
+                                child: Image.asset(seriviceIcons[index]),
+                                /*Icon(
                             Icons.favorite,
                             size: 40,
                             color: serviceIsDisabled && selectedIconIndexService != index
                                 ? Colors.grey
                                 : Colors.blue,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          serviceTexts[index],
-                          style: TextStyle(
-                            color: serviceIsDisabled && selectedIconIndexService != index
-                                ? Colors.grey
-                                : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-
-              const SizedBox(height: 20),
-              const Text(
-                'Accesibilidad',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 10),
-              GridView.count(
-                crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 5,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                children: List.generate(accesibilityTexts.length, (index) {
-                  return InkWell(
-                    onTap: preferenceIsDisabled && selectedIconIndexPreference != index
-                        ? null
-                        : () => onIconPressedAccesibility(index),
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 80,
-                          width: 80,
-                          decoration: BoxDecoration(
-                            color: preferenceIsDisabled && selectedIconIndexPreference != index
-                                ? Colors.grey
-                                : Colors.blue[100],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Icon(
-                            Icons.favorite,
-                            size: 40,
-                            color: preferenceIsDisabled && selectedIconIndexPreference != index
-                                ? Colors.grey
-                                : Colors.blue,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          accesibilityTexts[index],
-                          style: TextStyle(
-                            color: preferenceIsDisabled && selectedIconIndexPreference != index
-                                ? Colors.grey
-                                : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
-              ),
-              const SizedBox(height: 30),
-              Center(
-                child: SizedBox(
-                  width: 250,
-                  height: 60,
-                  child: ElevatedButton(
-                    onPressed: (selectedOrigin.isEmpty || (selectedService.isEmpty && selectedArea.isEmpty)
-                        || (selectedOrigin == selectedArea) || selectedPreference.isEmpty) ? null : () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Confirmación'),
-                            content: NavigationConfirmation(
-                              selectedOrigin: selectedOrigin,
-                              selectedArea: selectedArea,
-                              selectedService: selectedService,
-                              selectedPreference: selectedPreference,
-                            ),
-                            actions: [
-                              Center(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(); // Cierra el diálogo
-                                  },
-                                  child: const Text('Modificar',
-                                    style: TextStyle(fontSize: 20, color: Colors.black),),
+                          ),*/
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                serviceTexts[index],
+                                style: TextStyle(
+                                  color: serviceIsDisabled &&
+                                          selectedIconIndexService != index
+                                      ? Colors.grey
+                                      : Colors.black,
                                 ),
-                              )
+                              ),
                             ],
-                          );
-                        },
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      backgroundColor: Colors.blue[100],
+                          ),
+                        );
+                      }),
                     ),
-                    child: const Text(
-                      "IR",
-                      style: TextStyle(fontSize: 20, color: Colors.white),
+
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Accesibilidad',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 10),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 5,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children:
+                          List.generate(accesibilityTexts.length, (index) {
+                        return InkWell(
+                          onTap: preferenceIsDisabled &&
+                                  selectedIconIndexPreference != index
+                              ? null
+                              : () => onIconPressedAccesibility(index),
+                          child: Column(
+                            children: [
+                              Container(
+                                height: 80,
+                                width: 80,
+                                /*decoration: BoxDecoration(
+                            color: preferenceIsDisabled && selectedIconIndexPreference != index
+                                ? Colors.grey
+                                : Colors.blue[100],
+                            borderRadius: BorderRadius.circular(10),
+                          ),*/
+                                child: Image.asset(accesibilityIcons[index]),
+                                //BoxDecoration(image: DecorationImage(image: AssetImage()))
+                                /*Icon(
+                            Icons.favorite,
+                            size: 40,
+                            color: preferenceIsDisabled && selectedIconIndexPreference != index
+                                ? Colors.grey
+                                : Colors.blue,
+                          ),*/
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                accesibilityTexts[index],
+                                style: TextStyle(
+                                  color: preferenceIsDisabled &&
+                                          selectedIconIndexPreference != index
+                                      ? Colors.grey
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                    const SizedBox(height: 30),
+                    Center(
+                      child: SizedBox(
+                        width: 250,
+                        height: 60,
+                        child: ElevatedButton(
+                          onPressed: (selectedOrigin.isEmpty ||
+                                  (selectedService.isEmpty &&
+                                      selectedArea.isEmpty) ||
+                                  (selectedOrigin == selectedArea) ||
+                                  selectedPreference.isEmpty)
+                              ? null
+                              : () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Confirmación'),
+                                        content: NavigationConfirmation(
+                                          selectedOrigin: selectedOrigin,
+                                          selectedArea: selectedArea,
+                                          selectedService: selectedService,
+                                          selectedPreference:
+                                              selectedPreference,
+                                        ),
+                                        actions: [
+                                          Center(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Cierra el diálogo
+                                              },
+                                              child: const Text(
+                                                'Modificar',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                          style: ElevatedButton.styleFrom(
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: Colors.blue[100],
+                          ),
+                          child: const Text(
+                            "IR",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: _emergencyButton(context),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              Center(
-                child: _emergencyButton(context),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-
-List<DropdownMenuItem<String>> get dropdownItems{
+List<DropdownMenuItem<String>> get dropdownItems {
   List<DropdownMenuItem<String>> menuItems = [
     const DropdownMenuItem(value: "Cardiología", child: Text("Cardiología")),
-    const DropdownMenuItem(value: "Traumatología", child: Text("Traumatología")),
+    const DropdownMenuItem(
+        value: "Traumatología", child: Text("Traumatología")),
     const DropdownMenuItem(value: "Oftalmología", child: Text("Oftalmología")),
-    const DropdownMenuItem(value: "Clinica Médica", child: Text("Clinica Médica")),
+    const DropdownMenuItem(
+        value: "Clinica Médica", child: Text("Clinica Médica")),
     const DropdownMenuItem(value: "Obstetricia", child: Text("Obstetricia")),
     const DropdownMenuItem(value: "Cirujía", child: Text("Cirujía")),
-    const DropdownMenuItem(value: "Internaciones", child: Text("Internaciones")),
-    const DropdownMenuItem(value: "Guardia Médica", child: Text("Guardia Médica")),
+    const DropdownMenuItem(
+        value: "Internaciones", child: Text("Internaciones")),
+    const DropdownMenuItem(
+        value: "Guardia Médica", child: Text("Guardia Médica")),
   ];
   return menuItems;
 }
 
 class CustomSearchDelegate extends SearchDelegate<String> {
-
   List<String> searchTerms = [
     "Cardiología",
     "Traumatología",
@@ -499,7 +711,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         return ListTile(
           title: Text(result),
           onTap: () {
-            close(context, result); // Devuelve el valor seleccionado y cierra el buscador
+            close(context,
+                result); // Devuelve el valor seleccionado y cierra el buscador
           },
         );
       },
@@ -522,7 +735,8 @@ class CustomSearchDelegate extends SearchDelegate<String> {
         return ListTile(
           title: Text(result),
           onTap: () {
-            close(context, result); // Devuelve el valor seleccionado y cierra el buscador
+            close(context,
+                result); // Devuelve el valor seleccionado y cierra el buscador
           },
         );
       },
@@ -530,7 +744,7 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   }
 }
 
-Widget printHeader(){
+Widget printHeader() {
   return const Text(
     'Bienvenido',
     style: TextStyle(
@@ -586,7 +800,7 @@ Future<void> _emergencyPopUp(BuildContext context) {
         ),
         content: const Text(
           '¡Por favor, quédate en la\n'
-              'misma ubicación hasta recibir asistencia!\n',
+          'misma ubicación hasta recibir asistencia!\n',
           textAlign: TextAlign.center,
         ),
         actions: <Widget>[
@@ -619,4 +833,27 @@ Future<void> _emergencyPopUp(BuildContext context) {
       );
     },
   );
+}
+
+class BluePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Color.fromRGBO(137, 182, 235, 1)
+      ..style = PaintingStyle.fill;
+
+    Path path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height * 0.80)
+      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
-import 'home_page.dart';
+import '../home_page.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
