@@ -15,6 +15,7 @@ class SignupPage extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Container(
+          color: Colors.white,
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: Column(
             //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -24,12 +25,9 @@ class SignupPage extends StatelessWidget {
                 _headerSignUp(context),
                 const SizedBox(height: 30),
                 _inputSignUp(context),
-                const SizedBox(height: 20),
-                _forgotPassword(context),
-                const SizedBox(height: 50),
+                const SizedBox(height: 70),
                 _logIn(context)
               ]
-
           ),
         ),
       ),
@@ -136,15 +134,6 @@ class SignupPage extends StatelessWidget {
     );
   }
 
-  _forgotPassword(context){
-    return TextButton(
-      onPressed: () {},
-      child: const Text("¿Haz olvidado la contraseña?",
-        style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),
-      ),
-    );
-  }
-
   _logIn(context){
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +141,7 @@ class SignupPage extends StatelessWidget {
         const Text("¿Ya tienes cuenta?"),
         TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),);
             },
             child: const Text("Iniciar Sesión", style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),)
         )
