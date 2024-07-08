@@ -92,6 +92,12 @@ class _HomePageState extends State<HomePage> {
     "assets/images/thumbs-up.png"
   ];
 
+  List<String> accesibilityDisabled = [
+    "assets/images/escalera-bw.png",
+    "assets/images/elevator-bw.png",
+    "assets/images/thumbs-up-bw.png"
+  ];
+
   List<String> areaTexts = [
     'Cardiología',
     'Neurología',
@@ -107,6 +113,12 @@ class _HomePageState extends State<HomePage> {
     "assets/images/toilet.png",
     "assets/images/snack.png",
     "assets/images/receptionist.png"
+  ];
+
+  List<String> serviceDisabled = [
+    "assets/images/toilet-bw.png",
+    "assets/images/snack-bw.png",
+    "assets/images/receptionist-bw.png"
   ];
 
   @override
@@ -349,7 +361,9 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.asset(seriviceIcons[index]),
+                    child: serviceIsDisabled && selectedIconIndexService != index
+                        ? Image.asset(serviceDisabled[index])
+                        : Image.asset(seriviceIcons[index]),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -401,7 +415,9 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.asset(accesibilityIcons[index]),
+                    child: preferenceIsDisabled && selectedIconIndexPreference != index
+                        ? Image.asset(accesibilityDisabled[index])
+                        : Image.asset(accesibilityIcons[index]),
                   ),
                   const SizedBox(height: 4),
                   Text(
