@@ -14,13 +14,21 @@ class StartPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.network(
+             /* Image.network(
                 'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar con Icon de GUIO
                 height: 150,
+              ),*/
+              SizedBox(
+                height: 180,
+                width: 180,
+                child: Image.asset("assets/images/logo_GUIO_2.png"),
               ),
+              const SizedBox(height: 10),
               const Text("Guío",
                   style: TextStyle(
-                  fontSize: 40)
+                  fontSize: 40,
+                  fontWeight: FontWeight.w700,
+                  color: Color.fromRGBO(17, 116, 186, 1))
               ),
               const SizedBox(height: 50),
               const SizedBox(height: 100),
@@ -39,7 +47,7 @@ class StartPage extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
+                        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       child: const Text(
                         "Iniciar Sesión",
@@ -64,7 +72,7 @@ class StartPage extends StatelessWidget {
                       ),
                       child: const Text(
                         "Registrate",
-                        style: TextStyle(fontSize: 20, color: Color.fromRGBO(65, 105, 225, 1)),
+                        style: TextStyle(fontSize: 20, color: Color.fromRGBO(17, 116, 186, 1)),
                       ),
                     ),
                   ),

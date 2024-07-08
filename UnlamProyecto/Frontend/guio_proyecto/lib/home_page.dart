@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '/navigation_confirmation.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -121,15 +122,15 @@ class _HomePageState extends State<HomePage> {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     header(),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     headerTexto(),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 18),
                     _fromTo(context),
                     const SizedBox(height: 5),
                     if ((selectedArea == selectedOrigin) &&
@@ -144,16 +145,20 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     _services(context),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     _accesibilidad(context),
-                    const SizedBox(height: 30),
-                    _button(context),
                     const SizedBox(height: 20),
-                    Center(
-                      child: _emergencyButton(context),
-                    ),
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                        _button(context),
+                        const SizedBox(width: 10,),
+                        _emergencyButton(context),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -172,7 +177,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
         child: Column(
           children: [
             Row(
@@ -214,9 +219,9 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             const Divider(),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Row(
               children: [
                 const Icon(
@@ -238,8 +243,6 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 20,
                             ),
                           ),
-                          //SizedBox(width: 8),
-                          //Icon(Icons.close, color: Colors.blue, size: 35,),
                           IconButton(
                             icon: const Icon(
                               Icons.close,
@@ -324,7 +327,7 @@ class _HomePageState extends State<HomePage> {
         const Text(
           'Servicios',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -351,6 +354,7 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     serviceTexts[index],
                     style: TextStyle(
+                      fontSize: 18,
                       color: serviceIsDisabled && selectedIconIndexService != index
                           ? Colors.grey
                           : Colors.black,
@@ -374,7 +378,7 @@ class _HomePageState extends State<HomePage> {
         const Text(
           'Accesibilidad',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -402,6 +406,7 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     accesibilityTexts[index],
                     style: TextStyle(
+                      fontSize: 18,
                       color: preferenceIsDisabled && selectedIconIndexPreference != index
                           ? Colors.grey
                           : Colors.black,
@@ -420,7 +425,7 @@ class _HomePageState extends State<HomePage> {
   _button(context){
     return Center(
       child: SizedBox(
-        width: 250,
+        width: 200,
         height: 60,
         child: ElevatedButton(
           onPressed: (selectedOrigin.isEmpty ||
@@ -499,7 +504,7 @@ Widget header() {
       children: [
         Text('         '),
         Image(image:
-        NetworkImage('https://cdn.logo.com/hotlink-ok/logo-social.png'),
+          AssetImage("assets/images/logo_GUIO.png"),
           width: 100,
         ),
         Icon(
@@ -523,13 +528,12 @@ Widget headerTexto() {
           fontWeight: FontWeight.bold,
         ),
       ),
-      SizedBox(height: 5),
       Text(
-        'Seleccione su origen y destino para comenzar a navegar',
+        'Seleccione origen y destino para comenzar',
         style: TextStyle(
           color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+          fontSize: 18,
+          //fontWeight: FontWeight.bold,
         ),
       ),
     ],
@@ -636,21 +640,27 @@ Widget _emergencyButton(BuildContext context) {
   return Column(
     children: [
       SizedBox(
-        width: 250,
+        width: 60,
         height: 60,
-        child: ElevatedButton(
-          onPressed: () {
-            _emergencyPopUp(context);
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.red,
-          ),
-          child: const Text(
-            "EMERGENCIA",
+        child: IconButton(onPressed: () {
+          _emergencyPopUp(context);
+        },
+            style: ElevatedButton.styleFrom(
+              shape: const StadiumBorder(),
+              //padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: Colors.red,
+            ),
+            icon: const Icon(Icons.sos,
+              color: Colors.white,
+              size: 40,
+            )
+
+
+          
+          /*Text(
+            "EM",
             style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
+          ),*/
         ),
       ),
     ],

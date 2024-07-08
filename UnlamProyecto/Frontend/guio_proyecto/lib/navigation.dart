@@ -170,7 +170,7 @@ Widget header() {
           Text('         '),
           Image(
             image:
-                NetworkImage('https://cdn.logo.com/hotlink-ok/logo-social.png'),
+            AssetImage("assets/images/logo_GUIO.png"),
             width: 100,
           ),
           Icon(
@@ -180,7 +180,7 @@ Widget header() {
           ),
         ],
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: 20),
       const Text(
         "Dirigiendose a ",
         style: TextStyle(fontSize: 25, color: Colors.black),

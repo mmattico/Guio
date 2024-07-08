@@ -11,32 +11,37 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.white,
         body: Container(
           color: Colors.white,
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          child: SingleChildScrollView(
+            child: Column(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _back(context),
                 const SizedBox(height: 10),
                 _headerSignUp(context),
                 const SizedBox(height: 30),
                 _inputSignUp(context),
-                const SizedBox(height: 70),
-                _logIn(context)
-              ]
+                const SizedBox(height: 20),
+                _buttonSignup(context),
+                const SizedBox(height: 35),
+                _logIn(context),
+              ],
+            ),
           ),
-        ),
-      ),
+        ),),
     );
   }
 
   _back (context){
     return AppBar(
-      //elevation: 0,
+      backgroundColor: Colors.white,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.black),
         onPressed: () {
@@ -46,19 +51,18 @@ class SignupPage extends StatelessWidget {
     );
   }
 
-  _headerSignUp(context){
-    return const
-    Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "¡Bienvenido!",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-          ),
-          Text("Crea tu cuenta en GUIO App"),
-        ],
-      ),
+  _headerSignUp(context) {
+    return const Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          "¡Bienvenido a GUIO App!",
+          style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+        ),
+        Text("Registrate para utilizar la aplicación",
+          style: TextStyle(fontSize: 18),),
+      ],
     );
   }
 
@@ -115,22 +119,27 @@ class SignupPage extends StatelessWidget {
           ),
           obscureText: true,
         ),
-        const SizedBox(height: 20),
-
-        ElevatedButton(
-          onPressed: () {
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
-          ),
-          child: const Text(
-            "Registrate",
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        )
       ],
+    );
+  }
+
+  _buttonSignup(context) {
+    return SizedBox(
+      width: 250,
+      height: 60,
+      child: ElevatedButton(
+        onPressed: () {
+
+        },
+        style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+        ),
+        child: const Text(
+          "Registrate",
+          style: TextStyle(fontSize: 20, color: Colors.white),
+        ),),
     );
   }
 
@@ -143,7 +152,7 @@ class SignupPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),);
             },
-            child: const Text("Iniciar Sesión", style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),)
+            child: const Text("Iniciar Sesión", style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),)
         )
       ],
     );
