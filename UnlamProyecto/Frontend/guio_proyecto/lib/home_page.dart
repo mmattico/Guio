@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '/navigation_confirmation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'emergency.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -156,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                         _button(context),
                         const SizedBox(width: 10,),
-                        _emergencyButton(context),
+                        emergencyButton(context),
                       ],
                     )
                   ],
@@ -632,93 +633,4 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       },
     );
   }
-}
-
-//*************** BOTÓN DE EMERGENCIA ***************
-
-Widget _emergencyButton(BuildContext context) {
-  return Column(
-    children: [
-      SizedBox(
-        width: 60,
-        height: 60,
-        child: IconButton(onPressed: () {
-          _emergencyPopUp(context);
-        },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              //padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.red,
-            ),
-            icon: const Icon(Icons.sos,
-              color: Colors.white,
-              size: 40,
-            )
-
-
-          
-          /*Text(
-            "EM",
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),*/
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> _emergencyPopUp(BuildContext context) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Column(
-          children: <Widget>[
-            Icon(
-              Icons.info_outline, // Icono grande
-              size: 80, // Tamaño del icono
-              color: Colors.red,
-            ),
-            SizedBox(height: 10), // Espacio entre el icono y el título
-            Text(
-              'ALERTA ENVIADA',
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        content: const Text(
-          '¡Por favor, quédate en la\n'
-          'misma ubicación hasta recibir asistencia!\n',
-          textAlign: TextAlign.center,
-        ),
-        actions: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            child: Column(
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  child: const Text('Emergencia Solucionada'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    },
-  );
 }
