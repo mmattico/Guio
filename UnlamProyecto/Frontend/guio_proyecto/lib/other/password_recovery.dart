@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login.dart';
+import '/pages/login.dart';
 
 class PasswordRecovery extends StatelessWidget {
   final _emailController = TextEditingController();
@@ -16,7 +16,6 @@ class PasswordRecovery extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: SingleChildScrollView(
             child: Column(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _back(context),
                 const SizedBox(height: 10),
@@ -31,12 +30,12 @@ class PasswordRecovery extends StatelessWidget {
             ),
           ),
         ),),
-
     );
   }
 
     _back (context){
       return AppBar(
+        backgroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
@@ -109,7 +108,7 @@ class PasswordRecovery extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 10),
-        backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
+        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(
         "Recuperar Contraseña",

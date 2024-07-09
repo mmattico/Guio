@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-import 'emergency.dart';
+import '../other/emergency.dart';
 
 class Navigation extends StatefulWidget {
   final String? selectedService;

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import '/navigation_confirmation.dart';
+import '../other/navigation_confirmation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'emergency.dart';
+import '../other/emergency.dart';
+import 'package:flutter/services.dart';
+import '../other/search_homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'start_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -140,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header(),
+                    header(context),
                     const SizedBox(height: 8),
                     headerTexto(),
                     const SizedBox(height: 18),
@@ -515,7 +519,7 @@ class BluePainter extends CustomPainter {
   }
 }
 
-Widget header() {
+/*Widget header() {
   return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -530,6 +534,44 @@ Widget header() {
           size: 40,
         ),
       ]
+  );
+}*/
+
+Widget header(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      const Text('         '),
+      const Image(
+        image: AssetImage("assets/images/logo_GUIO.png"),
+        width: 100,
+      ),
+      PopupMenuButton<String>(
+        icon: const Icon(
+          Icons.account_circle,
+          color: Colors.white,
+          size: 40,
+        ),
+        onSelected: (String value) {
+          if (value == '1') {
+            // Navegar a la página de "Mi cuenta"
+          } else if (value == '2') {
+            // Manejar el cierre de sesión
+            _logout(context);
+          }
+        },
+        itemBuilder: (BuildContext context) => [
+          const PopupMenuItem<String>(
+            value: '1',
+            child: Text('Mi cuenta'),
+          ),
+          const PopupMenuItem<String>(
+            value: '2',
+            child: Text('Cerrar Sesión'),
+          ),
+        ],
+      ),
+    ],
   );
 }
 
@@ -557,96 +599,13 @@ Widget headerTexto() {
   );
 }
 
-//*********** BARRA DE BÚSQUEDA -origen y destino- ***********
+Future<void> _logout(BuildContext context) async {
+  // Eliminar datos de sesión del usuario
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('isLoggedIn');
 
-class CustomSearchDelegate extends SearchDelegate<String> {
-  //Definición de áreas
-  List<String> searchTerms = [
-    "Cardiología",
-    "Traumatología",
-    "Oftalmología",
-    "Clinica Médica",
-    "Obstetricia",
-    "Cirujía",
-    "Internaciones",
-    "Dermatología"
-  ];
-
-  // Ícono para volver hacia atras, salir de la barra de búsqueda
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, ''); // Devuelve una cadena vacía en lugar de null
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
-  }
-
-  //Ícono de micrófono, para tomar comandos por voz
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      Padding(padding: const EdgeInsets.fromLTRB(1,1,25,1),
-        child:  IconButton(
-          onPressed: () {
-            //Agregar funcionalidad para que tome voz.
-          },
-          icon: const Icon(Icons.mic_rounded,
-            size: 35,),
-        ),
-      )
-
-    ];
-  }
-
-  //Para la búsqueda por teclado de un área
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: () {
-            close(context,
-                result
-            ); // Devuelve el valor seleccionado y cierra el buscador
-          },
-        );
-      },
-    );
-  }
-
-  // Para la búsqueda por teclado de un área
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: () {
-            close(context,
-                result
-            ); // Devuelve el valor seleccionado y cierra el buscador
-          },
-        );
-      },
-    );
-  }
+  // Navegar a la pantalla de inicio de sesión
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) => StartPage()),
+  );
 }

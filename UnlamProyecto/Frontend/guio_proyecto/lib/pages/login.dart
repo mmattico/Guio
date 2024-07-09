@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
-import '../home_page.dart';
-import 'password_recovery.dart';
+import 'home_page.dart';
+import '../other/password_recovery.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -185,7 +185,5 @@ class _LoginPageState extends State<LoginPage> {
       ],
     );
   }
-
-
 }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../home_page.dart';
-import 'navigation.dart';
+import '../pages/home_page.dart';
+import '../pages/navigation.dart';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
