@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import '../other/navigation_confirmation.dart';
-import 'package:speech_to_text/speech_to_text.dart';
 import '../other/emergency.dart';
 import 'package:flutter/services.dart';
 import '../other/search_homepage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'start_page.dart';
+import '/other/header_homepage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -134,7 +132,7 @@ class _HomePageState extends State<HomePage> {
           CustomPaint(
             painter: BluePainter(),
             child: Container(
-              height: 400,
+              height: 380,
             ),
           ),
           SafeArea(
@@ -145,11 +143,11 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     header(context),
-                    const SizedBox(height: 8),
+                    //const SizedBox(height: 2),
                     headerTexto(),
-                    const SizedBox(height: 18),
+                    const SizedBox(height: 15),
                     _fromTo(context),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 4),
                     if ((selectedArea == selectedOrigin) &&
                         (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
                       const Padding(
@@ -492,120 +490,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-//*********** HEADER ***********
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-/*Widget header() {
-  return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text('         '),
-        Image(image:
-          AssetImage("assets/images/logo_GUIO.png"),
-          width: 100,
-        ),
-        Icon(
-          Icons.account_circle,
-          color: Colors.white,
-          size: 40,
-        ),
-      ]
-  );
-}*/
-
-Widget header(BuildContext context) {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      const Text('         '),
-      const Image(
-        image: AssetImage("assets/images/logo_GUIO.png"),
-        width: 100,
-      ),
-      PopupMenuButton<String>(
-        icon: const Icon(
-          Icons.account_circle,
-          color: Colors.white,
-          size: 40,
-        ),
-        onSelected: (String value) {
-          if (value == '1') {
-            // Navegar a la página de "Mi cuenta"
-          } else if (value == '2') {
-            // Manejar el cierre de sesión
-            _logout(context);
-          }
-        },
-        itemBuilder: (BuildContext context) => [
-          const PopupMenuItem<String>(
-            value: '1',
-            child: Text('Mi cuenta'),
-          ),
-          const PopupMenuItem<String>(
-            value: '2',
-            child: Text('Cerrar Sesión'),
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-Widget headerTexto() {
-  return const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Bienvenido',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 45,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Text(
-        'Seleccione origen y destino para comenzar',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          //fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> _logout(BuildContext context) async {
-  // Eliminar datos de sesión del usuario
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.remove('isLoggedIn');
-
-  // Navegar a la pantalla de inicio de sesión
-  Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (context) => StartPage()),
-  );
 }
