@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../other/navigation_confirmation.dart';
 import '../other/emergency.dart';
@@ -160,11 +161,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     _services(context),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     _accesibilidad(context),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 17),
                     Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -367,7 +368,7 @@ class _HomePageState extends State<HomePage> {
                         ? Image.asset(serviceDisabled[index])
                         : Image.asset(seriviceIcons[index]),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     serviceTexts[index],
                     style: TextStyle(
@@ -421,7 +422,7 @@ class _HomePageState extends State<HomePage> {
                         ? Image.asset(accesibilityDisabled[index])
                         : Image.asset(accesibilityIcons[index]),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     accesibilityTexts[index],
                     style: TextStyle(
@@ -464,7 +465,9 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 25),
+                      Icon(Icons.check_circle, color: Colors.green, size: 120,),
+                      const SizedBox(height: 8),
                       NavigationConfirmation(
                         selectedOrigin: selectedOrigin,
                         selectedArea: selectedArea,
@@ -480,7 +483,7 @@ class _HomePageState extends State<HomePage> {
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.blue[100],
+            backgroundColor: Color.fromRGBO(17, 116, 186, 1),
           ),
           child: const Text(
             "IR",

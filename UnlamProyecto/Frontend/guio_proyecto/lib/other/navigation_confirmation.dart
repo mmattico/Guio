@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
+import 'package:flutter/services.dart';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
@@ -87,7 +88,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue[100],
+                    backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                   ),
                   child: const Text(
                     "Iniciar Navegación",
