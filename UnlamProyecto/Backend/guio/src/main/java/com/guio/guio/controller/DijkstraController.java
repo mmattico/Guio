@@ -33,4 +33,14 @@ public class DijkstraController {
 		Camino camino = DijkstraService.convertirGrafoACaminoPorTipo(grafo, tipoNodoDestino);
 		return new ResponseEntity<>(camino, HttpStatus.OK);
 	}
+
+	@GetMapping("/mascortoconnodointermedio")
+	public ResponseEntity<?> getCaminoMasCortoPorTipo(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
+													  @RequestParam(name = "DESTINO") String nodoNombreDestino,
+													  @RequestParam(name = "TIPO") String tipoNodoIntermedio) {
+		Grafo grafo = DijkstraService.obtenerGrafo();
+		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen);
+		Camino camino = DijkstraService.convertirGrafoACaminoConNodoIntermedio(grafo, tipoNodoIntermedio, nodoNombreDestino);
+		return new ResponseEntity<>(camino, HttpStatus.OK);
+	}
 }

@@ -9,8 +9,22 @@ public class Camino {
 
     private List<Instruccion> instrucciones = new LinkedList<>();
 
+    public Camino(){
+    }
+
+    public Camino(List<Instruccion> instrucciones) {
+        this.instrucciones = instrucciones;
+    }
+
     public void addInstruccion(Instruccion instruccion) {
         instrucciones.add(instruccion);
+    }
+
+    public List<Instruccion> mergeCaminos(Camino camino) {
+        for(Instruccion instruccion : camino.getInstrucciones()) {
+            instrucciones.add(instruccion);
+        }
+        return instrucciones;
     }
 
     public List<Instruccion> getInstrucciones() {

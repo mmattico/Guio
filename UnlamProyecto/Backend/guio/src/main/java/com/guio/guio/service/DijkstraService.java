@@ -235,4 +235,32 @@ public class DijkstraService {
         }
         return nodoDestino;
     }
+
+public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen, String tipoNodoDestino, String nodoNombreDestino) {
+    Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoDestino, nodoNombreDestino);
+    Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
+
+    Grafo grafoIntermedio = obtenerGrafo();
+    grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoOrigen, nodoIntermedio.getNombre());
+    Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
+    return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+}
+
+    private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino, String nodoNombreDestino) {
+        Grafo grafoDestino = null;
+        Nodo nodoIntermedio = new Nodo();
+        Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
+        for (Nodo nodoOrigen: grafo.getNodos()){
+            if(nodoOrigen.getTipo().equals(tipoNodoDestino)) {
+                grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre());
+                for (Nodo nodoDestino: grafoDestino.getNodos()) {
+                    if (nodoOrigen.getDistancia() + nodoDestino.getDistancia() < distanciaMenor) {
+                        nodoIntermedio = nodoOrigen;
+                        distanciaMenor = nodoOrigen.getDistancia() + nodoDestino.getDistancia();
+                    }
+                }
+            }
+        }
+        return nodoIntermedio;
+    }
 }
