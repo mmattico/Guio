@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../home_page.dart';
-import 'navigation.dart';
+import '../pages/home_page.dart';
+import '../pages/navigation.dart';
+import 'package:flutter/services.dart';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
@@ -25,7 +26,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Usted ha seleccionado: \nOrigen ' ,
+              'Origen ' ,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
@@ -33,9 +34,9 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
             Text(
               '${widget.selectedOrigin}',
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 25),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 25),
             const Text(
               'Con destino a ',
               style: TextStyle(
@@ -50,7 +51,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   : (widget.selectedArea != '')
                   ? '${widget.selectedArea}'
                   : 'None',
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 25),
             ),
             const SizedBox(height: 20),
             const Text(
@@ -62,7 +63,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
             Text(
               '${widget.selectedPreference}',
-              style: const TextStyle(fontSize: 20),
+              style: const TextStyle(fontSize: 25),
             ),
 
             const SizedBox(height: 30),
@@ -87,7 +88,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Colors.blue[100],
+                    backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                   ),
                   child: const Text(
                     "Iniciar Navegación",
@@ -96,11 +97,32 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Center(
               child: SizedBox(
-                width: 150,
-                height: 60,
+                width: 180,
+                height: 38,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: const StadiumBorder(),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    backgroundColor: Colors.grey,
+                  ),
+                  child: const Text(
+                    "Modificar",
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Center(
+              child: SizedBox(
+                width: 180,
+                height: 38,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(context,
@@ -108,7 +130,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   },
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(vertical: 6),
                     backgroundColor: Colors.grey,
                   ),
                   child: const Text(

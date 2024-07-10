@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:guio_proyecto/home_page.dart';
+import 'package:guio_proyecto/pages/home_page.dart';
 import 'package:provider/provider.dart';
 //import 'dashboard_screen.dart';
-import 'login.dart';
-import 'signup.dart';
-import 'start_page.dart';
+import '/pages/login.dart';
+import '/pages/signup.dart';
+import '/pages/start_page.dart';
 //import 'navigation.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
