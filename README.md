@@ -14,6 +14,6 @@
 
 5 - Ubicarse en .\Guio\UnlamProyecto\Frontend\guio_proyecto
 
-6 - Ejecutar flutter pub get.
+6 - Ejecutar flutter pub get
 
-7 - Ejecutar flutter run.
+7 - Ejecutar flutter run

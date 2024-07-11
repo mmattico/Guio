@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/navigation_confirmation.dart';
+import '../other/navigation_confirmation.dart';
+import '../other/emergency.dart';
+import 'package:flutter/services.dart';
+import '../other/search_homepage.dart';
+import '/other/header_homepage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -90,6 +95,12 @@ class _HomePageState extends State<HomePage> {
     "assets/images/thumbs-up.png"
   ];
 
+  List<String> accesibilityDisabled = [
+    "assets/images/escalera-bw.png",
+    "assets/images/elevator-bw.png",
+    "assets/images/thumbs-up-bw.png"
+  ];
+
   List<String> areaTexts = [
     'Cardiología',
     'Neurología',
@@ -107,6 +118,12 @@ class _HomePageState extends State<HomePage> {
     "assets/images/receptionist.png"
   ];
 
+  List<String> serviceDisabled = [
+    "assets/images/toilet-bw.png",
+    "assets/images/snack-bw.png",
+    "assets/images/receptionist-bw.png"
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,22 +133,22 @@ class _HomePageState extends State<HomePage> {
           CustomPaint(
             painter: BluePainter(),
             child: Container(
-              height: 400,
+              height: 380,
             ),
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    header(),
-                    const SizedBox(height: 10),
+                    header(context),
+                    //const SizedBox(height: 2),
                     headerTexto(),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 15),
                     _fromTo(context),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 4),
                     if ((selectedArea == selectedOrigin) &&
                         (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
                       const Padding(
@@ -144,16 +161,20 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 8),
                     _services(context),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 8),
                     _accesibilidad(context),
-                    const SizedBox(height: 30),
-                    _button(context),
-                    const SizedBox(height: 20),
-                    Center(
-                      child: _emergencyButton(context),
-                    ),
+                    const SizedBox(height: 17),
+                    Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                        _button(context),
+                        const SizedBox(width: 10,),
+                        emergencyButton(context),
+                      ],
+                    )
                   ],
                 ),
               ),
@@ -172,7 +193,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
         child: Column(
           children: [
             Row(
@@ -214,9 +235,9 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             const Divider(),
-            const SizedBox(height: 12),
+            const SizedBox(height: 6),
             Row(
               children: [
                 const Icon(
@@ -238,8 +259,6 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 20,
                             ),
                           ),
-                          //SizedBox(width: 8),
-                          //Icon(Icons.close, color: Colors.blue, size: 35,),
                           IconButton(
                             icon: const Icon(
                               Icons.close,
@@ -324,7 +343,7 @@ class _HomePageState extends State<HomePage> {
         const Text(
           'Servicios',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -345,12 +364,15 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.asset(seriviceIcons[index]),
+                    child: serviceIsDisabled && selectedIconIndexService != index
+                        ? Image.asset(serviceDisabled[index])
+                        : Image.asset(seriviceIcons[index]),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     serviceTexts[index],
                     style: TextStyle(
+                      fontSize: 18,
                       color: serviceIsDisabled && selectedIconIndexService != index
                           ? Colors.grey
                           : Colors.black,
@@ -374,7 +396,7 @@ class _HomePageState extends State<HomePage> {
         const Text(
           'Accesibilidad',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -396,12 +418,15 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     height: 80,
                     width: 80,
-                    child: Image.asset(accesibilityIcons[index]),
+                    child: preferenceIsDisabled && selectedIconIndexPreference != index
+                        ? Image.asset(accesibilityDisabled[index])
+                        : Image.asset(accesibilityIcons[index]),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     accesibilityTexts[index],
                     style: TextStyle(
+                      fontSize: 18,
                       color: preferenceIsDisabled && selectedIconIndexPreference != index
                           ? Colors.grey
                           : Colors.black,
@@ -420,7 +445,7 @@ class _HomePageState extends State<HomePage> {
   _button(context){
     return Center(
       child: SizedBox(
-        width: 250,
+        width: 200,
         height: 60,
         child: ElevatedButton(
           onPressed: (selectedOrigin.isEmpty ||
@@ -440,7 +465,9 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 25),
+                      Icon(Icons.check_circle, color: Colors.green, size: 120,),
+                      const SizedBox(height: 8),
                       NavigationConfirmation(
                         selectedOrigin: selectedOrigin,
                         selectedArea: selectedArea,
@@ -456,7 +483,7 @@ class _HomePageState extends State<HomePage> {
           style: ElevatedButton.styleFrom(
             shape: const StadiumBorder(),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.blue[100],
+            backgroundColor: Color.fromRGBO(17, 116, 186, 1),
           ),
           child: const Text(
             "IR",
@@ -466,249 +493,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-//*********** HEADER ***********
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
-Widget header() {
-  return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text('         '),
-        Image(image:
-        NetworkImage('https://cdn.logo.com/hotlink-ok/logo-social.png'),
-          width: 100,
-        ),
-        Icon(
-          Icons.account_circle,
-          color: Colors.white,
-          size: 40,
-        ),
-      ]
-  );
-}
-
-Widget headerTexto() {
-  return const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Bienvenido',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 45,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      SizedBox(height: 5),
-      Text(
-        'Seleccione su origen y destino para comenzar a navegar',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
-  );
-}
-
-//*********** BARRA DE BÚSQUEDA -origen y destino- ***********
-
-class CustomSearchDelegate extends SearchDelegate<String> {
-  //Definición de áreas
-  List<String> searchTerms = [
-    "Cardiología",
-    "Traumatología",
-    "Oftalmología",
-    "Clinica Médica",
-    "Obstetricia",
-    "Cirujía",
-    "Internaciones",
-    "Dermatología"
-  ];
-
-  // Ícono para volver hacia atras, salir de la barra de búsqueda
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        close(context, ''); // Devuelve una cadena vacía en lugar de null
-      },
-      icon: const Icon(Icons.arrow_back),
-    );
-  }
-
-  //Ícono de micrófono, para tomar comandos por voz
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      Padding(padding: const EdgeInsets.fromLTRB(1,1,25,1),
-        child:  IconButton(
-          onPressed: () {
-            //Agregar funcionalidad para que tome voz.
-          },
-          icon: const Icon(Icons.mic_rounded,
-            size: 35,),
-        ),
-      )
-
-    ];
-  }
-
-  //Para la búsqueda por teclado de un área
-  @override
-  Widget buildResults(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: () {
-            close(context,
-                result
-            ); // Devuelve el valor seleccionado y cierra el buscador
-          },
-        );
-      },
-    );
-  }
-
-  // Para la búsqueda por teclado de un área
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    List<String> matchQuery = [];
-    for (var fruit in searchTerms) {
-      if (fruit.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(fruit);
-      }
-    }
-    return ListView.builder(
-      itemCount: matchQuery.length,
-      itemBuilder: (context, index) {
-        var result = matchQuery[index];
-        return ListTile(
-          title: Text(result),
-          onTap: () {
-            close(context,
-                result
-            ); // Devuelve el valor seleccionado y cierra el buscador
-          },
-        );
-      },
-    );
-  }
-}
-
-//*************** BOTÓN DE EMERGENCIA ***************
-
-Widget _emergencyButton(BuildContext context) {
-  return Column(
-    children: [
-      SizedBox(
-        width: 250,
-        height: 60,
-        child: ElevatedButton(
-          onPressed: () {
-            _emergencyPopUp(context);
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.red,
-          ),
-          child: const Text(
-            "EMERGENCIA",
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-Future<void> _emergencyPopUp(BuildContext context) {
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Column(
-          children: <Widget>[
-            Icon(
-              Icons.info_outline, // Icono grande
-              size: 80, // Tamaño del icono
-              color: Colors.red,
-            ),
-            SizedBox(height: 10), // Espacio entre el icono y el título
-            Text(
-              'ALERTA ENVIADA',
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-        content: const Text(
-          '¡Por favor, quédate en la\n'
-          'misma ubicación hasta recibir asistencia!\n',
-          textAlign: TextAlign.center,
-        ),
-        actions: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            child: Column(
-              children: <Widget>[
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  child: const Text('Emergencia Solucionada'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    textStyle: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  child: const Text('Cancelar'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        ],
-      );
-    },
-  );
 }

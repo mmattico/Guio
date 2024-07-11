@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
-import '../home_page.dart';
-import 'password_recovery.dart';
+import 'home_page.dart';
+import '../other/password_recovery.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -54,6 +54,7 @@ class _LoginPageState extends State<LoginPage> {
 
   _back (context){
     return AppBar(
+      backgroundColor: Colors.white,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.black),
         onPressed: () {
@@ -147,7 +148,7 @@ class _LoginPageState extends State<LoginPage> {
       style: ElevatedButton.styleFrom(
         shape: const StadiumBorder(),
         padding: const EdgeInsets.symmetric(vertical: 16),
-        backgroundColor: const Color.fromRGBO(65, 105, 225, 1),
+        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(
         "Iniciar Sesión",
@@ -165,7 +166,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
       child: const Text("¿Haz olvidado la contraseña?",
-        style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),
+        style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),
       ),
     );
   }
@@ -179,12 +180,10 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const SignupPage()),);
             },
-            child: const Text("Registrate", style: TextStyle(color: Color.fromRGBO(65, 105, 225, 1)),)
+            child: const Text("Registrate", style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),)
         )
       ],
     );
   }
-
-
 }
 

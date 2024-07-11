@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../home_page.dart';
+import 'home_page.dart';
+import '../other/emergency.dart';
 
 class Navigation extends StatefulWidget {
   final String? selectedService;
@@ -51,21 +52,23 @@ class _NavigationState extends State<Navigation> {
       ),
       body:*/
       backgroundColor: Colors.white,
-      body: /*Stack(
+      body: Stack(
             children: [
-            CustomPaint(
-            painter: BluePainter(),
-        Container(
-          height: 400,
-        ),*/
+              CustomPaint(
+              painter: BluePainter(),
+              child: Container(
+                height: 340,
+              ),
+            ),
           SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(25, 13, 16, 12),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 header(),
+                const SizedBox(height: 9),
                 Text(
                   (widget.selectedArea != '' && widget.selectedService != '')
                       ? '${widget.selectedArea} y ${widget.selectedService}'
@@ -75,11 +78,14 @@ class _NavigationState extends State<Navigation> {
                               ? '${widget.selectedArea}'
                               : 'None',
                   style: const TextStyle(
-                      fontSize: 35,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.white,
+                    fontSize: 45,
+                    fontWeight: FontWeight.bold,
+                    height: 1.1,
+                  ),
                 ),
-                SwitchListTile(
+                const SizedBox(height: 11),
+                /*SwitchListTile(
                   title: const Text('Asistencia por voz'),
                   value: selectedVoiceAssistance,
                   onChanged: (bool value) {
@@ -89,11 +95,37 @@ class _NavigationState extends State<Navigation> {
                     print('$selectedVoiceAssistance');
                   },
                   secondary: const Icon(Icons.volume_up),
+                ),*/
+                Card(
+                  color: Colors.white,
+                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                    child: Column(
+                      children: [
+                        SwitchListTile(
+                          title: const Text('Asistencia por voz'),
+                          value: selectedVoiceAssistance,
+                          onChanged: (bool value) {
+                            setState(() {
+                              selectedVoiceAssistance = value;
+                            });
+                            print('$selectedVoiceAssistance');
+                          },
+                          secondary: const Icon(Icons.volume_up),
+                          activeColor: Color.fromRGBO(17, 116, 186, 1),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 Center(
                   child: Image.network(
                     'https://cdn-icons-png.freepik.com/512/7884/7884621.png',
-                    height: 300,
+                    height: 280,
                   ),
                 ),
                 const Center(
@@ -102,8 +134,37 @@ class _NavigationState extends State<Navigation> {
                     style: TextStyle(fontSize: 25),
                   ),
                 ),
-                const SizedBox(height: 40),
-                Center(
+                const SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 250,
+                      height: 60,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: Colors.grey,
+                        ),
+                        child: const Text(
+                          "Finalizar Recorrido",
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ),),
+                    const SizedBox(width: 10,),
+                    emergencyButton(context),
+                  ],
+                ),
+                /*Center(
                   child: SizedBox(
                     width: 250,
                     height: 60,
@@ -126,12 +187,13 @@ class _NavigationState extends State<Navigation> {
                       ),
                     ),
                   ),
-                ),
+                ),*/
               ],
             ),
           ),
         ),
       ),
+  ],),
     );
   }
 }
@@ -170,20 +232,22 @@ Widget header() {
           Text('         '),
           Image(
             image:
-                NetworkImage('https://cdn.logo.com/hotlink-ok/logo-social.png'),
+            AssetImage("assets/images/logo_GUIO.png"),
             width: 100,
           ),
           Icon(
             Icons.account_circle,
-            color: Colors.grey,
+            color: Colors.white,
             size: 40,
           ),
         ],
       ),
-      const SizedBox(height: 10),
-      const Text(
+      SizedBox(height: 20),
+      Text(
         "Dirigiendose a ",
-        style: TextStyle(fontSize: 25, color: Colors.black),
+        style: TextStyle(color: Colors.white,
+          fontSize: 25,
+        ),
       ),
     ],
   );
