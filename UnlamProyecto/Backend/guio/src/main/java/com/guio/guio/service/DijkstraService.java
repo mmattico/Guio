@@ -130,7 +130,7 @@ public class DijkstraService {
 
     private static Instruccion getInstruccionInicial(Nodo nodoDestino) {
         Instruccion instruccion = new Instruccion();
-        instruccion.setCommando("El objetivo esta a una distancia de "+ nodoDestino.getDistancia()+" metros");
+        instruccion.setCommando("El objetivo esta a una distancia de " + nodoDestino.getDistancia().toString() +" metros");
         return instruccion;
     }
 
