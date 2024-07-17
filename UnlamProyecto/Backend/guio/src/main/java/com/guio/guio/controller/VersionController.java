@@ -1,6 +1,6 @@
 package com.guio.guio.controller;
 
-import com.guio.guio.model.Ping;
+import com.guio.guio.model.Version;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,13 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/api")
-public class PingController {
-
-    @GetMapping(value = "/ping", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> ping (){
-        Ping ping = new Ping();
-        ping.setMensaje("OK");
-        ping.setStatus(String.valueOf(HttpStatus.OK));
-        return new ResponseEntity<>(ping, HttpStatus.OK);
+public class VersionController {
+    @GetMapping(value = "/version", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> version (){
+        Version version = new Version();
+        version.setMensaje("OK");
+        version.setVersion("1.0.0.0");
+        return new ResponseEntity<>(version, HttpStatus.OK);
     }
 }

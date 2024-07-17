@@ -16,4 +16,4 @@
 
 6 - Ejecutar flutter pub get
 
-7 - Ejecutar flutter run
+7 - Ejecutar flutter run -d chrome --web-browser-flag "--disable-web-security"

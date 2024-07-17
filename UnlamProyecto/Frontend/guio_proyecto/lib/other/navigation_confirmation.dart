@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/model/instruccion_node.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;
@@ -80,7 +83,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                           selectedOrigin: widget.selectedOrigin,
                           selectedArea: widget.selectedArea,
                           selectedService: widget.selectedService,
-                          selectedPreference: widget.selectedPreference,
+                          selectedPreference: widget.selectedPreference
                         ),
                       ),
                     );
@@ -145,4 +148,5 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
       ),
     );
   }
+
 }
