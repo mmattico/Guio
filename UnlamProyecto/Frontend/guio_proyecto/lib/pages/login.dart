@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import '../other/password_recovery.dart';
+import 'home_page_accesible.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -142,7 +143,8 @@ class _LoginPageState extends State<LoginPage> {
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
         }
       },
       style: ElevatedButton.styleFrom(
