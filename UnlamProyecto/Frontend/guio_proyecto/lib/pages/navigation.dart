@@ -85,6 +85,7 @@ class _NavigationState extends State<Navigation> {
   bool _isLoading = false;
   int distanciaARecorrer = 0;
   int distanciaRecorrida = 0;
+  String _imagenPath = "";
 
   void toggleSwitch(bool value) {
     setState(() {
@@ -127,6 +128,12 @@ class _NavigationState extends State<Navigation> {
         await Future.delayed(Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
+
+          if(instrucciones[i].haygiro ?? false){
+            _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
+          } else {
+            _imagenPath = 'assets/images/narrow-top.png';
+          }
         });
       }
     } else {
@@ -180,25 +187,6 @@ class _NavigationState extends State<Navigation> {
       hablarTexto(_instruccion);
     }
     return Scaffold(
-      /*appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.network(
-            'https://cdn.logo.com/hotlink-ok/logo-social.png', //Reemplazar por logo de GUIO
-            //Reemplazar con Icon de GUIO
-            height: 50,
-          ),
-        ),
-        centerTitle: true,
-        //backgroundColor: Colors.grey[200],
-        elevation: 50.0,
-        leading: IconButton(
-          icon: const Icon(Icons.person),
-          tooltip: 'Profile',
-          onPressed: () {},
-        ),
-      ),
-      body:*/
       backgroundColor: Colors.white,
       body: _isLoading && _instruccion == ""
           ? Center(child: CircularProgressIndicator())
@@ -235,17 +223,6 @@ class _NavigationState extends State<Navigation> {
                   ),
                 ),
                 const SizedBox(height: 11),
-                /*SwitchListTile(
-                  title: const Text('Asistencia por voz'),
-                  value: selectedVoiceAssistance,
-                  onChanged: (bool value) {
-                    setState(() {
-                      selectedVoiceAssistance = value;
-                    });
-                    print('$selectedVoiceAssistance');
-                  },
-                  secondary: const Icon(Icons.volume_up),
-                ),*/
                 Card(
                   color: Colors.white,
                   margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
@@ -273,6 +250,14 @@ class _NavigationState extends State<Navigation> {
                   ),
                 ),
                 Center(
+                  child: SizedBox(
+                      width: 300.0,
+                      height: 300.0,
+                    child: Image.asset(_imagenPath,
+                      height: 280,),
+                  )
+                ),
+                Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -280,30 +265,26 @@ class _NavigationState extends State<Navigation> {
                         'Instruccion:',
                         style: TextStyle(fontSize: 24),
                       ),
-                      Text(
-                        _instruccion,
-                        style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-                      ),
+                      SizedBox(
+                        width: 700,
+                        height: 100,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _instruccion,
+                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                            )
+                        )
+                      )
+
                     ],
                   ),
                 ),
-                /*
-                Center(
-                  child: Image.network(
-                    'https://cdn-icons-png.freepik.com/512/7884/7884621.png',
-                    height: 280,
-                  ),
-                ),
-                const Center(
-                  child: Text(
-                    "Gire a la Derecha",
-                    style: TextStyle(fontSize: 25),
-                  ),
-                ),
-
-                */
-
-
                 const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -314,7 +295,11 @@ class _NavigationState extends State<Navigation> {
                       height: 60,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
+                          detenerReproduccion();
+                          setState(() {
+                            selectedVoiceAssistance = !selectedVoiceAssistance;
+                          });
+                           Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => const HomePage()),
@@ -334,30 +319,6 @@ class _NavigationState extends State<Navigation> {
                     emergencyButton(context),
                   ],
                 ),
-                /*Center(
-                  child: SizedBox(
-                    width: 250,
-                    height: 60,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.grey,
-                      ),
-                      child: const Text(
-                        "Finalizar Recorrido",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),*/
               ],
             ),
           ),
@@ -367,6 +328,20 @@ class _NavigationState extends State<Navigation> {
     );
   }
 }
+
+String _mapSentidoAImagen(String sentido) {
+  switch (sentido) {
+    case 'Izquierda':
+      return 'assets/images/narrow-left.png';
+    case 'Derecha':
+      return 'assets/images/narrow-right.png';
+    case 'Regresar':
+      return 'assets/images/narrow-down.png';
+    default:
+      return 'assets/images/narrow-top.png';
+  }
+}
+
 TextToSpeech tts = TextToSpeech();
 
 void detenerReproduccion() {
