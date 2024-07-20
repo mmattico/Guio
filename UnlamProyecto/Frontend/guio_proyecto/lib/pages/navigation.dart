@@ -7,7 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_speech/text_to_speech.dart';
+//import 'package:text_to_speech/text_to_speech.dart';
+import 'package:vibration/vibration.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Navigation extends StatefulWidget {
   final String? selectedService;
@@ -102,7 +104,9 @@ class _NavigationState extends State<Navigation> {
 
   Future<void> obtenerInstruccionesCamino() async {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': widget.selectedOrigin, 'DESTINO': widget.selectedArea});
-    var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+
     //var url = Uri.http('localhost:8080/api/dijktra/mascorto?ORIGEN=1&DESTINO=11');
     print(url);
     print(widget.selectedOrigin);
@@ -131,6 +135,7 @@ class _NavigationState extends State<Navigation> {
 
           if(instrucciones[i].haygiro ?? false){
             _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
+            Vibration.vibrate();
           } else {
             _imagenPath = 'assets/images/narrow-top.png';
           }
@@ -267,7 +272,7 @@ class _NavigationState extends State<Navigation> {
                       ),
                       SizedBox(
                         width: 700,
-                        height: 100,
+                        height: 150,
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +347,7 @@ String _mapSentidoAImagen(String sentido) {
   }
 }
 
-TextToSpeech tts = TextToSpeech();
+FlutterTts  tts = FlutterTts();
 
 void detenerReproduccion() {
   tts.stop();
@@ -352,7 +357,7 @@ void hablarTexto(String texto) {
   tts.setLanguage("es-AR"); // Configura el idioma español (España)
   tts.setPitch(1.0);
   tts.setVolume(1.0);
-  tts.setRate(1.0);
+  //tts.setRate(1.0);
   tts.speak(texto);
 }
 
