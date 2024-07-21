@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:guio_proyecto/model/instruccion_node.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class NavigationConfirmation extends StatefulWidget {
   final String? selectedService;

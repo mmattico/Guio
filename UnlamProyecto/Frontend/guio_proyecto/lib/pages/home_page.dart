@@ -138,15 +138,15 @@ class _HomePageState extends State<HomePage> {
           ),
           SafeArea(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     header(context),
-                    //const SizedBox(height: 2),
+                    const SizedBox(height: 10),
                     headerTexto(),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 20),
                     _fromTo(context),
                     const SizedBox(height: 4),
                     if ((selectedArea == selectedOrigin) &&
@@ -161,11 +161,11 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 15),
                     _services(context),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     _accesibilidad(context),
-                    const SizedBox(height: 17),
+                    const SizedBox(height: 25),
                     Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,7 +394,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text(
-          'Accesibilidad',
+          'Preferencias',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
