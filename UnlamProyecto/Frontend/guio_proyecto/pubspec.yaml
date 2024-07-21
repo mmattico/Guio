@@ -30,18 +30,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  text_to_speech: ^0.2.0
+  #text_to_speech: ^0.2.3
   carousel_slider: ^4.2.1
   carousel_indicator: ^1.0.0
   rflutter_alert: ^2.0.7
   speech_to_text: ^6.6.0
   shared_preferences: ^2.0.13
+  vibration: ^1.9.0
+  flutter_tts: ^4.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   pedometer: ^4.0.1  # versión actualizada
-  health: ^10.2.0     # versión actualizada
+  #health: ^10.2.0     # versión actualizada
   english_words: any
   provider: any
   flutter_login: any
