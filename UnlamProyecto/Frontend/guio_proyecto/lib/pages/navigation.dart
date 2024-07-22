@@ -160,6 +160,9 @@ class _NavigationState extends State<Navigation> {
         await Future.delayed(Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
+          if(i == 0){
+            Vibration.vibrate();
+          }
 
           if(instrucciones[i].haygiro ?? false){
             _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
@@ -169,7 +172,9 @@ class _NavigationState extends State<Navigation> {
           }
         });
       }
+      _imagenPath = 'assets/images/arrived_2.png';
       _instruccion = 'Ha llegado a Destino';
+      Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
     } else {
       setState(() {
         _isLoading = false;
@@ -331,6 +336,7 @@ class _NavigationState extends State<Navigation> {
                       child: ElevatedButton(
                         onPressed: () {
                           detenerReproduccion();
+                          Vibration.cancel();
                           setState(() {
                             selectedVoiceAssistance = !selectedVoiceAssistance;
                           });
