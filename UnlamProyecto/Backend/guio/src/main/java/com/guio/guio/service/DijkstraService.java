@@ -12,7 +12,9 @@ import java.util.Set;
 @SpringBootApplication
 public class DijkstraService {
 
-    public static Grafo calcularCaminoMasCortoDesdeFuente(Grafo grafo, String nodoOrigenNombre) {
+    public static Grafo calcularCaminoMasCortoDesdeFuente(Grafo grafo,
+                                                          String nodoOrigenNombre,
+                                                          String preferencia) {
         Nodo fuente = getNodoFromGrafo(grafo, nodoOrigenNombre);
 
         fuente.setDistancia(0);
@@ -24,9 +26,15 @@ public class DijkstraService {
 
         while (NodosNoRevisados.size() != 0) {
             Nodo currentNodo = getDistanciaMenorNodo(NodosNoRevisados);
+            if (verificarPreferencia(currentNodo, preferencia))
+                continue;
+
             NodosNoRevisados.remove(currentNodo);
-            for (Map.Entry<Nodo, Arista> parDeAdjacencia:currentNodo.getNodosVecinos().entrySet()) {
+            for (Map.Entry<Nodo, Arista> parDeAdjacencia : currentNodo.getNodosVecinos().entrySet()) {
                 Nodo nodoVecino = parDeAdjacencia.getKey();
+                if (verificarPreferencia(nodoVecino, preferencia))
+                    continue;
+
                 Arista arista = parDeAdjacencia.getValue();
                 if (!nodosRevisados.contains(nodoVecino)) {
                     CalcularDistanciaMinima(nodoVecino, arista, currentNodo);
@@ -41,7 +49,7 @@ public class DijkstraService {
     private static Nodo getDistanciaMenorNodo(Set<Nodo> nodosNoRevisados) {
         Nodo distanciaMenorNodo = null;
         int distanciaMenor = Integer.MAX_VALUE;
-        for (Nodo nodo: nodosNoRevisados) {
+        for (Nodo nodo : nodosNoRevisados) {
             int nodoDistancia = nodo.getDistancia();
             if (nodoDistancia < distanciaMenor) {
                 distanciaMenor = nodoDistancia;
@@ -52,7 +60,7 @@ public class DijkstraService {
     }
 
     private static void CalcularDistanciaMinima(Nodo nodoPrueba,
-                                                 Arista arista, Nodo nodoFuente) {
+                                                Arista arista, Nodo nodoFuente) {
         Integer peso = arista.getDistancia();
         Integer distanciaNodoFuente = nodoFuente.getDistancia();
         if (distanciaNodoFuente + peso < nodoPrueba.getDistancia()) {
@@ -76,9 +84,9 @@ public class DijkstraService {
         camino.addInstruccion(instruccion);
 
         Arista aristaAnterior = new Arista();
-        for (Nodo nodo: nodoDestino.getCaminoCorto()){
-            if(nodo.getArista().getDistancia().compareTo(0) > 0) {
-                if(aristaAnterior.getDistancia().compareTo(0) > 0){
+        for (Nodo nodo : nodoDestino.getCaminoCorto()) {
+            if (nodo.getArista().getDistancia().compareTo(0) > 0) {
+                if (aristaAnterior.getDistancia().compareTo(0) > 0) {
                     obtenerInstruccionDeDireccion(camino, aristaAnterior, nodo.getArista());
                 }
                 addInstruccionACamino(camino, nodo);
@@ -86,8 +94,8 @@ public class DijkstraService {
             }
         }
 
-        if(nodoDestino.getArista().getDistancia().compareTo(0) > 0) {
-            if(aristaAnterior.getDistancia().compareTo(0) > 0){
+        if (nodoDestino.getArista().getDistancia().compareTo(0) > 0) {
+            if (aristaAnterior.getDistancia().compareTo(0) > 0) {
                 obtenerInstruccionDeDireccion(camino, aristaAnterior, nodoDestino.getArista());
             }
             addInstruccionACamino(camino, nodoDestino);
@@ -109,18 +117,18 @@ public class DijkstraService {
         Instruccion instruccion;
         String orientacionFinal = aristaAnterior.getSentidoDestino();
         String orientacionDestino = aristaDestino.getSentidoOrigen();
-        if((orientacionFinal.equals("N") && orientacionDestino.equals("O"))
+        if ((orientacionFinal.equals("N") && orientacionDestino.equals("O"))
                 || (orientacionFinal.equals("O") && orientacionDestino.equals("S"))
                 || (orientacionFinal.equals("S") && orientacionDestino.equals("E"))
-                || (orientacionFinal.equals("E") && orientacionDestino.equals("N"))){
+                || (orientacionFinal.equals("E") && orientacionDestino.equals("N"))) {
             instruccion = new Instruccion();
             instruccion.setHaygiro(true);
             instruccion.setSentido("Derecha");
             camino.addInstruccion(instruccion);
-        }else if((orientacionFinal.equals("N") && orientacionDestino.equals("E"))
+        } else if ((orientacionFinal.equals("N") && orientacionDestino.equals("E"))
                 || (orientacionFinal.equals("E") && orientacionDestino.equals("S"))
                 || (orientacionFinal.equals("S") && orientacionDestino.equals("O"))
-                || (orientacionFinal.equals("O") && orientacionDestino.equals("N"))){
+                || (orientacionFinal.equals("O") && orientacionDestino.equals("N"))) {
             instruccion = new Instruccion();
             instruccion.setHaygiro(true);
             instruccion.setSentido("Izquierda");
@@ -130,14 +138,14 @@ public class DijkstraService {
 
     private static Instruccion getInstruccionInicial(Nodo nodoDestino) {
         Instruccion instruccion = new Instruccion();
-        instruccion.setCommando("El objetivo esta a una distancia de " + nodoDestino.getDistancia().toString() +" metros");
+        instruccion.setCommando("El objetivo esta a una distancia de " + nodoDestino.getDistancia().toString() + " metros");
         return instruccion;
     }
 
     private static Nodo getNodoFromGrafo(Grafo grafo, String nodoDestinoNombre) {
         Nodo nodoDestino = new Nodo();
-        for (Nodo nodo: grafo.getNodos()){
-            if(nodo.getNombre().equals(nodoDestinoNombre)){
+        for (Nodo nodo : grafo.getNodos()) {
+            if (nodo.getNombre().equals(nodoDestinoNombre)) {
                 nodoDestino = nodo;
                 break;
             }
@@ -162,44 +170,44 @@ public class DijkstraService {
         Nodo Nodo12 = new Nodo("12", NodoCTE.NODO_TIPO_NADA);
         Nodo Nodo13 = new Nodo("13", NodoCTE.NODO_TIPO_NADA);
 
-        Nodo1.addDestination(Nodo2, new Arista(2,"S","N",true));
+        Nodo1.addDestination(Nodo2, new Arista(2, "S", "N", true));
 
-        Nodo2.addDestination(Nodo1, new Arista(2,"N","S",true));
-        Nodo2.addDestination(Nodo3, new Arista(3,"E","O", false));
+        Nodo2.addDestination(Nodo1, new Arista(2, "N", "S", true));
+        Nodo2.addDestination(Nodo3, new Arista(3, "E", "O", false));
 
-        Nodo3.addDestination(Nodo4, new Arista(4,"N","S", false));
-        Nodo3.addDestination(Nodo6, new Arista(5,"E","O", false));
-        Nodo3.addDestination(Nodo2, new Arista(3,"O","E", false));
-        Nodo3.addDestination(Nodo5, new Arista(4,"S","N", false));
+        Nodo3.addDestination(Nodo4, new Arista(4, "N", "S", false));
+        Nodo3.addDestination(Nodo6, new Arista(5, "E", "O", false));
+        Nodo3.addDestination(Nodo2, new Arista(3, "O", "E", false));
+        Nodo3.addDestination(Nodo5, new Arista(4, "S", "N", false));
 
-        Nodo4.addDestination(Nodo3, new Arista(4,"S","N", false));
+        Nodo4.addDestination(Nodo3, new Arista(4, "S", "N", false));
 
-        Nodo5.addDestination(Nodo3, new Arista(4,"N","S", false));
+        Nodo5.addDestination(Nodo3, new Arista(4, "N", "S", false));
 
-        Nodo6.addDestination(Nodo3, new Arista(5,"O","E", false));
-        Nodo6.addDestination(Nodo13, new Arista(4,"S","N", false));
-        Nodo6.addDestination(Nodo7, new Arista(4,"E","O", false));
+        Nodo6.addDestination(Nodo3, new Arista(5, "O", "E", false));
+        Nodo6.addDestination(Nodo13, new Arista(4, "S", "N", false));
+        Nodo6.addDestination(Nodo7, new Arista(4, "E", "O", false));
 
-        Nodo7.addDestination(Nodo6, new Arista(4,"O","E", false));
-        Nodo7.addDestination(Nodo12, new Arista(4,"S","N", false));
+        Nodo7.addDestination(Nodo6, new Arista(4, "O", "E", false));
+        Nodo7.addDestination(Nodo12, new Arista(4, "S", "N", false));
 
-        Nodo8.addDestination(Nodo9, new Arista(2,"E","O", true));
+        Nodo8.addDestination(Nodo9, new Arista(2, "E", "O", true));
 
-        Nodo9.addDestination(Nodo8, new Arista(2,"O","E",true));
-        Nodo9.addDestination(Nodo13, new Arista(1,"N","S", false));
-        Nodo9.addDestination(Nodo10, new Arista(5,"S","N", false));
+        Nodo9.addDestination(Nodo8, new Arista(2, "O", "E", true));
+        Nodo9.addDestination(Nodo13, new Arista(1, "N", "S", false));
+        Nodo9.addDestination(Nodo10, new Arista(5, "S", "N", false));
 
-        Nodo10.addDestination(Nodo6, new Arista(5,"N","S", false));
-        Nodo10.addDestination(Nodo11, new Arista(4,"E","O", false));
+        Nodo10.addDestination(Nodo6, new Arista(5, "N", "S", false));
+        Nodo10.addDestination(Nodo11, new Arista(4, "E", "O", false));
 
-        Nodo11.addDestination(Nodo10, new Arista(4,"O","E", false));
-        Nodo11.addDestination(Nodo12, new Arista(5,"N","S", false));
+        Nodo11.addDestination(Nodo10, new Arista(4, "O", "E", false));
+        Nodo11.addDestination(Nodo12, new Arista(5, "N", "S", false));
 
-        Nodo12.addDestination(Nodo6, new Arista(4,"N","S", false));
-        Nodo12.addDestination(Nodo11, new Arista(5,"S","N", false));
+        Nodo12.addDestination(Nodo6, new Arista(4, "N", "S", false));
+        Nodo12.addDestination(Nodo11, new Arista(5, "S", "N", false));
 
-        Nodo13.addDestination(Nodo6, new Arista(4,"N","S", false));
-        Nodo13.addDestination(Nodo9, new Arista(1,"S","N", false));
+        Nodo13.addDestination(Nodo6, new Arista(4, "N", "S", false));
+        Nodo13.addDestination(Nodo9, new Arista(1, "S", "N", false));
 
         grafo.addNode(Nodo1);
         grafo.addNode(Nodo2);
@@ -226,9 +234,9 @@ public class DijkstraService {
     private static Nodo getNodoWithTypeFromGrafo(Grafo grafo, String tipoNodoDestino) {
         Nodo nodoDestino = new Nodo();
         Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
-        for (Nodo nodo: grafo.getNodos()){
-            if(nodo.getTipo().equals(tipoNodoDestino)
-                    && nodo.getDistancia() < distanciaMenor){
+        for (Nodo nodo : grafo.getNodos()) {
+            if (nodo.getTipo().equals(tipoNodoDestino)
+                    && nodo.getDistancia() < distanciaMenor) {
                 nodoDestino = nodo;
                 distanciaMenor = nodo.getDistancia();
             }
@@ -236,24 +244,30 @@ public class DijkstraService {
         return nodoDestino;
     }
 
-public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen, String tipoNodoDestino, String nodoNombreDestino) {
-    Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoDestino, nodoNombreDestino);
-    Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
+    public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen,
+                                                                String tipoNodoDestino,
+                                                                String nodoNombreDestino,
+                                                                String preferencia) {
+        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoDestino, nodoNombreDestino, preferencia);
+        Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
 
-    Grafo grafoIntermedio = obtenerGrafo();
-    grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoOrigen, nodoIntermedio.getNombre());
-    Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
-    return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
-}
+        Grafo grafoIntermedio = obtenerGrafo();
+        grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoOrigen, nodoIntermedio.getNombre(), preferencia);
+        Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
+        return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+    }
 
-    private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino, String nodoNombreDestino) {
+    private static Nodo getNodoIntermedioFromGrafo(Grafo grafo,
+                                                   String tipoNodoDestino,
+                                                   String nodoNombreDestino,
+                                                   String preferencia) {
         Grafo grafoDestino = null;
         Nodo nodoIntermedio = new Nodo();
         Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
-        for (Nodo nodoOrigen: grafo.getNodos()){
-            if(nodoOrigen.getTipo().equals(tipoNodoDestino)) {
-                grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre());
-                for (Nodo nodoDestino: grafoDestino.getNodos()) {
+        for (Nodo nodoOrigen : grafo.getNodos()) {
+            if (nodoOrigen.getTipo().equals(tipoNodoDestino)) {
+                grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre(), preferencia);
+                for (Nodo nodoDestino : grafoDestino.getNodos()) {
                     if (nodoOrigen.getDistancia() + nodoDestino.getDistancia() < distanciaMenor) {
                         nodoIntermedio = nodoOrigen;
                         distanciaMenor = nodoOrigen.getDistancia() + nodoDestino.getDistancia();
@@ -262,5 +276,13 @@ public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen, S
             }
         }
         return nodoIntermedio;
+    }
+
+    private static boolean verificarPreferencia(Nodo nodo, String preferencia) {
+        if ((preferencia == 'escalera' && nodo.getTipo() == 'ascensor') ||
+                (preferencia == 'ascensor' && nodo.getTipo() == 'escalera')) {
+            return false;
+        }
+        return true;
     }
 }
