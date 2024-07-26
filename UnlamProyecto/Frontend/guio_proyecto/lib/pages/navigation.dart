@@ -4,10 +4,8 @@ import 'package:guio_proyecto/model/instruccion_node.dart';
 import 'home_page.dart';
 import '../other/emergency.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:pedometer/pedometer.dart';
-import 'package:flutter/material.dart';
-import 'package:text_to_speech/text_to_speech.dart';
+import 'package:vibration/vibration.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class Navigation extends StatefulWidget {
   final String? selectedService;
@@ -77,7 +75,6 @@ class _NavigationState extends State<Navigation> {
   }
 }*/
 
-
 class _NavigationState extends State<Navigation> {
   bool selectedVoiceAssistance = true;
   List<Instrucciones> instrucciones = [];
@@ -86,12 +83,46 @@ class _NavigationState extends State<Navigation> {
   int distanciaARecorrer = 0;
   int distanciaRecorrida = 0;
   String _imagenPath = "";
+  FlutterTts tts = FlutterTts();
+  bool isTtsInitialized = false;
+
+
 
   void toggleSwitch(bool value) {
     setState(() {
       selectedVoiceAssistance = !selectedVoiceAssistance;
     });
   }
+
+  Future<void> hablarTexto(String texto) async {
+    await tts.setLanguage('es-AR');
+    await tts.setPitch(1.0);
+    await tts.setSpeechRate(0.7);
+
+    String text = texto;
+    await tts.speak(texto);
+  }
+
+  Future<void> detenerReproduccion() async {
+    await tts.stop();
+  }
+
+  /*Future<void> hablarTexto(String texto) async {
+    if (isTtsInitialized) {
+      try {
+        await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
+        await tts.setPitch(1.0);
+        //await tts.setVolume(1.0);
+        //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
+        var result = await tts.speak(texto);
+        print("TTS Speak Result: $result");
+      } catch (e) {
+        print("Error: $e");
+      }
+    } else {
+      print("TTS not initialized");
+    }
+  }*/
 
   @override
   void initState() {
@@ -102,8 +133,9 @@ class _NavigationState extends State<Navigation> {
 
   Future<void> obtenerInstruccionesCamino() async {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': widget.selectedOrigin, 'DESTINO': widget.selectedArea});
-    var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
-    //var url = Uri.http('localhost:8080/api/dijktra/mascorto?ORIGEN=1&DESTINO=11');
+    //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+
     print(url);
     print(widget.selectedOrigin);
     print(widget.selectedArea);
@@ -128,14 +160,21 @@ class _NavigationState extends State<Navigation> {
         await Future.delayed(Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
+          if(i == 0){
+            Vibration.vibrate();
+          }
 
           if(instrucciones[i].haygiro ?? false){
             _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
+            Vibration.vibrate();
           } else {
             _imagenPath = 'assets/images/narrow-top.png';
           }
         });
       }
+      _imagenPath = 'assets/images/arrived_2.png';
+      _instruccion = 'Ha llegado a Destino';
+      Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
     } else {
       setState(() {
         _isLoading = false;
@@ -195,16 +234,17 @@ class _NavigationState extends State<Navigation> {
               CustomPaint(
               painter: BluePainter(),
               child: Container(
-                height: 340,
+                height: 335,
               ),
             ),
           SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 13, 16, 12),
+          padding: const EdgeInsets.fromLTRB(25, 25, 16, 12),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 10),
                 header(),
                 const SizedBox(height: 9),
                 Text(
@@ -217,12 +257,12 @@ class _NavigationState extends State<Navigation> {
                               : 'None',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 45,
+                    fontSize: 50,
                     fontWeight: FontWeight.bold,
                     height: 1.1,
                   ),
                 ),
-                const SizedBox(height: 11),
+                const SizedBox(height: 15),
                 Card(
                   color: Colors.white,
                   margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
@@ -261,12 +301,12 @@ class _NavigationState extends State<Navigation> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
+                      const Text(
                         'Instruccion:',
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 20),
                       ),
                       SizedBox(
-                        width: 700,
+                        width: 300,
                         height: 100,
                         child: Center(
                           child: Column(
@@ -274,7 +314,7 @@ class _NavigationState extends State<Navigation> {
                             children: [
                               Text(
                                 _instruccion,
-                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
                             ],
@@ -296,6 +336,7 @@ class _NavigationState extends State<Navigation> {
                       child: ElevatedButton(
                         onPressed: () {
                           detenerReproduccion();
+                          Vibration.cancel();
                           setState(() {
                             selectedVoiceAssistance = !selectedVoiceAssistance;
                           });
@@ -341,20 +382,20 @@ String _mapSentidoAImagen(String sentido) {
       return 'assets/images/narrow-top.png';
   }
 }
+/*
+FlutterTts tts = FlutterTts();
 
-TextToSpeech tts = TextToSpeech();
-
-void detenerReproduccion() {
-  tts.stop();
+void detenerReproduccion() async {
+  await tts.stop();
 }
 
-void hablarTexto(String texto) {
-  tts.setLanguage("es-AR"); // Configura el idioma español (España)
-  tts.setPitch(1.0);
-  tts.setVolume(1.0);
-  tts.setRate(1.0);
-  tts.speak(texto);
-}
+void hablarTexto(String texto) async {
+  await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
+  await tts.setPitch(1.0);
+  await tts.setVolume(1.0);
+  //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
+  await tts.speak(texto);
+}*/
 
 class BluePainter extends CustomPainter {
   @override
@@ -385,18 +426,12 @@ Widget header() {
     mainAxisAlignment: MainAxisAlignment.start,
     children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('         '),
           Image(
             image:
             AssetImage("assets/images/logo_GUIO.png"),
             width: 100,
-          ),
-          Icon(
-            Icons.account_circle,
-            color: Colors.white,
-            size: 40,
           ),
         ],
       ),
@@ -404,7 +439,7 @@ Widget header() {
       Text(
         "Dirigiendose a ",
         style: TextStyle(color: Colors.white,
-          fontSize: 25,
+          fontSize: 28,
         ),
       ),
     ],
