@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-//*********** BARRA DE BÚSQUEDA -origen y destino- ***********
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class CustomSearchDelegate extends SearchDelegate<String> {
   // Definición de áreas
@@ -14,6 +13,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     "Internaciones",
     "Dermatología"
   ];
+
+  // Instancia de SpeechToText
+  final stt.SpeechToText _speechToText = stt.SpeechToText();
 
   // Ícono para volver hacia atrás, salir de la barra de búsqueda
   @override
@@ -33,10 +35,30 @@ class CustomSearchDelegate extends SearchDelegate<String> {
       Padding(
         padding: const EdgeInsets.fromLTRB(1, 1, 25, 1),
         child: IconButton(
-          onPressed: () {
-            // Agregar funcionalidad para que tome voz.
+          onPressed: () async {
+            // Verifica el estado de la conexión con el micrófono
+            bool available = await _speechToText.initialize();
+            if (available) {
+              _speechToText.listen(
+                onResult: (result) {
+                  if (result.hasConfidenceRating) {
+                    query = result.recognizedWords;
+                    showResults(context);
+                  }
+                },
+                listenFor: const Duration(seconds: 5),
+                pauseFor: const Duration(seconds: 3),
+                partialResults: true,
+                onSoundLevelChange: (level) => print('Sound level: $level'),
+              );
+            } else {
+              // Muestra un mensaje si el micrófono no está disponible
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Micrófono no disponible')),
+              );
+            }
           },
-          icon: const Icon(Icons.mic_rounded, size: 35),
+          icon: const Icon(Icons.mic_rounded, size: 35,),
         ),
       ),
     ];
