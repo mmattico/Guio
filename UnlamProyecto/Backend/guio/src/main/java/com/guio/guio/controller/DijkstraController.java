@@ -18,7 +18,7 @@ public class DijkstraController {
 	public ResponseEntity<?> getCaminoMasCorto(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
 											   @RequestParam(name = "DESTINO") String nodoNombreDestino,
 											   @RequestParam(name = "PREFERENCIA") String preferencia) {
-		Grafo grafo = DijkstraService.obtenerGrafo();
+		Grafo grafo = DijkstraService.obtenerGrafo(preferencia);
 		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
 		Camino camino = DijkstraService.convertirGrafoACamino(grafo, nodoNombreDestino);
 		return new ResponseEntity<>(camino, HttpStatus.OK);
@@ -28,7 +28,7 @@ public class DijkstraController {
 	public ResponseEntity<?> getCaminoMasCortoPorTipo(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
 													  @RequestParam(name = "SERVICIO") String tipoNodoDestino,
 													  @RequestParam(name = "PREFERENCIA") String preferencia) {
-		Grafo grafo = DijkstraService.obtenerGrafo();
+		Grafo grafo = DijkstraService.obtenerGrafo(preferencia);
 		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
 		Camino camino = DijkstraService.convertirGrafoACaminoPorTipo(grafo, tipoNodoDestino);
 		return new ResponseEntity<>(camino, HttpStatus.OK);
@@ -39,7 +39,7 @@ public class DijkstraController {
 													  @RequestParam(name = "DESTINO") String nodoNombreDestino,
 													  @RequestParam(name = "SERVICIO") String tipoNodoIntermedio,
 													  @RequestParam(name = "PREFERENCIA") String preferencia) {
-		Grafo grafo = DijkstraService.obtenerGrafo();
+		Grafo grafo = DijkstraService.obtenerGrafo(preferencia);
 		Grafo grafoServicio = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
 		Camino camino = DijkstraService.convertirGrafoACaminoConNodoIntermedio(grafoServicio, grafo, tipoNodoIntermedio, nodoNombreDestino, preferencia);
 		return new ResponseEntity<>(camino, HttpStatus.OK);

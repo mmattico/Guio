@@ -155,22 +155,26 @@ public class DijkstraService {
         return nodoDestino;
     }
 
-    public static Grafo obtenerGrafo() {
+    public static Grafo obtenerGrafo(String accesibilidadTipo) {
         Grafo grafo = new Grafo();
 
         Nodo Nodo1 = new Nodo("1", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo2 = new Nodo("2", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo3 = new Nodo("3", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo4 = new Nodo("4", NodoCTE.SERVICIO_TIPO_BAÑO);
-        Nodo Nodo5 = new Nodo("5", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo5 = new Nodo("Cardiología", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo6 = new Nodo("6", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo7 = new Nodo("7", NodoCTE.SERVICIO_TIPO_BAÑO);
-        Nodo Nodo8 = new Nodo("8", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo8 = new Nodo("Neurología", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo9 = new Nodo("9", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo10 = new Nodo("10", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo11 = new Nodo("11", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo12 = new Nodo("12", NodoCTE.SERVICIO_TIPO_NADA);
         Nodo Nodo13 = new Nodo("13", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo14 = new Nodo("Dermatología", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo15 = new Nodo("Pediatría", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo16 = new Nodo("Clinica Medica", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo17 = new Nodo("Ginecología", NodoCTE.SERVICIO_TIPO_NADA);
 
         Nodo1.addDestination(Nodo2, new Arista(2, "S", "N", true));
 
@@ -201,15 +205,65 @@ public class DijkstraService {
 
         Nodo10.addDestination(Nodo9, new Arista(5, "N", "S", false));
         Nodo10.addDestination(Nodo11, new Arista(4, "E", "O", false));
+        Nodo10.addDestination(Nodo17, new Arista(1, "O", "E", true));
 
         Nodo11.addDestination(Nodo10, new Arista(4, "O", "E", false));
         Nodo11.addDestination(Nodo12, new Arista(5, "N", "S", false));
+        Nodo11.addDestination(Nodo15, new Arista(1, "E", "O", true));
 
         Nodo12.addDestination(Nodo7, new Arista(4, "N", "S", false));
         Nodo12.addDestination(Nodo11, new Arista(5, "S", "N", false));
+        Nodo12.addDestination(Nodo14, new Arista(1, "E", "O", true));
+        Nodo12.addDestination(Nodo16, new Arista(1, "O", "E", true));
 
         Nodo13.addDestination(Nodo6, new Arista(4, "N", "S", false));
         Nodo13.addDestination(Nodo9, new Arista(1, "S", "N", false));
+
+        Nodo14.addDestination(Nodo12, new Arista(1, "O", "E", true));
+
+        Nodo15.addDestination(Nodo11, new Arista(1, "O", "E", true));
+
+        Nodo16.addDestination(Nodo12, new Arista(1, "E", "O", true));
+
+        Nodo17.addDestination(Nodo10, new Arista(1, "E", "O", true));
+
+        if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ASCENSOR)
+                || accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)){
+
+            Nodo Nodo20 = new Nodo("20", NodoCTE.ACCESSIBILIDAD_ASCENSOR);
+            Nodo Nodo21 = new Nodo("21", NodoCTE.ACCESSIBILIDAD_ASCENSOR);
+            Nodo10.addDestination(Nodo21, new Arista(1, "S", "N", false));
+            Nodo6.addDestination(Nodo20, new Arista(1, "N", "S", false));
+
+            Nodo20.addDestination(Nodo6, new Arista(1, "S", "N", false));
+            Nodo20.addDestination(Nodo21, new Arista(5, "O", "O", false));
+
+            Nodo21.addDestination(Nodo20, new Arista(5, "O", "O", false));
+            Nodo21.addDestination(Nodo10, new Arista(1, "N", "S", false));
+
+            grafo.addNode(Nodo20);
+            grafo.addNode(Nodo21);
+        }
+
+        if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ESCALERA)
+                || accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)){
+
+            Nodo Nodo18 = new Nodo("18", NodoCTE.ACCESSIBILIDAD_ESCALERA);
+            Nodo Nodo19 = new Nodo("19", NodoCTE.ACCESSIBILIDAD_ESCALERA);
+
+            Nodo7.addDestination(Nodo18, new Arista(1, "E", "O", false));
+
+            Nodo11.addDestination(Nodo19, new Arista(1, "S", "N", true));
+
+            Nodo18.addDestination(Nodo7, new Arista(1, "O", "E", false));
+            Nodo18.addDestination(Nodo19, new Arista(2, "E", "E", false));
+
+            Nodo19.addDestination(Nodo11, new Arista(1, "O", "E", false));
+            Nodo19.addDestination(Nodo18, new Arista(2, "E", "E", false));
+
+            grafo.addNode(Nodo18);
+            grafo.addNode(Nodo19);
+        }
 
         grafo.addNode(Nodo1);
         grafo.addNode(Nodo2);
@@ -256,7 +310,7 @@ public class DijkstraService {
         instruccionFinIntermedio.setDistancia(0);
         instruccionFinIntermedio.setCommando("Fin parte 1 del recorrido");
         caminoAIntermedio.addInstruccion(instruccionFinIntermedio);
-        Grafo grafoIntermedio = obtenerGrafo();
+        Grafo grafoIntermedio = obtenerGrafo(preferencia);
         grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoIntermedio, nodoIntermedio.getNombre(), preferencia);
         Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
         Instruccion instruccionFin = new Instruccion();

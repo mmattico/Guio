@@ -96,7 +96,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
-          <line>252</line>
+          <line>306</line>
           <option name="timeStamp" value="14" />
         </line-breakpoint>
       </breakpoints>
