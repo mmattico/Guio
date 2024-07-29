@@ -26,7 +26,7 @@ public class DijkstraController {
 
 	@GetMapping("/portipo")
 	public ResponseEntity<?> getCaminoMasCortoPorTipo(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
-													  @RequestParam(name = "TIPO") String tipoNodoDestino,
+													  @RequestParam(name = "SERVICIO") String tipoNodoDestino,
 													  @RequestParam(name = "PREFERENCIA") String preferencia) {
 		Grafo grafo = DijkstraService.obtenerGrafo();
 		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
@@ -37,7 +37,7 @@ public class DijkstraController {
 	@GetMapping("/mascortoconnodointermedio")
 	public ResponseEntity<?> getCaminoMasCortoPorTipo(@RequestParam(name = "ORIGEN") String nodoNombreOrigen,
 													  @RequestParam(name = "DESTINO") String nodoNombreDestino,
-													  @RequestParam(name = "TIPO") String tipoNodoIntermedio,
+													  @RequestParam(name = "SERVICIO") String tipoNodoIntermedio,
 													  @RequestParam(name = "PREFERENCIA") String preferencia) {
 		Grafo grafo = DijkstraService.obtenerGrafo();
 		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);

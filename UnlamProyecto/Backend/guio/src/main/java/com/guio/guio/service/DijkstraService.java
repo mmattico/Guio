@@ -156,19 +156,19 @@ public class DijkstraService {
     public static Grafo obtenerGrafo() {
         Grafo grafo = new Grafo();
 
-        Nodo Nodo1 = new Nodo("1", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo2 = new Nodo("2", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo3 = new Nodo("3", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo4 = new Nodo("4", NodoCTE.NODO_TIPO_BAÑO);
-        Nodo Nodo5 = new Nodo("5", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo6 = new Nodo("6", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo7 = new Nodo("7", NodoCTE.NODO_TIPO_BAÑO);
-        Nodo Nodo8 = new Nodo("8", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo9 = new Nodo("9", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo10 = new Nodo("10", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo11 = new Nodo("11", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo12 = new Nodo("12", NodoCTE.NODO_TIPO_NADA);
-        Nodo Nodo13 = new Nodo("13", NodoCTE.NODO_TIPO_NADA);
+        Nodo Nodo1 = new Nodo("1", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo2 = new Nodo("2", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo3 = new Nodo("3", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo4 = new Nodo("4", NodoCTE.SERVICIO_TIPO_BAÑO);
+        Nodo Nodo5 = new Nodo("5", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo6 = new Nodo("6", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo7 = new Nodo("7", NodoCTE.SERVICIO_TIPO_BAÑO);
+        Nodo Nodo8 = new Nodo("8", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo9 = new Nodo("9", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo10 = new Nodo("10", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo11 = new Nodo("11", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo12 = new Nodo("12", NodoCTE.SERVICIO_TIPO_NADA);
+        Nodo Nodo13 = new Nodo("13", NodoCTE.SERVICIO_TIPO_NADA);
 
         Nodo1.addDestination(Nodo2, new Arista(2, "S", "N", true));
 
@@ -245,10 +245,10 @@ public class DijkstraService {
     }
 
     public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen,
-                                                                String tipoNodoDestino,
+                                                                String tipoNodoIntermedio,
                                                                 String nodoNombreDestino,
                                                                 String preferencia) {
-        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoDestino, nodoNombreDestino, preferencia);
+        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoIntermedio, nodoNombreDestino, preferencia);
         Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
 
         Grafo grafoIntermedio = obtenerGrafo();
@@ -279,8 +279,10 @@ public class DijkstraService {
     }
 
     private static boolean verificarPreferencia(Nodo nodo, String preferencia) {
-        if ((preferencia == 'escalera' && nodo.getTipo() == 'ascensor') ||
-                (preferencia == 'ascensor' && nodo.getTipo() == 'escalera')) {
+        if ((preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ESCALERA)
+                && nodo.getTipo().equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ASCENSOR))
+                || (preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ASCENSOR)
+                && nodo.getTipo().equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ESCALERA))) {
             return false;
         }
         return true;
