@@ -40,8 +40,8 @@ public class DijkstraController {
 													  @RequestParam(name = "SERVICIO") String tipoNodoIntermedio,
 													  @RequestParam(name = "PREFERENCIA") String preferencia) {
 		Grafo grafo = DijkstraService.obtenerGrafo();
-		grafo = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
-		Camino camino = DijkstraService.convertirGrafoACaminoConNodoIntermedio(grafo, tipoNodoIntermedio, nodoNombreDestino, preferencia);
+		Grafo grafoServicio = DijkstraService.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen, preferencia);
+		Camino camino = DijkstraService.convertirGrafoACaminoConNodoIntermedio(grafoServicio, grafo, tipoNodoIntermedio, nodoNombreDestino, preferencia);
 		return new ResponseEntity<>(camino, HttpStatus.OK);
 	}
 }

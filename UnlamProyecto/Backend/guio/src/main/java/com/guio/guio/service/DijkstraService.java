@@ -26,13 +26,15 @@ public class DijkstraService {
 
         while (NodosNoRevisados.size() != 0) {
             Nodo currentNodo = getDistanciaMenorNodo(NodosNoRevisados);
-            if (verificarPreferencia(currentNodo, preferencia))
+            if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
+                    && verificarPreferencia(currentNodo, preferencia))
                 continue;
 
             NodosNoRevisados.remove(currentNodo);
             for (Map.Entry<Nodo, Arista> parDeAdjacencia : currentNodo.getNodosVecinos().entrySet()) {
                 Nodo nodoVecino = parDeAdjacencia.getKey();
-                if (verificarPreferencia(nodoVecino, preferencia))
+                if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
+                        && verificarPreferencia(nodoVecino, preferencia))
                     continue;
 
                 Arista arista = parDeAdjacencia.getValue();
@@ -197,13 +199,13 @@ public class DijkstraService {
         Nodo9.addDestination(Nodo13, new Arista(1, "N", "S", false));
         Nodo9.addDestination(Nodo10, new Arista(5, "S", "N", false));
 
-        Nodo10.addDestination(Nodo6, new Arista(5, "N", "S", false));
+        Nodo10.addDestination(Nodo9, new Arista(5, "N", "S", false));
         Nodo10.addDestination(Nodo11, new Arista(4, "E", "O", false));
 
         Nodo11.addDestination(Nodo10, new Arista(4, "O", "E", false));
         Nodo11.addDestination(Nodo12, new Arista(5, "N", "S", false));
 
-        Nodo12.addDestination(Nodo6, new Arista(4, "N", "S", false));
+        Nodo12.addDestination(Nodo7, new Arista(4, "N", "S", false));
         Nodo12.addDestination(Nodo11, new Arista(5, "S", "N", false));
 
         Nodo13.addDestination(Nodo6, new Arista(4, "N", "S", false));
@@ -244,16 +246,23 @@ public class DijkstraService {
         return nodoDestino;
     }
 
-    public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoOrigen,
+    public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoServicio, Grafo grafoOrigen,
                                                                 String tipoNodoIntermedio,
                                                                 String nodoNombreDestino,
                                                                 String preferencia) {
-        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoOrigen, tipoNodoIntermedio, nodoNombreDestino, preferencia);
+        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoServicio, tipoNodoIntermedio, nodoNombreDestino, preferencia);
         Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
-
+        Instruccion instruccionFinIntermedio = new Instruccion();
+        instruccionFinIntermedio.setDistancia(0);
+        instruccionFinIntermedio.setCommando("Fin parte 1 del recorrido");
+        caminoAIntermedio.addInstruccion(instruccionFinIntermedio);
         Grafo grafoIntermedio = obtenerGrafo();
-        grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoOrigen, nodoIntermedio.getNombre(), preferencia);
+        grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoIntermedio, nodoIntermedio.getNombre(), preferencia);
         Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
+        Instruccion instruccionFin = new Instruccion();
+        instruccionFin.setDistancia(0);
+        instruccionFin.setCommando("Fin del recorrido");
+        caminoADestino.addInstruccion(instruccionFin);
         return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
     }
 
@@ -266,12 +275,16 @@ public class DijkstraService {
         Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
         for (Nodo nodoOrigen : grafo.getNodos()) {
             if (nodoOrigen.getTipo().equals(tipoNodoDestino)) {
-                grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre(), preferencia);
+                /*grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre(), preferencia);
                 for (Nodo nodoDestino : grafoDestino.getNodos()) {
                     if (nodoOrigen.getDistancia() + nodoDestino.getDistancia() < distanciaMenor) {
                         nodoIntermedio = nodoOrigen;
                         distanciaMenor = nodoOrigen.getDistancia() + nodoDestino.getDistancia();
                     }
+                }*/
+                if(nodoOrigen.getDistancia() < distanciaMenor){
+                    nodoIntermedio = nodoOrigen;
+                    distanciaMenor = nodoOrigen.getDistancia();
                 }
             }
         }
