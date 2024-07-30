@@ -26,17 +26,17 @@ public class DijkstraService {
 
         while (NodosNoRevisados.size() != 0) {
             Nodo currentNodo = getDistanciaMenorNodo(NodosNoRevisados);
-            if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
+            /*if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
                     && verificarPreferencia(currentNodo, preferencia))
                 continue;
-
+*/
             NodosNoRevisados.remove(currentNodo);
             for (Map.Entry<Nodo, Arista> parDeAdjacencia : currentNodo.getNodosVecinos().entrySet()) {
                 Nodo nodoVecino = parDeAdjacencia.getKey();
-                if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
+  /*              if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
                         && verificarPreferencia(nodoVecino, preferencia))
                     continue;
-
+*/
                 Arista arista = parDeAdjacencia.getValue();
                 if (!nodosRevisados.contains(nodoVecino)) {
                     CalcularDistanciaMinima(nodoVecino, arista, currentNodo);
