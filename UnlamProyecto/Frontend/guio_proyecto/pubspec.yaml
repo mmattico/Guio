@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  #text_to_speech: ^0.2.3
+  text_to_speech: ^0.2.3
   carousel_slider: ^4.2.1
   carousel_indicator: ^1.0.0
   rflutter_alert: ^2.0.7
