@@ -1,0 +1,113 @@
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:guio_proyecto/pages/start_page.dart';
+
+//*********** HEADER ***********
+
+class BluePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = const Color.fromRGBO(137, 182, 235, 1)
+      ..style = PaintingStyle.fill;
+
+    Path path = Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width, size.height * 0.80)
+      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
+
+Widget header(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      const Text('         '),
+      const Image(
+        image: AssetImage("assets/images/logo_GUIO.png"),
+        width: 100,
+      ),
+      PopupMenuButton<String>(
+        icon: const Icon(
+          Icons.account_circle,
+          color: Colors.white,
+          size: 40,
+        ),
+        color: Colors.white,
+        offset: Offset(-10, 60),
+        onSelected: (String value) {
+          if (value == '1') {
+            // Ir a la página de "Mi cuenta"
+          } else if (value == '2') {
+            _logout(context);
+          }
+        },
+        itemBuilder: (BuildContext context) => [
+          const PopupMenuItem<String>(
+              value: '1',
+              child: Row(
+                children: [
+                  Icon(Icons.person, color: Colors.black,),
+                  SizedBox(width: 20,),
+                  Text('Mi cuenta'),
+                ],
+              )
+          ),
+          const PopupMenuItem<String>(
+              value: '2',
+              child: Row(
+                children: [
+                  Icon(Icons.logout, color: Colors.black,),
+                  SizedBox(width: 20,),
+                  Text('Cerrar Sesión'),
+                ],
+              )
+          ),
+        ],
+      ),
+    ],
+  );
+}
+
+Widget headerTexto() {
+  return const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Bienvenido',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 45,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      Text(
+        'Seleccione origen y destino para comenzar',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          //fontWeight: FontWeight.bold,
+        ),
+      ),
+    ],
+  );
+}
+
+Future<void> _logout(BuildContext context) async {
+  // Se eliminan los datos de sesión del usuario
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('isLoggedIn');
+
+  Navigator.of(context).pushReplacement(
+    MaterialPageRoute(builder: (context) => StartPage()),
+  );
+}
