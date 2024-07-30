@@ -134,7 +134,20 @@ class _NavigationState extends State<Navigation> {
   Future<void> obtenerInstruccionesCamino() async {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': widget.selectedOrigin, 'DESTINO': widget.selectedArea});
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
-    var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    var url;
+    if(widget.selectedService != ''){
+      url = Uri.http('localhost:8080', '/api/dijktra/mascorto',
+          {'ORIGEN': widget.selectedOrigin,
+            'DESTINO': widget.selectedArea,
+            'PREFERENCIA': widget.selectedPreference});
+    }else{
+      url = Uri.http('localhost:8080', '/api/dijktra/mascortoconnodointermedio',
+          {'ORIGEN': widget.selectedOrigin,
+            'DESTINO': widget.selectedArea,
+            'SERVICIO': widget.selectedService,
+            'PREFERENCIA': widget.selectedPreference});
+    }
 
     print(url);
     print(widget.selectedOrigin);
