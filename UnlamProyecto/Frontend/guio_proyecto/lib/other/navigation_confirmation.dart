@@ -80,7 +80,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                           selectedOrigin: widget.selectedOrigin,
                           selectedArea: widget.selectedArea,
                           selectedService: widget.selectedService,
-                          selectedPreference: widget.selectedPreference,
+                          selectedPreference: widget.selectedPreference
                         ),
                       ),
                     );
@@ -145,4 +145,5 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
       ),
     );
   }
+
 }

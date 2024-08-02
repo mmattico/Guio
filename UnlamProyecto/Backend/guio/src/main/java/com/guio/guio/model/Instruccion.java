@@ -2,12 +2,12 @@ package com.guio.guio.model;
 
 public class Instruccion {
 
-    private String commando;
-    private String siguienteNodo;
-    private Integer distancia;
+    private String commando = "";
+    private String siguienteNodo = "";
+    private Integer distancia = 0;
     private boolean existePuerta;
     private boolean haygiro;
-    private String sentido;
+    private String sentido = "";
 
     public String getSiguienteNodo() {
         return siguienteNodo;

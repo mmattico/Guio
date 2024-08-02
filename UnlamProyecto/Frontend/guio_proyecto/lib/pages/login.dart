@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import '../other/password_recovery.dart';
+import 'home_page_accesible.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -99,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su correo electrónico';
                 }
@@ -107,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                   return 'Formato inválido de correo electrónico';
                 }
                 return null;
-              },
+              },*/
             ),
             const SizedBox(height: 10),
             TextFormField(
@@ -122,12 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIcon: const Icon(Icons.password),
               ),
               obscureText: true,
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su contraseña';
                 }
                 return null;
-              },
+              },*/
             ),
           ],
         )
@@ -142,7 +143,8 @@ class _LoginPageState extends State<LoginPage> {
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
         }
       },
       style: ElevatedButton.styleFrom(
