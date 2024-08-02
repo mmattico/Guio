@@ -7,6 +7,7 @@ public class Instruccion {
     private Integer distancia = 0;
     private boolean existePuerta;
     private boolean haygiro;
+    private boolean pausa;
     private String sentido = "";
 
     public String getSiguienteNodo() {
@@ -55,5 +56,13 @@ public class Instruccion {
 
     public void setCommando(String commando) {
         this.commando = commando;
+    }
+
+    public boolean isPausa() {
+        return pausa;
+    }
+
+    public void setPausa(boolean pausa) {
+        this.pausa = pausa;
     }
 }
