@@ -6,11 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Grafo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Grafo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Instruccion.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/model/Instruccion.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/AlertaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/AlertaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/GrafoDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/GrafoDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/repositorio/AlertaRepositorio.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/repositorio/AlertaRepositorio.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/AlertaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/AlertaService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -21,6 +21,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -35,6 +36,31 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="develop" />
+                    <option name="lastUsedInstant" value="1722645155" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="release" />
+                    <option name="lastUsedInstant" value="1722645154" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$/.." />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
   </component>
   <component name="ProjectId" id="2iXDSYsaWd34UcxjKjGSSdNZ3gC" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -51,6 +77,9 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.guio.guio.controller" />
+      <recent name="com.guio.guio.service" />
+      <recent name="com.guio.guio.repositorio" />
       <recent name="com.guio.guio.dao" />
     </key>
   </component>
