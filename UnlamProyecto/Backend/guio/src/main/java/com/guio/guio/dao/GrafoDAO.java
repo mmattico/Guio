@@ -18,14 +18,20 @@ public class GrafoDAO {
     private String nombre;
     @Column(name = "Codigo")
     private String codigo;
+    @Column(name = "norteGrado")
+    private Integer norteGrado;
     @OneToMany(mappedBy = "grafo")
     private Set<NodoDAO> nodos = new HashSet<>();
+    @OneToMany(mappedBy = "grafo")
+    private Set<UsuarioDAO> usuarios = new HashSet<>();
 
-    public GrafoDAO(Integer grafoID, String nombre, String codigo, Set<NodoDAO> nodos) {
+    public GrafoDAO(Integer grafoID, String nombre, String codigo, Integer norteGrado, Set<NodoDAO> nodos, Set<UsuarioDAO> usuarios) {
         this.grafoID = grafoID;
         this.nombre = nombre;
         this.codigo = codigo;
+        this.norteGrado = norteGrado;
         this.nodos = nodos;
+        this.usuarios = usuarios;
     }
 
     public GrafoDAO() {
@@ -61,5 +67,21 @@ public class GrafoDAO {
 
     public void setNodos(Set<NodoDAO> nodos) {
         this.nodos = nodos;
+    }
+
+    public Integer getNorteGrado() {
+        return norteGrado;
+    }
+
+    public void setNorteGrado(Integer norteGrado) {
+        this.norteGrado = norteGrado;
+    }
+
+    public Set<UsuarioDAO> getUsuarios() {
+        return usuarios;
+    }
+
+    public void setUsuarios(Set<UsuarioDAO> usuarios) {
+        this.usuarios = usuarios;
     }
 }
