@@ -1,5 +1,7 @@
 package com.guio.guio.dao;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,17 +10,18 @@ import java.time.LocalDateTime;
 public class AlertaDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AlertaID")
     private Integer alertaID;
     @ManyToOne
     @JoinColumn(name = "UsuarioID") // Definir la columna que actúa como clave foránea
+    @JsonBackReference
     private UsuarioDAO usuario;
     @Column(name = "Fecha")
     private LocalDateTime fecha;
     @Column(name = "Comentario")
     private String comentario;
-    @Column(name = "LugarDeAlerta")
+    @Column(name = "lugar_de_alerta")
     private String lugarDeAlerta;
     @Column(name = "Estado")
     private String estado;
