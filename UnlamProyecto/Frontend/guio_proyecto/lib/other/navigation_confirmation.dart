@@ -123,19 +123,14 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
               child: SizedBox(
                 width: 180,
                 height: 38,
-                child: ElevatedButton(
+                child: TextButton(
                   onPressed: () {
                     Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const HomePage()),);
                   },
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    backgroundColor: Colors.grey,
-                  ),
                   child: const Text(
                     "Cancelar",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    style: TextStyle(fontSize: 20, color: Color.fromRGBO(17, 116, 186, 1)),
                   ),
                 ),
               ),
