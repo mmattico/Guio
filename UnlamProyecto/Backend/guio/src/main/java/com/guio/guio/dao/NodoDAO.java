@@ -1,5 +1,7 @@
 package com.guio.guio.dao;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,11 +9,12 @@ import javax.persistence.*;
 public class NodoDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "NodoID")
     private Integer nodoID;
     @ManyToOne
     @JoinColumn(name = "GrafoID") // Definir la columna que actúa como clave foránea
+    @JsonBackReference
     private GrafoDAO grafo;
     @Column(name = "Nombre")
     private String nombre;

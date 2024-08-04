@@ -1,5 +1,6 @@
 package com.guio.guio.dao;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.guio.guio.model.Nodo;
 
 import javax.persistence.*;
@@ -11,18 +12,20 @@ import java.util.Set;
 public class GrafoDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "GrafoID")
     private Integer grafoID;
     @Column(name = "Nombre")
     private String nombre;
     @Column(name = "Codigo")
     private String codigo;
-    @Column(name = "norteGrado")
+    @Column(name = "norte_grado")
     private Integer norteGrado;
     @OneToMany(mappedBy = "grafo")
+    @JsonManagedReference
     private Set<NodoDAO> nodos = new HashSet<>();
     @OneToMany(mappedBy = "grafo")
+    @JsonManagedReference
     private Set<UsuarioDAO> usuarios = new HashSet<>();
 
     public GrafoDAO(Integer grafoID, String nombre, String codigo, Integer norteGrado, Set<NodoDAO> nodos, Set<UsuarioDAO> usuarios) {
