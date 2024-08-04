@@ -94,20 +94,20 @@ class _NavigationState extends State<Navigation> {
     });
   }
 
-  Future<void> hablarTexto(String texto) async {
+  /*Future<void> hablarTexto(String texto) async {
     await tts.setLanguage('es-AR');
     await tts.setPitch(1.0);
     await tts.setSpeechRate(0.7);
 
     String text = texto;
     await tts.speak(texto);
-  }
+  }*/
 
   Future<void> detenerReproduccion() async {
     await tts.stop();
   }
 
-  /*Future<void> hablarTexto(String texto) async {
+  Future<void> hablarTexto(String texto) async {
     if (isTtsInitialized) {
       try {
         await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
@@ -122,7 +122,7 @@ class _NavigationState extends State<Navigation> {
     } else {
       print("TTS not initialized");
     }
-  }*/
+  }
 
   @override
   void initState() {
@@ -395,7 +395,7 @@ String _mapSentidoAImagen(String sentido) {
       return 'assets/images/narrow-top.png';
   }
 }
-/*
+
 FlutterTts tts = FlutterTts();
 
 void detenerReproduccion() async {
@@ -408,7 +408,7 @@ void hablarTexto(String texto) async {
   await tts.setVolume(1.0);
   //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
   await tts.speak(texto);
-}*/
+}
 
 class BluePainter extends CustomPainter {
   @override
