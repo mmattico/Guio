@@ -2,19 +2,32 @@ package com.guio.guio.service;
 
 import com.guio.guio.constantes.NodoCTE;
 import com.guio.guio.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Service;
 
+import java.sql.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-@SpringBootApplication
+@Service
 public class DijkstraService {
 
-    public static Grafo calcularCaminoMasCortoDesdeFuente(Grafo grafo,
-                                                          String nodoOrigenNombre,
-                                                          String preferencia) {
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String user;
+
+    @Value("${spring.datasource.password}")
+    private String password;
+
+    @Value("${spring.datasource.driver-class-name}")
+    private String driverClass;
+
+    public static Grafo calcularCaminoMasCortoDesdeFuente(Grafo grafo, String nodoOrigenNombre) {
         Nodo fuente = getNodoFromGrafo(grafo, nodoOrigenNombre);
 
         fuente.setDistancia(0);
@@ -26,17 +39,9 @@ public class DijkstraService {
 
         while (NodosNoRevisados.size() != 0) {
             Nodo currentNodo = getDistanciaMenorNodo(NodosNoRevisados);
-            /*if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
-                    && verificarPreferencia(currentNodo, preferencia))
-                continue;
-*/
             NodosNoRevisados.remove(currentNodo);
             for (Map.Entry<Nodo, Arista> parDeAdjacencia : currentNodo.getNodosVecinos().entrySet()) {
                 Nodo nodoVecino = parDeAdjacencia.getKey();
-  /*              if (!preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)
-                        && verificarPreferencia(nodoVecino, preferencia))
-                    continue;
-*/
                 Arista arista = parDeAdjacencia.getValue();
                 if (!nodosRevisados.contains(nodoVecino)) {
                     CalcularDistanciaMinima(nodoVecino, arista, currentNodo);
@@ -61,8 +66,7 @@ public class DijkstraService {
         return distanciaMenorNodo;
     }
 
-    private static void CalcularDistanciaMinima(Nodo nodoPrueba,
-                                                Arista arista, Nodo nodoFuente) {
+    private static void CalcularDistanciaMinima(Nodo nodoPrueba, Arista arista, Nodo nodoFuente) {
         Integer peso = arista.getDistancia();
         Integer distanciaNodoFuente = nodoFuente.getDistancia();
         if (distanciaNodoFuente + peso < nodoPrueba.getDistancia()) {
@@ -76,7 +80,20 @@ public class DijkstraService {
 
     public static Camino convertirGrafoACamino(Grafo grafo, String nodoDestinoNombre) {
         Nodo nodoDestino = getNodoFromGrafo(grafo, nodoDestinoNombre);
-        Camino camino = obtenerInstrucciones(nodoDestino);
+        Camino camino;
+        if(nodoDestino.getCaminoCorto().isEmpty()){
+            camino = obtenerInstruccionCaminoNoExiste();
+        }else {
+            camino = obtenerInstrucciones(nodoDestino);
+        }
+        return camino;
+    }
+
+    private static Camino obtenerInstruccionCaminoNoExiste() {
+        Camino camino = new Camino();
+        Instruccion instruccion = new Instruccion();
+        instruccion.setCommando("No existe camino disponible, volver atras y elegir otra ruta");
+        camino.addInstruccion(instruccion);
         return camino;
     }
 
@@ -155,129 +172,168 @@ public class DijkstraService {
         return nodoDestino;
     }
 
-    public static Grafo obtenerGrafo(String accesibilidadTipo) {
+    public Planificacion obtenerPlanificacion(String ubicacion, String accesibilidadTipo) {
+        Planificacion planificacion = new Planificacion();
+        Grafo grafoParte1 = new Grafo();
+        Grafo grafoParte2 = new Grafo();
+
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            // Cargar el driver JDBC
+            Class.forName(this.driverClass);
+
+            // Establecer conexión
+            connection = DriverManager.getConnection(this.url, this.user, this.password);
+
+            // Crear un statement
+            statement = connection.createStatement();
+
+            String query = "SELECT BSNodo.* " +
+                    "FROM BSNodo " +
+                    "INNER JOIN BSGrafo on BSGrafo.GrafoID = BSNodo.GrafoID " +
+                    "WHERE BSGrafo.Codigo = '" + ubicacion + "' " +
+                    "AND BSNodo.Activo = '1' ";
+
+            if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ESCALERA)){
+                query = query + "AND BSNodo.Tipo <> 'Ascensor'";
+            }else if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ASCENSOR)){
+                query = query + "AND BSNodo.Tipo <> 'Escaleras'";
+            }
+
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                String nodoNombre = resultSet.getString("Nombre");
+                String nodoTipo = resultSet.getString("Tipo");
+                Nodo NodoParte1 = new Nodo(nodoNombre, nodoTipo);
+                Nodo NodoParte2 = new Nodo(nodoNombre, nodoTipo);
+                grafoParte1.setGrafoID(resultSet.getInt("GrafoID"));
+                grafoParte2.setGrafoID(resultSet.getInt("GrafoID"));
+                grafoParte1.addNode(NodoParte1);
+                grafoParte2.addNode(NodoParte2);
+            }
+
+            String query2 = "SELECT NodoOrigen.Nombre as NodoOrigenNombre, " +
+                    "NodoDestino.Nombre as NodoDestinoNombre, " +
+                    "BSArista.SentidoOrigen as SentidoOrigen, " +
+                    "BSArista.SentidoDestino as SentidoDestino, " +
+                    "BSArista.Distancia as Distancia, " +
+                    "BSArista.ExistePuerta as ExistePuerta " +
+                    "FROM BSArista " +
+                    "INNER JOIN BSNodo NodoOrigen on NodoOrigen.NodoID = BSArista.NodoOrigenID " +
+                    "INNER JOIN BSNodo NodoDestino on NodoDestino.NodoID = BSArista.NodoDestinoID " +
+                    "WHERE NodoOrigen.GrafoID = " + grafoParte1.getGrafoID() + " " +
+                    "AND NodoDestino.GrafoID = " + grafoParte1.getGrafoID();
+
+            resultSet = statement.executeQuery(query2);
+            while (resultSet.next()) {
+                Nodo nodoOrigenParte1 = getNodoFromGrafo(grafoParte1, resultSet.getString("NodoOrigenNombre"));
+                Nodo nodoDestinoParte1 = getNodoFromGrafo(grafoParte1, resultSet.getString("NodoDestinoNombre"));
+                Nodo nodoOrigenParte2 = getNodoFromGrafo(grafoParte2, resultSet.getString("NodoOrigenNombre"));
+                Nodo nodoDestinoParte2 = getNodoFromGrafo(grafoParte2, resultSet.getString("NodoDestinoNombre"));
+                String sentidoOrigen = resultSet.getString("SentidoOrigen");
+                String sentidoDestino = resultSet.getString("SentidoDestino");
+                Integer distancia = resultSet.getInt("Distancia");
+                boolean existePuerta = resultSet.getBoolean("ExistePuerta");
+                nodoOrigenParte1.addDestination(nodoDestinoParte1,
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
+                nodoOrigenParte2.addDestination(nodoDestinoParte2,
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar recursos
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        planificacion.setPrimeraParte(grafoParte1);
+        planificacion.setSegundaParte(grafoParte2);
+        return planificacion;
+    }
+
+    public Grafo obtenerGrafo(String ubicacion, String accesibilidadTipo) {
         Grafo grafo = new Grafo();
 
-        Nodo Nodo1 = new Nodo("1", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo2 = new Nodo("2", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo3 = new Nodo("3", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo4 = new Nodo("4", NodoCTE.SERVICIO_TIPO_BAÑO);
-        Nodo Nodo5 = new Nodo("Cardiología", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo6 = new Nodo("6", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo7 = new Nodo("7", NodoCTE.SERVICIO_TIPO_BAÑO);
-        Nodo Nodo8 = new Nodo("Neurología", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo9 = new Nodo("9", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo10 = new Nodo("10", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo11 = new Nodo("11", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo12 = new Nodo("12", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo13 = new Nodo("13", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo14 = new Nodo("Dermatología", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo15 = new Nodo("Pediatría", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo16 = new Nodo("Clinica Medica", NodoCTE.SERVICIO_TIPO_NADA);
-        Nodo Nodo17 = new Nodo("Ginecología", NodoCTE.SERVICIO_TIPO_NADA);
+        Connection connection = null;
+        Statement statement = null;
+        ResultSet resultSet = null;
+        try {
+            // Cargar el driver JDBC
+            Class.forName(this.driverClass);
 
-        Nodo1.addDestination(Nodo2, new Arista(2, "S", "N", true));
+            // Establecer conexión
+            connection = DriverManager.getConnection(this.url, this.user, this.password);
 
-        Nodo2.addDestination(Nodo1, new Arista(2, "N", "S", true));
-        Nodo2.addDestination(Nodo3, new Arista(3, "E", "O", false));
+            // Crear un statement
+            statement = connection.createStatement();
 
-        Nodo3.addDestination(Nodo4, new Arista(4, "N", "S", false));
-        Nodo3.addDestination(Nodo6, new Arista(5, "E", "O", false));
-        Nodo3.addDestination(Nodo2, new Arista(3, "O", "E", false));
-        Nodo3.addDestination(Nodo5, new Arista(4, "S", "N", false));
+            String query = "SELECT BSNodo.* " +
+                    "FROM BSNodo " +
+                    "INNER JOIN BSGrafo on BSGrafo.GrafoID = BSNodo.GrafoID " +
+                    "WHERE BSGrafo.Codigo = '" + ubicacion + "' " +
+                    "AND BSNodo.Activo = '1' ";
 
-        Nodo4.addDestination(Nodo3, new Arista(4, "S", "N", false));
+            if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ESCALERA)){
+                query = query + "AND BSNodo.Tipo <> 'Ascensor'";
+            }else if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ASCENSOR)){
+                query = query + "AND BSNodo.Tipo <> 'Escaleras'";
+            }
 
-        Nodo5.addDestination(Nodo3, new Arista(4, "N", "S", false));
+            resultSet = statement.executeQuery(query);
 
-        Nodo6.addDestination(Nodo3, new Arista(5, "O", "E", false));
-        Nodo6.addDestination(Nodo13, new Arista(4, "S", "N", false));
-        Nodo6.addDestination(Nodo7, new Arista(4, "E", "O", false));
+            while (resultSet.next()) {
+                String nodoNombre = resultSet.getString("Nombre");
+                String nodoTipo = resultSet.getString("Tipo");
+                Nodo Nodo = new Nodo(nodoNombre, nodoTipo);
+                grafo.setGrafoID(resultSet.getInt("GrafoID"));
+                grafo.addNode(Nodo);
+            }
 
-        Nodo7.addDestination(Nodo6, new Arista(4, "O", "E", false));
-        Nodo7.addDestination(Nodo12, new Arista(4, "S", "N", false));
+            String query2 = "SELECT NodoOrigen.Nombre as NodoOrigenNombre, " +
+                                    "NodoDestino.Nombre as NodoDestinoNombre, " +
+                                    "BSArista.SentidoOrigen as SentidoOrigen, " +
+                                    "BSArista.SentidoDestino as SentidoDestino, " +
+                                    "BSArista.Distancia as Distancia, " +
+                                    "BSArista.ExistePuerta as ExistePuerta " +
+                            "FROM BSArista " +
+                            "INNER JOIN BSNodo NodoOrigen on NodoOrigen.NodoID = BSArista.NodoOrigenID " +
+                            "INNER JOIN BSNodo NodoDestino on NodoDestino.NodoID = BSArista.NodoDestinoID " +
+                            "WHERE NodoOrigen.GrafoID = " + grafo.getGrafoID() + " " +
+                                "AND NodoDestino.GrafoID = " + grafo.getGrafoID();
 
-        Nodo8.addDestination(Nodo9, new Arista(2, "E", "O", true));
+            resultSet = statement.executeQuery(query2);
+            while (resultSet.next()) {
+                Nodo nodoOrigen = getNodoFromGrafo(grafo, resultSet.getString("NodoOrigenNombre"));
+                Nodo nodoDestino = getNodoFromGrafo(grafo, resultSet.getString("NodoDestinoNombre"));
+                String sentidoOrigen = resultSet.getString("SentidoOrigen");
+                String sentidoDestino = resultSet.getString("SentidoDestino");
+                Integer distancia = resultSet.getInt("Distancia");
+                boolean existePuerta = resultSet.getBoolean("ExistePuerta");
+                nodoOrigen.addDestination(nodoDestino,
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
+            }
 
-        Nodo9.addDestination(Nodo8, new Arista(2, "O", "E", true));
-        Nodo9.addDestination(Nodo13, new Arista(1, "N", "S", false));
-        Nodo9.addDestination(Nodo10, new Arista(5, "S", "N", false));
-
-        Nodo10.addDestination(Nodo9, new Arista(5, "N", "S", false));
-        Nodo10.addDestination(Nodo11, new Arista(4, "E", "O", false));
-        Nodo10.addDestination(Nodo17, new Arista(1, "O", "E", true));
-
-        Nodo11.addDestination(Nodo10, new Arista(4, "O", "E", false));
-        Nodo11.addDestination(Nodo12, new Arista(5, "N", "S", false));
-        Nodo11.addDestination(Nodo15, new Arista(1, "E", "O", true));
-
-        Nodo12.addDestination(Nodo7, new Arista(4, "N", "S", false));
-        Nodo12.addDestination(Nodo11, new Arista(5, "S", "N", false));
-        Nodo12.addDestination(Nodo14, new Arista(1, "E", "O", true));
-        Nodo12.addDestination(Nodo16, new Arista(1, "O", "E", true));
-
-        Nodo13.addDestination(Nodo6, new Arista(4, "N", "S", false));
-        Nodo13.addDestination(Nodo9, new Arista(1, "S", "N", false));
-
-        Nodo14.addDestination(Nodo12, new Arista(1, "O", "E", true));
-
-        Nodo15.addDestination(Nodo11, new Arista(1, "O", "E", true));
-
-        Nodo16.addDestination(Nodo12, new Arista(1, "E", "O", true));
-
-        Nodo17.addDestination(Nodo10, new Arista(1, "E", "O", true));
-
-        if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ASCENSOR)
-                || accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)){
-
-            Nodo Nodo20 = new Nodo("20", NodoCTE.ACCESSIBILIDAD_ASCENSOR);
-            Nodo Nodo21 = new Nodo("21", NodoCTE.ACCESSIBILIDAD_ASCENSOR);
-            Nodo10.addDestination(Nodo21, new Arista(1, "S", "N", false));
-            Nodo6.addDestination(Nodo20, new Arista(1, "N", "S", false));
-
-            Nodo20.addDestination(Nodo6, new Arista(1, "S", "N", false));
-            Nodo20.addDestination(Nodo21, new Arista(5, "O", "O", false));
-
-            Nodo21.addDestination(Nodo20, new Arista(5, "O", "O", false));
-            Nodo21.addDestination(Nodo10, new Arista(1, "N", "S", false));
-
-            grafo.addNode(Nodo20);
-            grafo.addNode(Nodo21);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar recursos
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        if(accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_ESCALERA)
-                || accesibilidadTipo.equals(NodoCTE.ACCESSIBILIDAD_CUALQUIERA)){
-
-            Nodo Nodo18 = new Nodo("18", NodoCTE.ACCESSIBILIDAD_ESCALERA);
-            Nodo Nodo19 = new Nodo("19", NodoCTE.ACCESSIBILIDAD_ESCALERA);
-
-            Nodo7.addDestination(Nodo18, new Arista(1, "E", "O", false));
-
-            Nodo11.addDestination(Nodo19, new Arista(1, "S", "N", true));
-
-            Nodo18.addDestination(Nodo7, new Arista(1, "O", "E", false));
-            Nodo18.addDestination(Nodo19, new Arista(2, "E", "E", false));
-
-            Nodo19.addDestination(Nodo11, new Arista(1, "O", "E", false));
-            Nodo19.addDestination(Nodo18, new Arista(2, "E", "E", false));
-
-            grafo.addNode(Nodo18);
-            grafo.addNode(Nodo19);
-        }
-
-        grafo.addNode(Nodo1);
-        grafo.addNode(Nodo2);
-        grafo.addNode(Nodo3);
-        grafo.addNode(Nodo4);
-        grafo.addNode(Nodo5);
-        grafo.addNode(Nodo6);
-        grafo.addNode(Nodo7);
-        grafo.addNode(Nodo8);
-        grafo.addNode(Nodo9);
-        grafo.addNode(Nodo10);
-        grafo.addNode(Nodo11);
-        grafo.addNode(Nodo12);
-        grafo.addNode(Nodo13);
         return grafo;
     }
 
@@ -300,42 +356,43 @@ public class DijkstraService {
         return nodoDestino;
     }
 
-    public static Camino convertirGrafoACaminoConNodoIntermedio(Grafo grafoServicio, Grafo grafoOrigen,
+    public static Camino convertirGrafoACaminoConNodoIntermedio(Planificacion planificacion,
+                                                                String nodoNombreOrigen,
                                                                 String tipoNodoIntermedio,
-                                                                String nodoNombreDestino,
-                                                                String preferencia) {
-        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoServicio, tipoNodoIntermedio, nodoNombreDestino, preferencia);
+                                                                String nodoNombreDestino) {
+        Grafo grafoServicio = calcularCaminoMasCortoDesdeFuente(planificacion.getPrimeraParte(), nodoNombreOrigen);
+        Nodo nodoIntermedio = getNodoIntermedioFromGrafo(grafoServicio, tipoNodoIntermedio);
+        if(nodoIntermedio.getCaminoCorto().isEmpty()){
+            return obtenerInstruccionCaminoNoExiste();
+        }
         Camino caminoAIntermedio = obtenerInstrucciones(nodoIntermedio);
+
         Instruccion instruccionFinIntermedio = new Instruccion();
         instruccionFinIntermedio.setDistancia(0);
         instruccionFinIntermedio.setCommando("Fin parte 1 del recorrido");
+        instruccionFinIntermedio.setPausa(true);
         caminoAIntermedio.addInstruccion(instruccionFinIntermedio);
-        Grafo grafoIntermedio = obtenerGrafo(preferencia);
-        grafoIntermedio = calcularCaminoMasCortoDesdeFuente(grafoIntermedio, nodoIntermedio.getNombre(), preferencia);
+
+        Grafo grafoIntermedio = calcularCaminoMasCortoDesdeFuente(planificacion.getSegundaParte(), nodoIntermedio.getNombre());
+        if(getNodoFromGrafo(grafoIntermedio, nodoNombreDestino).getCaminoCorto().isEmpty()){
+            return obtenerInstruccionCaminoNoExiste();
+        }
         Camino caminoADestino = convertirGrafoACamino(grafoIntermedio, nodoNombreDestino);
+
         Instruccion instruccionFin = new Instruccion();
         instruccionFin.setDistancia(0);
         instruccionFin.setCommando("Fin del recorrido");
+        instruccionFin.setPausa(true);
         caminoADestino.addInstruccion(instruccionFin);
+
         return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
     }
 
-    private static Nodo getNodoIntermedioFromGrafo(Grafo grafo,
-                                                   String tipoNodoDestino,
-                                                   String nodoNombreDestino,
-                                                   String preferencia) {
-        Grafo grafoDestino = null;
+    private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino) {
         Nodo nodoIntermedio = new Nodo();
         Integer distanciaMenor = NodoCTE.DISTANCIA_DEFAULT;
         for (Nodo nodoOrigen : grafo.getNodos()) {
             if (nodoOrigen.getTipo().equals(tipoNodoDestino)) {
-                /*grafoDestino = calcularCaminoMasCortoDesdeFuente(grafo, nodoOrigen.getNombre(), preferencia);
-                for (Nodo nodoDestino : grafoDestino.getNodos()) {
-                    if (nodoOrigen.getDistancia() + nodoDestino.getDistancia() < distanciaMenor) {
-                        nodoIntermedio = nodoOrigen;
-                        distanciaMenor = nodoOrigen.getDistancia() + nodoDestino.getDistancia();
-                    }
-                }*/
                 if(nodoOrigen.getDistancia() < distanciaMenor){
                     nodoIntermedio = nodoOrigen;
                     distanciaMenor = nodoOrigen.getDistancia();
@@ -345,13 +402,4 @@ public class DijkstraService {
         return nodoIntermedio;
     }
 
-    private static boolean verificarPreferencia(Nodo nodo, String preferencia) {
-        if ((preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ESCALERA)
-                && nodo.getTipo().equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ASCENSOR))
-                || (preferencia.equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ASCENSOR)
-                && nodo.getTipo().equalsIgnoreCase(NodoCTE.ACCESSIBILIDAD_ESCALERA))) {
-            return false;
-        }
-        return true;
-    }
 }
