@@ -136,17 +136,19 @@ class _NavigationState extends State<Navigation> {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     var url;
-    if(widget.selectedService != ''){
-      url = Uri.http('localhost:8080', '/api/dijktra/mascorto',
+    if(widget.selectedService!.isEmpty){
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascorto',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
-            'PREFERENCIA': widget.selectedPreference});
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
     }else{
-      url = Uri.http('localhost:8080', '/api/dijktra/mascortoconnodointermedio',
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascortoconnodointermedio',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
             'SERVICIO': widget.selectedService,
-            'PREFERENCIA': widget.selectedPreference});
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
     }
 
     print(url);
