@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../other/navigation_confirmation.dart';
-import '../other/emergency.dart';
 import 'package:flutter/services.dart';
 import '../other/search_homepage.dart';
 import '/other/header_homepage.dart';
+import '../other/emergency_homepage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -172,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                         _button(context),
                         const SizedBox(width: 10,),
-                        emergencyButton(context),
+                        emergencyButtonHome(context),
                       ],
                     )
                   ],
@@ -387,7 +387,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  //Sección accesibilidad
+  //Sección preferencias
   _accesibilidad(context){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -455,9 +455,11 @@ class _HomePageState extends State<HomePage> {
               ? null
               : () {
             showDialog(
+              barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
+                  backgroundColor: Colors.white,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(20.0)),
                   ),
@@ -466,7 +468,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 25),
-                      Icon(Icons.check_circle, color: Colors.green, size: 120,),
+                      const Icon(Icons.check_circle, color: Colors.green, size: 120,),
                       const SizedBox(height: 8),
                       NavigationConfirmation(
                         selectedOrigin: selectedOrigin,

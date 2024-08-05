@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-import 'package:text_to_speech/text_to_speech.dart';
-
+//import 'package:text_to_speech/text_to_speech.dart';
+/*
 class AccesibleHome extends StatefulWidget {
   @override
   _AccesibleHome createState() => _AccesibleHome();
@@ -9,7 +9,7 @@ class AccesibleHome extends StatefulWidget {
 
 class _AccesibleHome extends State<AccesibleHome> {
   late stt.SpeechToText _speech;
-  late TextToSpeech _textToSpeech;
+  //late TextToSpeech _textToSpeech;
   bool _isListening = false;
   String _text = " ";
 
@@ -148,3 +148,4 @@ class _AccesibleHome extends State<AccesibleHome> {
     );
   }
 }
+*/

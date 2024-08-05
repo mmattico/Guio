@@ -1,5 +1,8 @@
 package com.guio.guio.dao;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,13 +12,15 @@ import java.util.Set;
 public class UsuarioDAO {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UsuarioID")
     private Integer usuarioID;
     @ManyToOne
     @JoinColumn(name = "GrafoID") // Definir la columna que actúa como clave foránea
+    @JsonBackReference
     private GrafoDAO grafo;
     @OneToMany(mappedBy = "usuario")
+    @JsonManagedReference
     private Set<AlertaDAO> alertas = new HashSet<>();
     @Column(name = "Nombre")
     private String nombre;
