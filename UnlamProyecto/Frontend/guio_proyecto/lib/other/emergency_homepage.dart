@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../other/search_homepage.dart';
 import 'emergency.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';  // For jsonEncode
 
 class AreaSelectionDialog extends StatefulWidget {
   @override
@@ -9,6 +11,45 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
+
+
+  Future<void> enviarAlerta() async {
+    var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
+
+    final payload = {
+      'usuario':{
+        'usuarioID':'1'
+      },
+      'fecha': DateTime.now().toIso8601String(),
+      'comentario': 'PRUEBA',
+      'lugarDeAlerta': areaEmergencia,
+      'estado': 'pendiente',
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json', // Adjust headers as needed
+        },
+        body: jsonEncode(payload), // Convert your payload to a JSON string
+      );
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        // If the server returns an OK response, parse the JSON
+        final responseData = jsonDecode(response.body);
+        print('Response data: $responseData');
+      } else {
+        // If the server did not return a 200 OK response,
+        // throw an exception or handle it as needed
+        print('Failed to post data: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle any errors that occur during the request
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +106,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                           print('Área seleccionada: $areaEmergencia');
                           Navigator.of(context).pop();
                           emergencyPopUp(context);
-                          //ACA ES DONDE MANDO LOS DATOS PARA LA ALERTA
+                          enviarAlerta();
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(
