@@ -38,8 +38,10 @@ public class UsuarioDAO {
     private String usuario;
     @Column(name = "Contraseña")
     private String contraseña;
+    @Column(name = "accesibilidad_default")
+    private boolean accesibilidadDefault;
 
-    public UsuarioDAO(Integer usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña) {
+    public UsuarioDAO(Integer usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault) {
         this.usuarioID = usuarioID;
         this.grafo = grafo;
         this.alertas = alertas;
@@ -51,6 +53,7 @@ public class UsuarioDAO {
         this.permisos = permisos;
         this.usuario = usuario;
         this.contraseña = contraseña;
+        this.accesibilidadDefault = accesibilidadDefault;
     }
 
     public UsuarioDAO() {
@@ -142,5 +145,13 @@ public class UsuarioDAO {
 
     public void setAlertas(Set<AlertaDAO> alertas) {
         this.alertas = alertas;
+    }
+
+    public boolean isAccesibilidadDefault() {
+        return accesibilidadDefault;
+    }
+
+    public void setAccesibilidadDefault(boolean accesibilidadDefault) {
+        this.accesibilidadDefault = accesibilidadDefault;
     }
 }
