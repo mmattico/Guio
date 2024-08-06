@@ -94,20 +94,20 @@ class _NavigationState extends State<Navigation> {
     });
   }
 
-  Future<void> hablarTexto(String texto) async {
+  /*Future<void> hablarTexto(String texto) async {
     await tts.setLanguage('es-AR');
     await tts.setPitch(1.0);
     await tts.setSpeechRate(0.7);
 
     String text = texto;
     await tts.speak(texto);
-  }
+  }*/
 
   Future<void> detenerReproduccion() async {
     await tts.stop();
   }
 
-  /*Future<void> hablarTexto(String texto) async {
+  Future<void> hablarTexto(String texto) async {
     if (isTtsInitialized) {
       try {
         await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
@@ -122,7 +122,7 @@ class _NavigationState extends State<Navigation> {
     } else {
       print("TTS not initialized");
     }
-  }*/
+  }
 
   @override
   void initState() {
@@ -136,17 +136,25 @@ class _NavigationState extends State<Navigation> {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     var url;
-    if(widget.selectedService != ''){
-      url = Uri.http('localhost:8080', '/api/dijktra/mascorto',
+    if(widget.selectedService!.isEmpty){
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascorto',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
-            'PREFERENCIA': widget.selectedPreference});
-    }else{
-      url = Uri.http('localhost:8080', '/api/dijktra/mascortoconnodointermedio',
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
+    }else if(widget.selectedArea!.isEmpty) {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/portipo',
+          { 'ORIGEN': widget.selectedOrigin,
+            'SERVICIO': widget.selectedService,
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
+    } else {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascortoconnodointermedio',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
             'SERVICIO': widget.selectedService,
-            'PREFERENCIA': widget.selectedPreference});
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
     }
 
     print(url);
@@ -395,7 +403,7 @@ String _mapSentidoAImagen(String sentido) {
       return 'assets/images/narrow-top.png';
   }
 }
-/*
+
 FlutterTts tts = FlutterTts();
 
 void detenerReproduccion() async {
@@ -408,7 +416,7 @@ void hablarTexto(String texto) async {
   await tts.setVolume(1.0);
   //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
   await tts.speak(texto);
-}*/
+}
 
 class BluePainter extends CustomPainter {
   @override
