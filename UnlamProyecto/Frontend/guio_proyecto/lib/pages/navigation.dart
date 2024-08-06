@@ -234,7 +234,7 @@ class _NavigationState extends State<Navigation> {
               print("______________________________________________________DIRECCION MAGNETOMETRO: $direccion");
               await Future.delayed(Duration(milliseconds: 500));
             }
-            }
+          }
         }
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
