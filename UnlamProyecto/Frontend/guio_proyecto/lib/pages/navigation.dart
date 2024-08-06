@@ -142,7 +142,13 @@ class _NavigationState extends State<Navigation> {
             'DESTINO': widget.selectedArea,
             'PREFERENCIA': widget.selectedPreference,
             'UBICACION':'PRUEBA'});
-    }else{
+    }else if(widget.selectedArea!.isEmpty) {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/portipo',
+          { 'ORIGEN': widget.selectedOrigin,
+            'SERVICIO': widget.selectedService,
+            'PREFERENCIA': widget.selectedPreference,
+            'UBICACION':'PRUEBA'});
+    } else {
       url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascortoconnodointermedio',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
