@@ -2,7 +2,9 @@
     <!-- Permisos para el reconocimiento de voz -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-
+   <!-- Permisos del podometro -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/>
+    <uses-permission android:name="android.permission.BODY_SENSORS"/>
     <application
         android:label="GUIO"
         android:name="${applicationName}"
