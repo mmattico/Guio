@@ -9,8 +9,6 @@ import '/pages/signup.dart';
 import '/pages/start_page.dart';
 //import 'navigation.dart';
 
-//import '/pages/sensor_magnetometer.dart';
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());

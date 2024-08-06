@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:vibration/vibration.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:pedometer/pedometer.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Navigation extends StatefulWidget {
@@ -88,7 +89,8 @@ class _NavigationState extends State<Navigation> {
   String _imagenPath = "";
   FlutterTts tts = FlutterTts();
   bool isTtsInitialized = false;
-  //podometro
+
+  // Podometro
   String _pasosValue = '0';
   int _pasosIniciales = 0;
   bool _primeraLectura = true; // Chequeo primera lectura de paso sino da el total del podometro
@@ -96,7 +98,9 @@ class _NavigationState extends State<Navigation> {
   Stream<StepCount>? _stepCountStream;
   StreamSubscription<StepCount>? _stepCountSubscription;
 
-
+  // Magnetometro
+  StreamSubscription<CompassEvent>? _compassSubscription;
+  double? direccion = 0;
 
   void toggleSwitch(bool value) {
     setState(() {
@@ -139,6 +143,7 @@ class _NavigationState extends State<Navigation> {
     super.initState();
     _isLoading = true;
     requestPermisos();
+    startListening();
     obtenerInstruccionesCamino();
   }
 
@@ -153,6 +158,7 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
+  // Inicio podometro
   void initPodometro() {
     if (_stepCountSubscription != null) {
       _stepCountSubscription!.cancel();
@@ -172,6 +178,20 @@ class _NavigationState extends State<Navigation> {
     _stepCountSubscription?.cancel();
     super.dispose();
   }
+  // Fin podometro
+
+  // Inicio magnetometro
+  void startListening() {
+    _compassSubscription = FlutterCompass.events!.listen((CompassEvent event) {
+      direccion = event.heading;
+    });
+  }
+
+  // Detiene la suscripción al magnetómetro
+  void stopListening() {
+    _compassSubscription?.cancel();
+  }
+  // Fin magnetometro
 
   Future<void> obtenerInstruccionesCamino() async {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': widget.selectedOrigin, 'DESTINO': widget.selectedArea});
@@ -211,6 +231,7 @@ class _NavigationState extends State<Navigation> {
             while (distanciaRecorrida < distanciaARecorrer) {
               print("______________________________________________________DISTANCIA RECORRIDA: $distanciaRecorrida");
               print("______________________________________________________DISTANCIA A RECORRER: $distanciaARecorrer");
+              print("______________________________________________________DIRECCION MAGNETOMETRO: $direccion");
               await Future.delayed(Duration(milliseconds: 500));
             }
             }
