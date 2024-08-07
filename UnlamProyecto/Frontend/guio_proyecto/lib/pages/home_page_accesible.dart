@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+//import 'package:flutter/material.dart';
+//import 'package:speech_to_text/speech_to_text.dart' as stt;
 //import 'package:text_to_speech/text_to_speech.dart';
 /*
 class AccesibleHome extends StatefulWidget {
