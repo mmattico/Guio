@@ -143,6 +143,8 @@ public class DijkstraService {
             instruccion = new Instruccion();
             instruccion.setHaygiro(true);
             instruccion.setSentido("Derecha");
+            instruccion.setSentidoOrigen(orientacionFinal);
+            instruccion.setSentidoDestino(orientacionDestino);
             camino.addInstruccion(instruccion);
         } else if ((orientacionFinal.equals("N") && orientacionDestino.equals("E"))
                 || (orientacionFinal.equals("E") && orientacionDestino.equals("S"))
@@ -151,6 +153,8 @@ public class DijkstraService {
             instruccion = new Instruccion();
             instruccion.setHaygiro(true);
             instruccion.setSentido("Izquierda");
+            instruccion.setSentidoOrigen(orientacionFinal);
+            instruccion.setSentidoDestino(orientacionDestino);
             camino.addInstruccion(instruccion);
         }
     }
