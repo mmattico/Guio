@@ -9,7 +9,7 @@ import '/pages/start_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -49,11 +49,11 @@ class _GeneratorPageState extends State<GeneratorPage> {
       case 0:
         page = const StartPage();
       case 1:
-        page = LoginPage();
+        page = const LoginPage();
       case 2:
-        page = SignupPage();
+        page = const SignupPage();
       case 3:
-        page = HomePage();
+        page = const HomePage();
 
       default:
         throw UnimplementedError('no widget for $selectedIndex');

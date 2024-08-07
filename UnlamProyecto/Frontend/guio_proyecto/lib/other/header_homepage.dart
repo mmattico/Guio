@@ -43,7 +43,7 @@ Widget header(BuildContext context) {
           size: 40,
         ),
         color: Colors.white,
-        offset: Offset(-10, 60),
+        offset: const Offset(-10, 60),
         onSelected: (String value) {
           if (value == '1') {
             // Ir a la página de "Mi cuenta"
@@ -108,6 +108,6 @@ Future<void> _logout(BuildContext context) async {
   await prefs.remove('isLoggedIn');
 
   Navigator.of(context).pushReplacement(
-    MaterialPageRoute(builder: (context) => StartPage()),
+    MaterialPageRoute(builder: (context) => const StartPage()),
   );
 }

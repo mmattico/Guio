@@ -25,19 +25,20 @@ class KanbanView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: groupedTickets.keys.map((status) {
             return Container(
+              color: Colors.white,
               width: 300,
               child: Column(
                 children: [
-                  Text(status, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(status, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Expanded(
                     child: ListView(
                       shrinkWrap: true,
                       children: groupedTickets[status]!
                           .map((ticket) => Card(
-                        //color: Colors.white, Ponerle color azul clarito
+                        //color: Colors.white, Ponerle color azul clarito // Color.fromRGBO(17, 116, 186, 1)
                         child: ListTile(
-                          title: Text('ID: ${ticket.id}'),
-                          subtitle: Text('N°: ${ticket.id}\nFecha: ${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}'),
+                          title: Text(ticket.id.toString().padLeft(4, '0'),),
+                          subtitle: Text('Usuario ${ticket.id}\nFecha: ${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}'),
                           onTap: () {
                             // Acción al hacer clic en el ticket
                           },

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'home_page_web.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
@@ -34,7 +33,7 @@ class Ticket {
   final DateTime fecha;
   final String comentario;
   final String areaEmergencia;
-  final String estado;
+  String estado;
 
   Ticket({
     required this.id,
@@ -110,7 +109,7 @@ class _TicketListPageState extends State<TicketListPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('GUIO - Atención de Alertas de Usuarios'),
+        title: const Text('GUIO - Atención de Alertas de Usuarios'),
         actions: [
           IconButton(
             icon: Icon(_isKanbanView ? Icons.table_chart : Icons.view_kanban),
@@ -119,9 +118,10 @@ class _TicketListPageState extends State<TicketListPage> {
         ],
       ),
       drawer: Drawer(
+        backgroundColor: Colors.white,
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
+            const UserAccountsDrawerHeader(
               accountName: Text('Usuario Admin'),
               accountEmail: Text(''),
               currentAccountPicture: CircleAvatar(
@@ -129,8 +129,8 @@ class _TicketListPageState extends State<TicketListPage> {
               ),
             ),
             ListTile(
-              title: Text('Inicio'),
-              leading: Icon(Icons.home),
+              title: const Text('Inicio'),
+              leading: const Icon(Icons.home),
               onTap: () {
                 if (_tickets != null) {
                   Navigator.push(
@@ -142,21 +142,21 @@ class _TicketListPageState extends State<TicketListPage> {
                 } else {
                   // Manejar el caso en que _tickets es null
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('No hay tickets disponibles')),
+                    const SnackBar(content: Text('No hay tickets disponibles')),
                   );
                 }
               },
             ),
             ListTile(
-              title: Text('Dashboard'),
-              leading: Icon(Icons.bar_chart),
+              title: const Text('Dashboard'),
+              leading: const Icon(Icons.bar_chart),
               onTap: () {
 
               },
             ),
             ListTile(
-              title: Text('Cerrar Sesion'),
-              leading: Icon(Icons.exit_to_app),
+              title: const Text('Cerrar Sesion'),
+              leading: const Icon(Icons.exit_to_app),
               onTap: () {},
             ),
           ],
@@ -166,11 +166,11 @@ class _TicketListPageState extends State<TicketListPage> {
         future: futureAlertas,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay tickets disponibles'));
+            return const Center(child: Text('No hay tickets disponibles'));
           } else {
             List<Ticket> tickets = snapshot.data!;
             return Padding(

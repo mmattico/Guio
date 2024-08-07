@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import '../other/password_recovery.dart';
-import 'home_page_accesible.dart';
+//import 'home_page_accesible.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',

@@ -33,21 +33,23 @@ class _TicketDetailsDialogState extends State<TicketDetailsDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Colors.white,
       title: Text('${_ticket.id}'),
       content: SingleChildScrollView(
         child: ListBody(
           children: [
-            Text('Datos del usuario:'),
+            const Text('Datos del usuario:'),
             Text('ID: ${_ticket.id}'),
             //Text(widget.ticket.name),
             //Text(widget.ticket.numberPhone),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text('Área de Emergencia: ${_ticket.areaEmergencia}'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text('Estado: ${_ticket.estado}'),
             DropdownButton<String>(
+              dropdownColor: Colors.white,
               value: _status,
-              items: ['pendiente', 'En curso', 'Cerrado']
+              items: ['pendiente', '{\"estado\":\"en curso\"}', 'Cerrado']
                   .map((status) => DropdownMenuItem<String>(
                 value: status,
                 child: Text(status),
@@ -60,17 +62,17 @@ class _TicketDetailsDialogState extends State<TicketDetailsDialog> {
                 });*/
               },
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text('Fecha: ${DateFormat('dd-MM-yyyy – kk:mm').format(_ticket.fecha)}'),
-            Text('Comentarios:'),
+            const Text('Comentarios:'),
             //...widget.ticket.comentario.map((comment) => Text(comment)).toList(),
             TextField(
               controller: _commentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Agregar comentario',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
            /* ElevatedButton(
               onPressed: _addComment,
               child: Text('Agregar'),
@@ -83,7 +85,7 @@ class _TicketDetailsDialogState extends State<TicketDetailsDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cerrar'),
+          child: const Text('Cerrar'),
         ),
       ],
     );
