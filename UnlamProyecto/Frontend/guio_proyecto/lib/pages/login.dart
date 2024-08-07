@@ -28,15 +28,15 @@ class _LoginPageState extends State<LoginPage> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
+        body: SafeArea(
+          child: Container(
           color: Colors.white,
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: SingleChildScrollView(
             child: Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _back(context),
-              const SizedBox(height: 10),
+              //_back(context),
+              const SizedBox(height: 30),
               _header(context),
               const SizedBox(height: 50),
               _inputField(context),
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-      ),),
+      ),),),
     );
   }
 
@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              /*validator: (value) {
+              validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su correo electrónico';
                 }
@@ -108,9 +108,9 @@ class _LoginPageState extends State<LoginPage> {
                   return 'Formato inválido de correo electrónico';
                 }
                 return null;
-              },*/
+              },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 15),
             TextFormField(
               controller: _passwordController,
               decoration: InputDecoration(
