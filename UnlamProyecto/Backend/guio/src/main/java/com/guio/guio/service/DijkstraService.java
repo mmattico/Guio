@@ -129,6 +129,8 @@ public class DijkstraService {
         instruccion.setSiguienteNodo(nodo.getNombre());
         instruccion.setDistancia(nodo.getArista().getDistancia());
         instruccion.setHaygiro(false);
+        instruccion.setSentidoDestino(nodo.getArista().getSentidoDestino());
+        instruccion.setSentidoOrigen(nodo.getArista().getSentidoOrigen());
         camino.addInstruccion(instruccion);
     }
 
