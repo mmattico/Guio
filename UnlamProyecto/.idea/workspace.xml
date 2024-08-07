@@ -6,8 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/AlertaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/AlertaController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/UsuarioDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/UsuarioDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/AlertaDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/dao/AlertaDAO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/AlertaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/AlertaService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
