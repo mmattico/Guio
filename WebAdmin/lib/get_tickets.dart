@@ -67,12 +67,18 @@ class TicketListPage extends StatefulWidget {
 class _TicketListPageState extends State<TicketListPage> {
 
   late Future<List<Ticket>> futureAlertas;
+  List<Ticket>? _tickets;
   bool _isKanbanView = false;
 
   @override
   void initState() {
     super.initState();
     futureAlertas = fetchAlertas('PRUEBA');
+    futureAlertas.then((tickets) {
+      setState(() {
+        _tickets = tickets;
+      });
+    });
   }
 
   void _toggleView() {
@@ -125,13 +131,28 @@ class _TicketListPageState extends State<TicketListPage> {
             ListTile(
               title: Text('Inicio'),
               leading: Icon(Icons.home),
-              onTap: () {},
+              onTap: () {
+                if (_tickets != null) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TicketListPage(),
+                    ),
+                  );
+                } else {
+                  // Manejar el caso en que _tickets es null
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('No hay tickets disponibles')),
+                  );
+                }
+              },
             ),
             ListTile(
               title: Text('Dashboard'),
               leading: Icon(Icons.bar_chart),
-              selected: true,
-              onTap: () {},
+              onTap: () {
+
+              },
             ),
             ListTile(
               title: Text('Cerrar Sesion'),
