@@ -9,6 +9,8 @@ public class Instruccion {
     private boolean haygiro;
     private boolean pausa;
     private String sentido = "";
+    private String sentidoOrigen = "";
+    private String sentidoDestino = "";
 
     public String getSiguienteNodo() {
         return siguienteNodo;
@@ -64,5 +66,21 @@ public class Instruccion {
 
     public void setPausa(boolean pausa) {
         this.pausa = pausa;
+    }
+
+    public String getSentidoOrigen() {
+        return sentidoOrigen;
+    }
+
+    public void setSentidoOrigen(String sentidoOrigen) {
+        this.sentidoOrigen = sentidoOrigen;
+    }
+
+    public String getSentidoDestino() {
+        return sentidoDestino;
+    }
+
+    public void setSentidoDestino(String sentidoDestino) {
+        this.sentidoDestino = sentidoDestino;
     }
 }
