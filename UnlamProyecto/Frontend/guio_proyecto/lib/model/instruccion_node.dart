@@ -29,6 +29,8 @@ class Instrucciones {
   bool? existePuerta;
   bool? haygiro;
   String? sentido;
+  String? sentidoOrigen;
+  String? sentidoDestino;
 
   Instrucciones(
       {this.commando,
@@ -36,7 +38,9 @@ class Instrucciones {
         this.distancia,
         this.existePuerta,
         this.haygiro,
-        this.sentido});
+        this.sentido,
+        this.sentidoOrigen,
+        this.sentidoDestino});
 
   String instruccionToString(){
     String retorna="";
@@ -65,6 +69,8 @@ class Instrucciones {
     existePuerta = json['existePuerta'];
     haygiro = json['haygiro'];
     sentido = json['sentido'];
+    sentidoOrigen = json['sentidoOrigen'];
+    sentidoDestino = json['sentidoDestino'];
   }
 
   Map<String, dynamic> toJson() {
@@ -75,6 +81,8 @@ class Instrucciones {
     data['existePuerta'] = this.existePuerta;
     data['haygiro'] = this.haygiro;
     data['sentido'] = this.sentido;
+    data['sentidoOrigen'] = this.sentidoOrigen;
+    data['sentidoDestino'] = this.sentidoDestino;
     return data;
   }
 }
