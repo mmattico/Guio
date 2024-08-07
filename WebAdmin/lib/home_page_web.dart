@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'get_tickets.dart';
-
 
 class HomePageWeb extends StatelessWidget {
   final List<Ticket> tickets;
@@ -37,12 +37,12 @@ class HomePageWeb extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: [
-                DataColumn(label: Text('N°')),
-                DataColumn(label: Text('Asunto')),
-                DataColumn(label: Text('Fecha')),
+                DataColumn(label: Text('N° Ticket')),
+                DataColumn(label: Text('Fecha y Hora')),
+                DataColumn(label: Text('Ubicacion')),
                 DataColumn(label: Text('Estado')),
-                DataColumn(label: Text('Ubicación')),
-                //DataColumn(label: Text('Acciones')),
+                DataColumn(label: Text('Comentarios')),
+                //DataColumn(label: Text('Prioridad')),
               ],
               rows: tickets.map((ticket) => DataRow(
                 cells: [
@@ -54,12 +54,12 @@ class HomePageWeb extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           decoration: BoxDecoration(
-                            color: Colors.white,  // Color de fondo del rectángulo
-                            border: Border.all(color: Colors.blueAccent, width: 1.0),  // Color y ancho del borde
-                            borderRadius: BorderRadius.circular(8.0),  // Bordes redondeados
+                            color: Colors.white,
+                            border: Border.all(color: Colors.blueAccent, width: 1.0),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Text(
-                            ticket.id as String,
+                            '000${ticket.id}',
                             style: TextStyle(
                               color: Colors.blueAccent,
                             ),
@@ -68,26 +68,10 @@ class HomePageWeb extends StatelessWidget {
                       ),
                     ),
                   ),
+                  DataCell(Text('${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}')),
                   DataCell(Text(ticket.areaEmergencia)),
-                  DataCell(Text(ticket.fecha)),
-                  DataCell(
-                    DropdownButton<String>(
-                      dropdownColor: Colors.white,
-                      value: ticket.estado,
-                      items: ['ABIERTO', 'EN CURSO', 'FINALIZADO']
-                          .map((status) => DropdownMenuItem<String>(
-                        value: status,
-                        child: Text(status),
-                      ))
-                          .toList(),
-                      onChanged: (newStatus) {
-                        if (newStatus != null) {
-                          onStatusChanged(ticket, newStatus);
-                        }
-                      },
-                    ),
-                  ),
-                  DataCell(Text(ticket.areaEmergencia)),
+                  DataCell(Text(ticket.estado)),
+                  DataCell(Text(ticket.comentario)),
                 ],
               )).toList(),
             ),

@@ -40,6 +40,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
+        print('alerta enviada');
       } else {
         // If the server did not return a 200 OK response,
         // throw an exception or handle it as needed
