@@ -12,7 +12,7 @@ public class AlertaDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AlertaID")
-    private Integer alertaID;
+    private Long alertaID;
     @ManyToOne
     @JoinColumn(name = "UsuarioID") // Definir la columna que actúa como clave foránea
     @JsonBackReference
@@ -26,7 +26,7 @@ public class AlertaDAO {
     @Column(name = "Estado")
     private String estado;
 
-    public AlertaDAO(Integer alertaID, UsuarioDAO usuario, LocalDateTime fecha, String comentario, String lugarDeAlerta, String estado) {
+    public AlertaDAO(Long alertaID, UsuarioDAO usuario, LocalDateTime fecha, String comentario, String lugarDeAlerta, String estado) {
         this.alertaID = alertaID;
         this.usuario = usuario;
         this.fecha = fecha;
@@ -38,11 +38,11 @@ public class AlertaDAO {
     public AlertaDAO() {
     }
 
-    public Integer getAlertaID() {
+    public Long getAlertaID() {
         return alertaID;
     }
 
-    public void setAlertaID(Integer alertaID) {
+    public void setAlertaID(Long alertaID) {
         this.alertaID = alertaID;
     }
 

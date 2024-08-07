@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AlertaService {
@@ -21,6 +22,10 @@ public class AlertaService {
 
     public List<AlertaDAO> findAllByGrafoUbicacion(String codigo) {
         return alertaRepository.findByGrafoUbicacion(codigo);
+    }
+
+    public Optional<AlertaDAO> getAlertaById(Long id) {
+        return alertaRepository.findById(id);
     }
 
     public void delete(Long id) {
