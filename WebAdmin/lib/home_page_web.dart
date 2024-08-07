@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'get_tickets.dart';
 
-class HomePageWeb extends StatelessWidget {
+class HomePageWeb extends StatefulWidget {
   final List<Ticket> tickets;
   final void Function(Ticket) onOpenTicketDetails;
   final void Function(Ticket, String) onStatusChanged;
@@ -14,6 +14,36 @@ class HomePageWeb extends StatelessWidget {
   });
 
   @override
+  _HomePageWebState createState() => _HomePageWebState();
+}
+
+class _HomePageWebState extends State<HomePageWeb> {
+  late List<Ticket> _filteredTickets;
+  late TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredTickets = widget.tickets;
+    _searchController = TextEditingController();
+    _searchController.addListener(_filterTickets);
+  }
+
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterTickets() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredTickets = widget.tickets.where((ticket) {
+        return ticket.id.toString().contains(query);
+      }).toList();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -23,8 +53,9 @@ class HomePageWeb extends StatelessWidget {
             Container(
               width: 500,
               child: TextField(
+                controller: _searchController,
                 decoration: InputDecoration(
-                  labelText: 'Buscar...',
+                  labelText: 'Buscar por ID...',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -44,13 +75,13 @@ class HomePageWeb extends StatelessWidget {
                 DataColumn(label: Text('Comentarios')),
                 //DataColumn(label: Text('Prioridad')),
               ],
-              rows: tickets.map((ticket) => DataRow(
+              rows: _filteredTickets.map((ticket) => DataRow(
                 cells: [
                   DataCell(
                     MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: GestureDetector(
-                        onTap: () => onOpenTicketDetails(ticket),
+                        onTap: () => widget.onOpenTicketDetails(ticket),
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           decoration: BoxDecoration(
