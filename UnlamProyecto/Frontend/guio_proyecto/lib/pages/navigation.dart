@@ -178,7 +178,7 @@ class _NavigationState extends State<Navigation> {
             }
           }
         }*/
-        await Future.delayed(Duration(seconds: 6));
+        await Future.delayed(const Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
           if(i == 0){
@@ -249,7 +249,7 @@ class _NavigationState extends State<Navigation> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: _isLoading && _instruccion == ""
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Stack(
             children: [
               CustomPaint(
@@ -304,7 +304,7 @@ class _NavigationState extends State<Navigation> {
                             print('$selectedVoiceAssistance');
                           },
                           secondary: const Icon(Icons.volume_up),
-                          activeColor: Color.fromRGBO(17, 116, 186, 1),
+                          activeColor: const Color.fromRGBO(17, 116, 186, 1),
                         ),
                       ],
                     ),
@@ -335,7 +335,7 @@ class _NavigationState extends State<Navigation> {
                             children: [
                               Text(
                                 _instruccion,
-                                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
                             ],

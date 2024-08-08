@@ -40,6 +40,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
+        print('alerta enviada');
       } else {
         // If the server did not return a 200 OK response,
         // throw an exception or handle it as needed
@@ -73,8 +74,8 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
-          SizedBox(height: 8),
+          const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
+          const SizedBox(height: 8),
           SearchWidget(
             onAreaSelected: (area) {
               setState(() {
@@ -115,7 +116,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                       )),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   TextButton(
                     child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
                     onPressed: () {
@@ -194,7 +195,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           widget.onAreaSelected(result);
         }
       },
-      child: Text(buttonText, style: TextStyle(fontSize: 18, color: Color.fromRGBO(17, 116, 186, 1),),),
+      child: Text(buttonText, style: const TextStyle(fontSize: 18, color: Color.fromRGBO(17, 116, 186, 1),),),
     );
   }
 }

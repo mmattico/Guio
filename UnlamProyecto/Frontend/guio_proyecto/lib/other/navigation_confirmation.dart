@@ -88,7 +88,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                    backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                   ),
                   child: const Text(
                     "Iniciar Navegación",
