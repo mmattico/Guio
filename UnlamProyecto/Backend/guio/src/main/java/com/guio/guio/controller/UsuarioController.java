@@ -35,4 +35,29 @@ public class UsuarioController {
         return userService.findAll();
     }
 
+    @GetMapping("/validar-nombre-usuario")
+    public boolean validarNombreUsuario(@RequestParam(name = "USERNAME") String nombreUsuario) {
+        return userService.existeNombreUsuario(nombreUsuario);
+    }
+
+    @GetMapping("/validar-documento")
+    public boolean validarDocumentoIdentificacion(@RequestParam(name = "DNI") String documentoIdentificacion) {
+        return userService.existeDocumentoIdentificacion(documentoIdentificacion);
+    }
+
+    @GetMapping("/validar-correo")
+    public boolean validarCorreoElectronico(@RequestParam(name = "EMAIL") String correoElectronico) {
+        return userService.existeCorreoElectronico(correoElectronico);
+    }
+
+    @PutMapping("/actualizar-email")
+    public boolean actualizarCorreoElectronico(@RequestParam Long idUsuario, @RequestParam(name = "EMAIL") String nuevoCorreoElectronico) {
+        return userService.actualizarCorreoElectronico(idUsuario, nuevoCorreoElectronico);
+    }
+
+    @PutMapping("/actualizar-telefono")
+    public boolean actualizarTelefono(@RequestParam Long idUsuario, @RequestParam(name = "TEL") String nuevoTelefono) {
+        return userService.actualizarNumeroDeTelefono(idUsuario, nuevoTelefono);
+    }
+
 }
