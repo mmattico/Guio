@@ -40,7 +40,7 @@ public class NodoController {
 
     @GetMapping("/extremos/{ubicacion}")
     public List<NodoDAO> getAllNodesExtremos(@PathVariable String ubicacion) {
-        return nodoService.getAllNodesExtremos(ubicacion);
+        return nodoService.getAllNodesTipo(ubicacion, "extremo");
     }
 
     //http://localhost:8080/api/nodos/desactivar/1/PRUEBA
