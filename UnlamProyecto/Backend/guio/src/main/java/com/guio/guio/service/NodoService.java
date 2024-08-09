@@ -1,7 +1,6 @@
 package com.guio.guio.service;
 
 import com.guio.guio.dao.NodoDAO;
-import com.guio.guio.model.Nodo;
 import com.guio.guio.repositorio.NodoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,6 @@ public class NodoService {
     }
 
     public List<NodoDAO> getAllNodesExtremos(String ubicacion) {
-        return nodoRepositorio.findNodosByNombreAndGrafoUbicacion(ubicacion);
+        return nodoRepositorio.findNodosExtremosByGrafoUbicacion(ubicacion);
     }
 }
