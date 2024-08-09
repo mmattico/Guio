@@ -4,6 +4,7 @@ import com.guio.guio.dao.AlertaDAO;
 import com.guio.guio.dao.GrafoDAO;
 import com.guio.guio.repositorio.AlertaRepositorio;
 import com.guio.guio.repositorio.GrafoRepositorio;
+import com.guio.guio.summary.AlertaSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ public class AlertaService {
         return alertaRepository.save(alerta);
     }
 
-    public List<AlertaDAO> findAllByGrafoUbicacion(String codigo) {
+    public List<AlertaSummary> findAllByGrafoUbicacion(String codigo) {
         return alertaRepository.findByGrafoUbicacion(codigo);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -17,8 +18,33 @@ public class NodoController {
     @Autowired
     private NodoService nodoService;
 
+    @PostMapping
+    public NodoDAO createNodo(@RequestBody NodoDAO Nodo) {
+        return nodoService.saveNode(Nodo);
+    }
+
+    @GetMapping("/{id}")
+    public Optional<NodoDAO> getNodo(@PathVariable Long id) {
+        return nodoService.getNodeById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteNodo(@PathVariable Long id) {
+        nodoService.deleteNode(id);
+    }
+
+    @GetMapping
+    public List<NodoDAO> getAllNodes() {
+        return nodoService.getAllNodes();
+    }
+
+    @GetMapping("/extremos/{ubicacion}")
+    public List<NodoDAO> getAllNodesExtremos(@PathVariable String ubicacion) {
+        return nodoService.getAllNodesExtremos(ubicacion);
+    }
+
     //http://localhost:8080/api/nodos/desactivar/1/PRUEBA
-    @GetMapping("/desactivar/{nombre}/{ubicacion}")
+    @PutMapping("/desactivar/{nombre}/{ubicacion}")
     public ResponseEntity<?> desactivarNodo(@PathVariable String nombre, @PathVariable String ubicacion) {
         List<NodoDAO> nodos = nodoService.getNodeByNombreYUbicacionGrafo(nombre, ubicacion);
         for (NodoDAO nodo: nodos){
@@ -28,7 +54,7 @@ public class NodoController {
         return new ResponseEntity<>("Se desactivo", HttpStatus.OK);
     }
 
-    @GetMapping("/activar/{nombre}/{ubicacion}")
+    @PutMapping("/activar/{nombre}/{ubicacion}")
     public ResponseEntity<?> activarNodo(@PathVariable String nombre, @PathVariable String ubicacion) {
         List<NodoDAO> nodos = nodoService.getNodeByNombreYUbicacionGrafo(nombre, ubicacion);
         for (NodoDAO nodo: nodos){
