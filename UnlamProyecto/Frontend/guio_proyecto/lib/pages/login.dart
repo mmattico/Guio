@@ -100,7 +100,7 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su correo electrónico';
                 }
@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                   return 'Formato inválido de correo electrónico';
                 }
                 return null;
-              },
+              },*/
             ),
             const SizedBox(height: 15),
             TextFormField(
