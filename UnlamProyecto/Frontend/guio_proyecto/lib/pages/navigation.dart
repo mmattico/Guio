@@ -124,6 +124,46 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
+  Future<void> _showPopup(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text('¡Ha llegado a su primer destino!', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          actions: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    width: 150,
+                    height: 60,
+                    child: ElevatedButton(
+                      child: Text('Continuar', style: TextStyle(fontSize: 20, color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -191,9 +231,21 @@ class _NavigationState extends State<Navigation> {
           } else {
             _imagenPath = 'assets/images/narrow-top.png';
           }
+
         });
+
+        if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
+          await _showPopup(context);
+        }
       }
       _imagenPath = 'assets/images/arrived_2.png';
+
+      Image.asset(
+        _imagenPath,
+        width: 50,
+        height: 50,
+      );
+
       _instruccion = 'Ha llegado a Destino';
       Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
     } else {
@@ -204,6 +256,7 @@ class _NavigationState extends State<Navigation> {
       });
     }
   }
+
 /*
   void _onStepCount(StepCount event) {
     distanciaRecorrida = distanciaRecorrida + event.steps;
