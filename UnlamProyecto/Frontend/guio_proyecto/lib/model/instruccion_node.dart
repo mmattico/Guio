@@ -27,8 +27,6 @@ class Instrucciones {
   String? siguienteNodo;
   int? distancia;
   bool? existePuerta;
-  bool? haygiro;
-  String? sentido;
   String? sentidoOrigen;
   String? sentidoDestino;
 
@@ -37,8 +35,6 @@ class Instrucciones {
         this.siguienteNodo,
         this.distancia,
         this.existePuerta,
-        this.haygiro,
-        this.sentido,
         this.sentidoOrigen,
         this.sentidoDestino});
 
@@ -53,10 +49,6 @@ class Instrucciones {
         if(this.existePuerta == true){
           retorna += "Hay una puerta en el camino.";
         }
-      }else{
-        if(this.haygiro == true){
-          retorna += "Gire hacia la " + this.sentido.toString() + ".";
-        }
       }
     }
     return retorna;
@@ -67,8 +59,6 @@ class Instrucciones {
     siguienteNodo = json['siguienteNodo'];
     distancia = json['distancia'];
     existePuerta = json['existePuerta'];
-    haygiro = json['haygiro'];
-    sentido = json['sentido'];
     sentidoOrigen = json['sentidoOrigen'];
     sentidoDestino = json['sentidoDestino'];
   }
@@ -79,8 +69,6 @@ class Instrucciones {
     data['siguienteNodo'] = this.siguienteNodo;
     data['distancia'] = this.distancia;
     data['existePuerta'] = this.existePuerta;
-    data['haygiro'] = this.haygiro;
-    data['sentido'] = this.sentido;
     data['sentidoOrigen'] = this.sentidoOrigen;
     data['sentidoDestino'] = this.sentidoDestino;
     return data;

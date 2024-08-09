@@ -105,18 +105,12 @@ public class DijkstraService {
         Arista aristaAnterior = new Arista();
         for (Nodo nodo : nodoDestino.getCaminoCorto()) {
             if (nodo.getArista().getDistancia().compareTo(0) > 0) {
-                if (aristaAnterior.getDistancia().compareTo(0) > 0) {
-                    obtenerInstruccionDeDireccion(camino, aristaAnterior, nodo.getArista());
-                }
                 addInstruccionACamino(camino, nodo);
                 aristaAnterior = nodo.getArista();
             }
         }
 
         if (nodoDestino.getArista().getDistancia().compareTo(0) > 0) {
-            if (aristaAnterior.getDistancia().compareTo(0) > 0) {
-                obtenerInstruccionDeDireccion(camino, aristaAnterior, nodoDestino.getArista());
-            }
             addInstruccionACamino(camino, nodoDestino);
         }
         return camino;
@@ -128,37 +122,9 @@ public class DijkstraService {
         instruccion.setExistePuerta(nodo.getArista().isExistePuerta());
         instruccion.setSiguienteNodo(nodo.getNombre());
         instruccion.setDistancia(nodo.getArista().getDistancia());
-        instruccion.setHaygiro(false);
         instruccion.setSentidoDestino(nodo.getArista().getSentidoDestino());
         instruccion.setSentidoOrigen(nodo.getArista().getSentidoOrigen());
         camino.addInstruccion(instruccion);
-    }
-
-    private static void obtenerInstruccionDeDireccion(Camino camino, Arista aristaAnterior, Arista aristaDestino) {
-        Instruccion instruccion;
-        String orientacionFinal = aristaAnterior.getSentidoDestino();
-        String orientacionDestino = aristaDestino.getSentidoOrigen();
-        if ((orientacionFinal.equals("N") && orientacionDestino.equals("O"))
-                || (orientacionFinal.equals("O") && orientacionDestino.equals("S"))
-                || (orientacionFinal.equals("S") && orientacionDestino.equals("E"))
-                || (orientacionFinal.equals("E") && orientacionDestino.equals("N"))) {
-            instruccion = new Instruccion();
-            instruccion.setHaygiro(true);
-            instruccion.setSentido("Derecha");
-            instruccion.setSentidoOrigen(orientacionFinal);
-            instruccion.setSentidoDestino(orientacionDestino);
-            camino.addInstruccion(instruccion);
-        } else if ((orientacionFinal.equals("N") && orientacionDestino.equals("E"))
-                || (orientacionFinal.equals("E") && orientacionDestino.equals("S"))
-                || (orientacionFinal.equals("S") && orientacionDestino.equals("O"))
-                || (orientacionFinal.equals("O") && orientacionDestino.equals("N"))) {
-            instruccion = new Instruccion();
-            instruccion.setHaygiro(true);
-            instruccion.setSentido("Izquierda");
-            instruccion.setSentidoOrigen(orientacionFinal);
-            instruccion.setSentidoDestino(orientacionDestino);
-            camino.addInstruccion(instruccion);
-        }
     }
 
     private static Instruccion getInstruccionInicial(Nodo nodoDestino) {

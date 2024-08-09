@@ -6,9 +6,7 @@ public class Instruccion {
     private String siguienteNodo = "";
     private Integer distancia = 0;
     private boolean existePuerta;
-    private boolean haygiro;
     private boolean pausa;
-    private String sentido = "";
     private String sentidoOrigen = "";
     private String sentidoDestino = "";
 
@@ -34,22 +32,6 @@ public class Instruccion {
 
     public void setExistePuerta(boolean existePuerta) {
         this.existePuerta = existePuerta;
-    }
-
-    public boolean isHaygiro() {
-        return haygiro;
-    }
-
-    public void setHaygiro(boolean haygiro) {
-        this.haygiro = haygiro;
-    }
-
-    public String getSentido() {
-        return sentido;
-    }
-
-    public void setSentido(String sentido) {
-        this.sentido = sentido;
     }
 
     public String getCommando() {
