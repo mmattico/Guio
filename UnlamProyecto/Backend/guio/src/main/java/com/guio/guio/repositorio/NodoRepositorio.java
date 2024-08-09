@@ -12,4 +12,6 @@ public interface NodoRepositorio  extends JpaRepository<NodoDAO, Long> {
     @Query("SELECT n FROM NodoDAO n WHERE n.nombre = :nombre AND n.grafo.codigo = :ubicacion")
     List<NodoDAO> findNodosByNombreAndGrafoUbicacion(@Param("nombre") String nombre, @Param("ubicacion") String ubicacion);
 
+    @Query("SELECT n FROM NodoDAO n WHERE n.Tipo = extremo AND n.grafo.codigo = :ubicacion")
+    List<NodoDAO> findNodosByNombreAndGrafoUbicacion(@Param("ubicacion") String ubicacion);
 }
