@@ -34,4 +34,8 @@ public class NodoService {
     public void deleteNode(Long id) {
         nodoRepositorio.deleteById(id);
     }
+
+    public List<NodoDAO> getAllNodesExtremos(String ubicacion) {
+        return nodoRepositorio.findNodosByNombreAndGrafoUbicacion(ubicacion);
+    }
 }

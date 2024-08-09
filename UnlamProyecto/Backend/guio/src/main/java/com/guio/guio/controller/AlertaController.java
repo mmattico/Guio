@@ -4,6 +4,7 @@ import com.guio.guio.dao.AlertaDAO;
 import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.service.AlertaService;
 import com.guio.guio.service.UsuarioService;
+import com.guio.guio.summary.AlertaSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class AlertaController {
     }
 
     @GetMapping("/{ubicacionCodigo}")
-    public List<AlertaDAO>  getAllAlertasByUbicacion(@PathVariable String ubicacionCodigo) {
+    public List<AlertaSummary>  getAllAlertasByUbicacion(@PathVariable String ubicacionCodigo) {
         return alertaService.findAllByGrafoUbicacion(ubicacionCodigo);
     }
 
