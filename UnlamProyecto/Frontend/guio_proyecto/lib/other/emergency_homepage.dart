@@ -11,6 +11,9 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
+  int alertaId = 0;
+
+  List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
 
 
   Future<void> enviarAlerta() async {
@@ -21,9 +24,9 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         'usuarioID':'1'
       },
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': 'PRUEBA',
+      'comentario': 'Nueva Alerta',
       'lugarDeAlerta': areaEmergencia,
-      'estado': 'pendiente',
+      'estado': statusAlert[0],
     };
 
     try {
@@ -39,6 +42,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       if (response.statusCode == 200) {
         // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
+        alertaId = responseData['alertaID'];
         print('Response data: $responseData');
         print('alerta enviada');
       } else {
@@ -61,29 +65,33 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 80,
+            size: 95,
             color: Colors.red,
           ),
           SizedBox(height: 10),
           Text(
-            'ENVIAR ALERTA',
+            'ENVIAR ALERTA', style: TextStyle(fontSize: 26),
             textAlign: TextAlign.center,
           ),
         ],
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
-          const SizedBox(height: 8),
-          SearchWidget(
-            onAreaSelected: (area) {
-              setState(() {
-                areaEmergencia = area;
-              });
-            },
+      content: Container(
+        width: 300.0,
+        child:
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 22),),
+              const SizedBox(height: 8),
+              SearchWidget(
+                onAreaSelected: (area) {
+                  setState(() {
+                    areaEmergencia = area;
+                  });
+                },
+              ),
+            ],
           ),
-        ],
       ),
       actions: <Widget>[
         Container(
@@ -94,8 +102,8 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 180,
-                    height: 50,
+                    width: 220,
+                    height: 70,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
@@ -106,19 +114,19 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                         if (areaEmergencia != null) {
                           print('Área seleccionada: $areaEmergencia');
                           Navigator.of(context).pop();
-                          emergencyPopUp(context);
+                          emergencyPopUp(context, alertaId);
                           enviarAlerta();
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 24,
                       )),
                     ),
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
+                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 17),),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -195,7 +203,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           widget.onAreaSelected(result);
         }
       },
-      child: Text(buttonText, style: const TextStyle(fontSize: 18, color: Color.fromRGBO(17, 116, 186, 1),),),
+      child: Text(buttonText, style: const TextStyle(fontSize: 22, color: Color.fromRGBO(17, 116, 186, 1),),),
     );
   }
 }

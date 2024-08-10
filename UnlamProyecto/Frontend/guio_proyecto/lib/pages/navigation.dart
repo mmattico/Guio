@@ -431,7 +431,7 @@ class _NavigationState extends State<Navigation> {
                         ),
                       ),),
                     const SizedBox(width: 10,),
-                    emergencyButton(context),
+                    //emergencyButton(context), //No usar este mismo. Crear nuevo boton de alerta que sea propio de esta pagina
                   ],
                 ),
               ],

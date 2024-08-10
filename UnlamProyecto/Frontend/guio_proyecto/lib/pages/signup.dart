@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:guio_proyecto/pages/home_page.dart';
 import 'login.dart';
 
 /*const users =  {
@@ -196,6 +195,7 @@ class _SignupPageState extends State<SignupPage>{
                       if (value.length != 10) {
                         return 'El número telefónico debe tener 10 dígitos';
                       }
+                      return null;
                     },
                 ),
                 const SizedBox(height: 15),
