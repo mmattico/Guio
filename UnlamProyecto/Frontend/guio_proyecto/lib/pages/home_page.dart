@@ -148,7 +148,6 @@ class _HomePageState extends State<HomePage> {
             child: NotificationListener<ScrollNotification>(
               onNotification: (scrollInfo) {
                 setState(() {
-                  // Ajusta la altura del CustomPaint en función del desplazamiento vertical
                   _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
                 });
                 return true;
@@ -209,7 +208,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
         child: Column(
           children: [
             Row(
@@ -219,18 +218,22 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.green,
                   size: 35,
                 ),
-                const SizedBox(width: 4),
+                //const SizedBox(width: 1),
                 Row(
                   children: [
                     _origin(context),
                     if (selectedOrigin.isNotEmpty)
                       Row(
                         children: [
-                          Text(
-                            selectedOrigin,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
+                          SizedBox(
+                            width: 115.0,
+                            child: Text(
+                              selectedOrigin,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -261,19 +264,23 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.blue,
                   size: 35,
                 ),
-                const SizedBox(width: 4),
+                //const SizedBox(width: 4),
                 Row(
                   children: [
                     _destino(context),
                     if (selectedArea.isNotEmpty)
                       Row(
                         children: [
-                          Text(
-                            selectedArea,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                            ),
+                          SizedBox(
+                            width: 105.0,
+                            child: Text(
+                              selectedArea,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                           ),
                           IconButton(
                             icon: const Icon(
@@ -485,9 +492,9 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 25),
-                      const Icon(Icons.check_circle, color: Colors.green, size: 120,),
-                      const SizedBox(height: 8),
+                      //const SizedBox(height: 25),
+                      const Icon(Icons.check_circle, color: Colors.green, size: 100,),
+                      //const SizedBox(height: 3),
                       NavigationConfirmation(
                         selectedOrigin: selectedOrigin,
                         selectedArea: selectedArea,
