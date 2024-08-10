@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:guio_proyecto/pages/home_page.dart';
+import '../other/user_session.dart';
 import 'login.dart';
-
-/*const users =  {
-  'admin@gmail.com': '12345',
-  'guioapp@gmail.com': 'guioapp',
-};*/
-
-
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -353,7 +346,6 @@ class _SignupPageState extends State<SignupPage>{
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
-                              //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
                             }
                           },
                           style: ElevatedButton.styleFrom(

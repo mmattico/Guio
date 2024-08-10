@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                  hintText: "Nombre de usuario o Correo Electrónico",
+                  hintText: "Nombre de usuario",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: BorderSide.none
@@ -103,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               validator: (value) {
               if (value == null || value.isEmpty) {
-                return  'Por favor, ingrese su correo electrónico';
+                return  'Por favor, ingrese su nombre de usuario';
               }
               UserSession().username = value;
               return null;
@@ -142,8 +142,11 @@ class _LoginPageState extends State<LoginPage> {
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+          //despues de validar usuario y contraseña
+          //con el UserSession().username vas a buscar el dato del booleano
+          //y lo asignas en UserSession().userAccessibility
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
         }
       },
       style: ElevatedButton.styleFrom(
