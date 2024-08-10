@@ -24,7 +24,16 @@ class _SignupPageState extends State<SignupPage>{
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _isChecked = false;
+  bool _isChecked = false; // este se envía para lo de accesibilidad :)
+
+  String nombre = '';
+  String apellido = '';
+  String email = '';
+  int telefono = 0;
+  int dni = 0;
+  String usuario = '';
+  String password = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +59,7 @@ class _SignupPageState extends State<SignupPage>{
                 _accesibilityCheck(context),
                 const SizedBox(height: 20),
                 _buttonSignup(context),
-                const SizedBox(height: 35),
+                const SizedBox(height: 25),
                 _logIn(context),
               ],
             ),
@@ -103,7 +112,7 @@ class _SignupPageState extends State<SignupPage>{
                 TextFormField(
                   controller: _nameController,
                   decoration: InputDecoration(
-                      hintText: "Nombre y Apellido",
+                      hintText: "Nombre",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
                           borderSide: BorderSide.none
@@ -114,11 +123,36 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese su Nombre y Apellido';
+                      return 'Por favor, ingrese su Nombre';
                     }
                     if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
                       return 'Por favor, utilice únicamente caracteres alfabéticos';
                     }
+                    nombre = value;
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                      hintText: "Apellido",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none
+                      ),
+                      fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.person)
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese su Apellido';
+                    }
+                    if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
+                      return 'Por favor, utilice únicamente caracteres alfabéticos';
+                    }
+                    apellido = value;
                     return null;
                   },
                 ),
@@ -146,6 +180,7 @@ class _SignupPageState extends State<SignupPage>{
                     if (value.length < 7 || value.length > 8) {
                       return 'El DNI debe tener entre 7 y 8 caracteres';
                     }
+                    dni = value as int;
                     return null;
                   },
                 ),
@@ -169,6 +204,7 @@ class _SignupPageState extends State<SignupPage>{
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return 'Formato inválido de correo electrónico';
                     }
+                    email = value;
                     return null;
                   },
                 ),
@@ -196,7 +232,31 @@ class _SignupPageState extends State<SignupPage>{
                       if (value.length != 10) {
                         return 'El número telefónico debe tener 10 dígitos';
                       }
+                      telefono = value as int;
+                      return null;
                     },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                      hintText: "Nombre de usuario",
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(18),
+                          borderSide: BorderSide.none
+                      ),
+                      fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.person)
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese un nombre de usuario';
+                    }
+                    usuario = value;
+                    //Acá hay que controlar que el username no esté repetido.
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
@@ -218,6 +278,7 @@ class _SignupPageState extends State<SignupPage>{
                 if (value.length <10) {
                   return 'La contraseña debe tener un mínimo de 10 caracteres';
                 }
+                password = value;
                 return null;
               },
                 ),
@@ -246,8 +307,6 @@ class _SignupPageState extends State<SignupPage>{
             },
           ),
         )
-
-        //Text(_isChecked ? 'Checkbox está seleccionado' : 'Checkbox no está seleccionado'),
       ],
     );
   }
@@ -259,6 +318,7 @@ class _SignupPageState extends State<SignupPage>{
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
+            //Acá se envian los datos a la BD de usuario
             showDialog(
               context: context,
               builder: (BuildContext context) {
