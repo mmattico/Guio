@@ -86,6 +86,7 @@ public class DijkstraService {
         }else {
             camino = obtenerInstrucciones(nodoDestino);
         }
+        camino.setNorteGrado(grafo.getNorteGrado());
         return camino;
     }
 
@@ -161,6 +162,15 @@ public class DijkstraService {
 
             // Crear un statement
             statement = connection.createStatement();
+
+            String queryNorteGrado = "SELECT BSGrafo.norte_grado " +
+                    "FROM BSGrafo " +
+                    "WHERE BSGrafo.Codigo = '" + ubicacion + "' ";
+
+            resultSet = statement.executeQuery(queryNorteGrado);
+            if(resultSet.next()) {
+                planificacion.setNorteGrado(resultSet.getInt(0));
+            }
 
             String query = "SELECT BSNodo.* " +
                     "FROM BSNodo " +
@@ -247,6 +257,15 @@ public class DijkstraService {
 
             // Crear un statement
             statement = connection.createStatement();
+
+            String queryNorteGrado = "SELECT BSGrafo.* " +
+                    "FROM BSGrafo " +
+                    "WHERE BSGrafo.Codigo = '" + ubicacion + "'";
+
+            resultSet = statement.executeQuery(queryNorteGrado);
+            if(resultSet.next()) {
+                grafo.setNorteGrado(resultSet.getInt("norte_grado"));
+            }
 
             String query = "SELECT BSNodo.* " +
                     "FROM BSNodo " +

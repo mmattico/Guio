@@ -3,6 +3,7 @@ package com.guio.guio.model;
 public class Planificacion {
     private Grafo primeraParte;
     private Grafo segundaParte;
+    private int norteGrado;
 
     public Grafo getPrimeraParte() {
         return primeraParte;
@@ -18,5 +19,13 @@ public class Planificacion {
 
     public void setSegundaParte(Grafo segundaParte) {
         this.segundaParte = segundaParte;
+    }
+
+    public int getNorteGrado() {
+        return norteGrado;
+    }
+
+    public void setNorteGrado(int norteGrado) {
+        this.norteGrado = norteGrado;
     }
 }
