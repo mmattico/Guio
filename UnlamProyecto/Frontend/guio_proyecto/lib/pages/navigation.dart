@@ -406,7 +406,7 @@ class _NavigationState extends State<Navigation> {
                               ),
                             ),),
                           const SizedBox(width: 10,),
-                          emergencyButton(context),
+                          //emergencyButton(context), //queda comentado hasta que se haga el boton de alerta desde navegacion
                         ],
                       ),
                     ],

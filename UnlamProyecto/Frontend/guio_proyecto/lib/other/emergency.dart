@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 //*************** BOTÓN DE EMERGENCIA ***************
 
@@ -27,7 +28,7 @@ import 'package:http/http.dart' as http;
   );
 }*/
 
-Future<void> emergencyPopUp(BuildContext context, int alertaId) {
+Future<void> emergencyPopUp(BuildContext context, int alertaID) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -75,10 +76,9 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                      backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                     ),
                     onPressed: () async {
-                      // Muestra el diálogo de confirmación
                       final result = await showDialog<bool>(
                         context: context,
                         barrierDismissible: false,
@@ -114,18 +114,18 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                         },
                       );
 
-                      // Si el usuario eligió sí, cierra el popup original
+                      // Si el usuario eligió sí, cierra el popup original y actualiza la alerta
                       if (result == true) {
                         //actualizar estado de alerta a "finalizada"
-                        updateTicketStatus(alertaId, 'finalizada');
+                        updateTicketStatus(alertaID, 'finalizada');
                         //agregar también update de comentario
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Emergencia\nSolucionada', style: TextStyle(color: Colors.white, fontSize: 18),
+                    child: const Text('Emergencia\nSolucionada', style: TextStyle(color: Colors.white, fontSize: 18),),
                   ),
-                ),),
-                SizedBox(height: 10,),
+                ),
+                const SizedBox(height: 10,),
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -152,7 +152,6 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop(true);
-
                                 },
                                 child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
                               ),
@@ -171,7 +170,7 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                     // Si el usuario eligió sí, cierra el popup original
                     if (result == true) {
                       //cambia estado de alerta a cancelada
-                      updateTicketStatus(alertaId, 'cancelada');
+                      updateTicketStatus(alertaID, 'cancelada');
                       //agregar también update de comentario
                       Navigator.of(context).pop();
                     }
@@ -195,6 +194,10 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
 
 Future<void> updateTicketStatus(int ticketId, String newStatus) async {
   final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado');
+
+  print('URL: $url');
+  print('New Status: $newStatus');
+  print('ticket id $ticketId');
 
   final response = await http.put(
     url,
