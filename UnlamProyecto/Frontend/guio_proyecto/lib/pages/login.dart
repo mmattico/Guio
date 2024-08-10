@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../other/user_session.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import '../other/password_recovery.dart';
@@ -100,6 +101,13 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
+              validator: (value) {
+              if (value == null || value.isEmpty) {
+                return  'Por favor, ingrese su correo electrónico';
+              }
+              UserSession().username = value;
+              return null;
+              },
             ),
             const SizedBox(height: 15),
             TextFormField(
@@ -114,12 +122,12 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIcon: const Icon(Icons.password),
               ),
               obscureText: true,
-              /*validator: (value) {
+              validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su contraseña';
                 }
                 return null;
-              },*/
+              },
             ),
           ],
         )
