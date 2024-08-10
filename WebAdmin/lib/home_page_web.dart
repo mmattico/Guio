@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'get_tickets.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class HomePageWeb extends StatefulWidget {
   final List<Ticket> tickets;
@@ -83,12 +82,12 @@ class _HomePageWebState extends State<HomePageWeb> {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columns: [
-                const DataColumn(label: Text('N° Ticket')),
-                const DataColumn(label: Text('Fecha y Hora')),
-                const DataColumn(label: Text('Ubicacion')),
-                const DataColumn(label: Text('Estado')),
-                const DataColumn(label: Text('Comentarios')),
+              columns: const [
+                DataColumn(label: Text('N° Ticket')),
+                DataColumn(label: Text('Fecha y Hora')),
+                DataColumn(label: Text('Ubicacion')),
+                DataColumn(label: Text('Estado')),
+                DataColumn(label: Text('Comentarios')),
                 //DataColumn(label: Text('Prioridad')),
               ],
               rows: _filteredTickets.map((ticket) => DataRow(

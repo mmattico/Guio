@@ -20,7 +20,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
   @override
   Widget build(BuildContext context) {
     return  Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.fromLTRB(6, 4, 6, 2),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,9 +34,9 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
             Text(
               '${widget.selectedOrigin}',
-              style: const TextStyle(fontSize: 25),
+              style: const TextStyle(fontSize: 23),
             ),
-            const SizedBox(height: 25),
+            const SizedBox(height: 10),
             const Text(
               'Con destino a ',
               style: TextStyle(
@@ -51,9 +51,9 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   : (widget.selectedArea != '')
                   ? '${widget.selectedArea}'
                   : 'None',
-              style: const TextStyle(fontSize: 25),
+              style: const TextStyle(fontSize: 23),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const Text(
               'Utilizando ' ,
               style: TextStyle(
@@ -63,14 +63,14 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
             Text(
               '${widget.selectedPreference}',
-              style: const TextStyle(fontSize: 25),
+              style: const TextStyle(fontSize: 23),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
             Center(
               child: SizedBox(
-                width: 250,
-                height: 60,
+                width: double.infinity,
+                height: 55,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -86,8 +86,10 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                   ),
                   child: const Text(
@@ -97,18 +99,20 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
             Center(
               child: SizedBox(
-                width: 180,
-                height: 38,
+                width: double.infinity,
+                height: 35,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
-                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 5),
                     backgroundColor: Colors.grey,
                   ),
                   child: const Text(
@@ -118,10 +122,10 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             Center(
               child: SizedBox(
-                width: 180,
+                width: double.infinity,
                 height: 38,
                 child: TextButton(
                   onPressed: () {

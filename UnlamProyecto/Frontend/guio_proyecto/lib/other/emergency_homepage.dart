@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,11 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
+  String? nombreUsuario = UserSession().username;
+
+  int alertaId = 0;
+
+  List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
 
 
   Future<void> enviarAlerta() async {
@@ -18,7 +24,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
 
     final payload = {
       'usuario':{
-        'usuarioID':'1'
+        'usuarioID': '1'//nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
       },
       'fecha': DateTime.now().toIso8601String(),
       'comentario': 'PRUEBA',
@@ -41,6 +47,8 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
+        alertaId = responseData['alertaID'];
+        print('alerta id : $alertaId');
       } else {
         // If the server did not return a 200 OK response,
         // throw an exception or handle it as needed
@@ -102,12 +110,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
-                      onPressed: areaEmergencia == null ? null : () {
+                      onPressed: areaEmergencia == null ? null : () async {
                         if (areaEmergencia != null) {
                           print('Área seleccionada: $areaEmergencia');
+                          print('alerta id en codigo $alertaId');
+                          await enviarAlerta();
                           Navigator.of(context).pop();
-                          emergencyPopUp(context);
-                          enviarAlerta();
+                          emergencyPopUp(context, alertaId);
+                          print('alerta id en codigo $alertaId');
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(
