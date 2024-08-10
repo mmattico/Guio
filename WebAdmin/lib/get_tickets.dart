@@ -8,7 +8,6 @@ import 'dart:convert';  // For jsonEncode
 Future<List<Ticket>> fetchAlertas(String ubicacionCodigo) async {
   final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ubicacionCodigo'));
 
-
   if (response.statusCode == 200) {
     final utf8DecodedBody = utf8.decode(response.bodyBytes);
     List<dynamic> body = jsonDecode(utf8DecodedBody);
@@ -34,13 +33,20 @@ class Ticket {
   final String comentario;
   final String areaEmergencia;
   String estado;
+  final String apellido;
+  final String telefono;
+  final String dni;
 
   Ticket({
     required this.id,
     required this.fecha,
     required this.comentario,
     required this.areaEmergencia,
-    required this.estado});
+    required this.estado,
+    required this.apellido,
+    required this.telefono,
+    required this.dni,
+  });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
@@ -49,6 +55,9 @@ class Ticket {
       comentario: json['comentario']?.toString() ?? '',
       areaEmergencia: json['lugarDeAlerta']?.toString() ?? '',
       estado: json['estado']?.toString() ?? '',
+      apellido: json['apellido']?.toString() ?? '',
+      telefono: json['telefono']?.toString() ?? '',
+      dni: json['dni']?.toString() ?? ''
     );
   }
 
@@ -102,6 +111,8 @@ class _TicketListPageState extends State<TicketListPage> {
       //ticket.estado = newStatus;
     });
   }
+
+  int cantidadAlertas = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -173,6 +184,7 @@ class _TicketListPageState extends State<TicketListPage> {
             return const Center(child: Text('No hay tickets disponibles'));
           } else {
             List<Ticket> tickets = snapshot.data!;
+            cantidadAlertas = tickets.length;
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: _isKanbanView
@@ -181,6 +193,7 @@ class _TicketListPageState extends State<TicketListPage> {
                       tickets: tickets,
                       onOpenTicketDetails: _openTicketDetails,
                       onStatusChanged: _updateTicketStatus,
+                      cantidadAlertas: cantidadAlertas,
               ),
             );
           }

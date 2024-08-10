@@ -8,11 +8,14 @@ class HomePageWeb extends StatefulWidget {
   final List<Ticket> tickets;
   final void Function(Ticket) onOpenTicketDetails;
   final void Function(Ticket, String) onStatusChanged;
+  int cantidadAlertas = 0;
+  int cantidadAlertasActz = 0;
 
   HomePageWeb({
     required this.tickets,
     required this.onOpenTicketDetails,
     required this.onStatusChanged,
+    required this.cantidadAlertas
   });
 
   @override
@@ -61,26 +64,38 @@ class _HomePageWebState extends State<HomePageWeb> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            const Spacer(),
-            Container(
-              width: 500,
-              child: TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  labelText: 'Buscar por número de Ticket...',
-                  border: OutlineInputBorder(),
-                ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Row(
+            children: [
+              const Spacer(),
+              //boton de refresh
+              IconButton(
+                icon: Icon(Icons.refresh),
+                iconSize: 35.0,
+                color: Color.fromRGBO(17, 116, 186, 1),
+                tooltip: 'Actualizar listado de alertas',
+                onPressed: () async {
+                  await fetchAlertas('PRUEBA');
+                  print('Alertas actualizadas');
+                },
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
-        Expanded(
-          child: SingleChildScrollView(
+              Flexible(child: SizedBox(
+                  width: 500,
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      labelText: 'Buscar por número de Ticket...',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(height: 20),
+          SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: [
@@ -89,7 +104,6 @@ class _HomePageWebState extends State<HomePageWeb> {
                 const DataColumn(label: Text('Ubicacion')),
                 const DataColumn(label: Text('Estado')),
                 const DataColumn(label: Text('Comentarios')),
-                //DataColumn(label: Text('Prioridad')),
               ],
               rows: _filteredTickets.map((ticket) => DataRow(
                 cells: [
@@ -106,7 +120,6 @@ class _HomePageWebState extends State<HomePageWeb> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Text(
-                            //'${ticket.id}',
                             ticket.id.toString().padLeft(4, '0'),
                             style: const TextStyle(
                               color: Colors.blueAccent,
@@ -121,7 +134,7 @@ class _HomePageWebState extends State<HomePageWeb> {
                   DataCell(
                     DropdownButton<String>(
                       value: ticket.estado,
-                      items: ['pendiente', 'en curso', 'cerrado']
+                      items: ['pendiente', 'en curso', 'finalizada', 'cancelada']
                           .map((status) => DropdownMenuItem<String>(
                         value: status,
                         child: Text(status),
@@ -140,14 +153,17 @@ class _HomePageWebState extends State<HomePageWeb> {
               )).toList(),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+
 }
 
 Future<void> updateTicketStatus(int ticketId, String newStatus) async {
-  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado'); // Reemplaza con la URL correcta
+  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado');
+
+  print('nuevo estado: ' + newStatus);
 
   final response = await http.put(
     url,
