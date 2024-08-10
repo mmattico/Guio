@@ -93,8 +93,8 @@ class PasswordRecovery extends StatelessWidget {
 
   _recoveryButton(context){
     return SizedBox(
-        width: 250,
-        height: 55,
+      width: double.infinity,
+      height: 55,
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {

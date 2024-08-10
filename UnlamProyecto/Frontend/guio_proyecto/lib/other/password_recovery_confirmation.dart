@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../pages/password_recovery.dart';
 import '/pages/login.dart';
+import '../pages/change_password.dart';
 
 class PasswordRecoveryConfirmation extends StatelessWidget {
   final String email;
@@ -47,7 +48,7 @@ class PasswordRecoveryConfirmation extends StatelessWidget {
             ),
             const SizedBox(height: 30.0),
             SizedBox(
-              width: 250,
+              width: double.infinity,
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
@@ -71,6 +72,7 @@ class PasswordRecoveryConfirmation extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => PasswordRecovery())
+                    //MaterialPageRoute(builder: (context) => const ChangePassword()) //ESTE LO USO SOLO A MODO DE PRUEBA
                 );
               },
               child: const Text(

@@ -283,7 +283,7 @@ class _SignupPageState extends State<SignupPage>{
             activeColor: Colors.green,
             visualDensity: VisualDensity.compact,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            title: const Text('Deseo tener por defecto activas las opciones de accesibilidad'),
+            title: const Text('Deseo tener por defecto activas las opciones de accesibilidad', style: TextStyle(fontSize: 14),),
             value: _isChecked,
             onChanged: (bool? value) {
               setState(() {
@@ -298,7 +298,7 @@ class _SignupPageState extends State<SignupPage>{
 
   _buttonSignup(BuildContext context) {
     return SizedBox(
-      width: 250,
+      width: double.infinity,
       height: 55,
       child: ElevatedButton(
         onPressed: () {

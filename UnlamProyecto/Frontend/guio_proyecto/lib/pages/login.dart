@@ -115,8 +115,9 @@ class _LoginPageState extends State<LoginPage> {
 
   _buttonLogin(context) {
     return SizedBox(
-        width: 250,
-        height: 60,
+        //width: 250,
+        width: double.infinity,
+        height: 55,
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
