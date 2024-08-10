@@ -2,7 +2,10 @@ package com.guio.guio.service;
 
 import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.repositorio.UsuarioRepositorio;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,8 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
+    @Autowired
+    private JavaMailSender emailSender;
 
     @Autowired
     private UsuarioRepositorio userRepository;
@@ -69,6 +74,36 @@ public class UsuarioService {
         } else {
             return false;
         }
+    }
+
+    public void resetPassword(String nombreUsuario) {
+        String contraseña = generatePassword();
+        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        usuario.setContraseña(contraseña);
+        usuario.setContraseñaReseteada(true);
+        userRepository.save(usuario);
+
+        String subject = "Solicitud de reseteo de contraseña";
+        String message = "Su nueva contraseña es: " + contraseña + " por favor acordarse de cambiarla al iniciar sesion";
+
+        sendEmail(usuario.getEmail(), subject, message);
+    }
+
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        emailSender.send(message);
+    }
+
+    private static String generatePassword() {
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+                .withinRange('0', 'z')
+                .filteredBy(Character::isLetterOrDigit) // Puedes ajustar el filtrado según tus necesidades
+                .build();
+
+        return generator.generate(12); // Ajusta la longitud de la contraseña
     }
 
 }
