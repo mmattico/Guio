@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                  hintText: "Correo Electrónico",
+                  hintText: "Nombre de usuario o Correo Electrónico",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: BorderSide.none
@@ -100,15 +100,6 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              /*validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese su correo electrónico';
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return 'Formato inválido de correo electrónico';
-                }
-                return null;
-              },*/
             ),
             const SizedBox(height: 15),
             TextFormField(
