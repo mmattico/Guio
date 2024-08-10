@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home_page.dart';
-import '../other/password_recovery.dart';
+import 'password_recovery.dart';
 //import 'home_page_accesible.dart';
 
 /*const users =  {
@@ -23,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -35,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Column(
             children: [
-              //_back(context),
               const SizedBox(height: 30),
               _header(context),
               const SizedBox(height: 50),
@@ -44,24 +42,12 @@ class _LoginPageState extends State<LoginPage> {
               _buttonLogin(context),
               const SizedBox(height: 20),
               _forgotPassword(context),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               _signup(context),
             ],
           ),
         ),
       ),),),
-    );
-  }
-
-  _back (context){
-    return AppBar(
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
     );
   }
 
@@ -91,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                  hintText: "Nombre de usuario o Correo Electrónico",
+                  hintText: "Nombre de usuario o Email",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: BorderSide.none
@@ -139,8 +125,10 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(

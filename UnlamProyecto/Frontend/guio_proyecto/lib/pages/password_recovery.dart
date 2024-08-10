@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/password_recovery_confirmation.dart';
 import '/pages/login.dart';
 
 class PasswordRecovery extends StatelessWidget {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  String email = '';
+
+  PasswordRecovery({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -11,39 +15,28 @@ class PasswordRecovery extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
-          color: Colors.white,
-          margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _back(context),
-                const SizedBox(height: 10),
-                _header(context),
-                const SizedBox(height: 50),
-                _inputField(context),
-                const SizedBox(height: 50),
-                _recoveryButton(context),
-                const SizedBox(height: 10),
-                _cancelButton(context),
-              ],
+        body: SafeArea(
+          child: Container(
+            color: Colors.white,
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const SizedBox(height: 50),
+                  _header(context),
+                  const SizedBox(height: 50),
+                  _inputField(context),
+                  const SizedBox(height: 50),
+                  _recoveryButton(context),
+                  const SizedBox(height: 10),
+                  _cancelButton(context),
+                ],
+              ),
             ),
           ),
         ),),
     );
   }
-
-    _back (context){
-      return AppBar(
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      );
-    }
 
     _header(context) {
       return const Column(
@@ -51,8 +44,10 @@ class PasswordRecovery extends StatelessWidget {
         children: [
           Text(
             "Recuperá tu contraseña",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-          )
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold,),
+          ),
+          SizedBox(height: 10),
+          Text("Te enviaremos una nueva contraseña a tu casilla de correo electrónico", style: TextStyle(fontSize: 14),)
         ],
       );
     }
@@ -84,6 +79,7 @@ class PasswordRecovery extends StatelessWidget {
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return 'Formato inválido de correo electrónico';
                     }
+                    email = value;
                     return null;
                   },
                 ),
@@ -97,16 +93,19 @@ class PasswordRecovery extends StatelessWidget {
 
   _recoveryButton(context){
     return SizedBox(
-        width: 280,
-        height: 65,
+        width: 250,
+        height: 55,
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
           //Enviar mail de recovery
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordRecoveryConfirmation(email: email)),);
         }
       },
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
         padding: const EdgeInsets.symmetric(vertical: 10),
         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
       ),
@@ -121,15 +120,12 @@ class PasswordRecovery extends StatelessWidget {
     return TextButton(
         onPressed: () {
           Navigator.push(context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         },
         child: const Text(
           'Cancelar',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-          ),
+          style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 16),
         ),
     );
   }
