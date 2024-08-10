@@ -3,6 +3,7 @@ package com.guio.guio.controller;
 import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +34,12 @@ public class UsuarioController {
     @GetMapping
     public List<UsuarioDAO> getAllUsers() {
         return userService.findAll();
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "USERNAME") String nombreUsuario) {
+        userService.resetPassword(nombreUsuario);
+        return ResponseEntity.ok("Password successfully reset");
     }
 
     @GetMapping("/validar-nombre-usuario")

@@ -2,7 +2,11 @@ package com.guio.guio.service;
 
 import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.repositorio.UsuarioRepositorio;
+import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +17,13 @@ import java.util.Optional;
 public class UsuarioService {
 
     @Autowired
+    private JavaMailSender mailSender;
+
+    @Autowired
     private UsuarioRepositorio userRepository;
+
+    @Value("${spring.mail.username}")
+    private String mailGuio;
 
     public UsuarioDAO save(UsuarioDAO user) {
         return userRepository.save(user);
@@ -67,5 +77,35 @@ public class UsuarioService {
         } else {
             return false;
         }
+    }
+
+    public void resetPassword(String nombreUsuario) {
+        String contraseña = generatePassword();
+        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("User not found"));
+        usuario.setContraseña(contraseña);
+        userRepository.save(usuario);
+
+        String subject = "Password Reset Request";
+        String message = "Click the following link to reset your password: " + contraseña;
+
+        sendEmail(usuario.getEmail(), subject, message);
+    }
+
+    private void sendEmail(String to, String subject, String message) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setFrom(mailGuio);
+        mailMessage.setTo(to);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+        mailSender.send(mailMessage);
+    }
+
+    private static String generatePassword() {
+        RandomStringGenerator generator = new RandomStringGenerator.Builder()
+                .withinRange('0', 'z')
+                .filteredBy(Character::isLetterOrDigit) // Puedes ajustar el filtrado según tus necesidades
+                .build();
+
+        return generator.generate(12); // Ajusta la longitud de la contraseña
     }
 }
