@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
@@ -11,9 +12,7 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
-  int alertaId = 0;
-
-  List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
+  String? nombreUsuario = UserSession().username;
 
 
   Future<void> enviarAlerta() async {
@@ -21,12 +20,12 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
 
     final payload = {
       'usuario':{
-        'usuarioID':'1'
+        'usuarioID': '1'//nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
       },
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': 'Nueva Alerta',
+      'comentario': 'PRUEBA',
       'lugarDeAlerta': areaEmergencia,
-      'estado': statusAlert[0],
+      'estado': 'pendiente',
     };
 
     try {
@@ -42,7 +41,6 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       if (response.statusCode == 200) {
         // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
-        alertaId = responseData['alertaID'];
         print('Response data: $responseData');
         print('alerta enviada');
       } else {
@@ -65,33 +63,29 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 95,
+            size: 80,
             color: Colors.red,
           ),
           SizedBox(height: 10),
           Text(
-            'ENVIAR ALERTA', style: TextStyle(fontSize: 26),
+            'ENVIAR ALERTA',
             textAlign: TextAlign.center,
           ),
         ],
       ),
-      content: Container(
-        width: 300.0,
-        child:
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 22),),
-              const SizedBox(height: 8),
-              SearchWidget(
-                onAreaSelected: (area) {
-                  setState(() {
-                    areaEmergencia = area;
-                  });
-                },
-              ),
-            ],
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
+          const SizedBox(height: 8),
+          SearchWidget(
+            onAreaSelected: (area) {
+              setState(() {
+                areaEmergencia = area;
+              });
+            },
           ),
+        ],
       ),
       actions: <Widget>[
         Container(
@@ -102,8 +96,8 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 220,
-                    height: 70,
+                    width: 180,
+                    height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
@@ -114,19 +108,19 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                         if (areaEmergencia != null) {
                           print('Área seleccionada: $areaEmergencia');
                           Navigator.of(context).pop();
-                          emergencyPopUp(context, alertaId);
+                          emergencyPopUp(context);
                           enviarAlerta();
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24,
+                        fontSize: 20,
                       )),
                     ),
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 17),),
+                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -203,7 +197,7 @@ class _SearchWidgetState extends State<SearchWidget> {
           widget.onAreaSelected(result);
         }
       },
-      child: Text(buttonText, style: const TextStyle(fontSize: 22, color: Color.fromRGBO(17, 116, 186, 1),),),
+      child: Text(buttonText, style: const TextStyle(fontSize: 18, color: Color.fromRGBO(17, 116, 186, 1),),),
     );
   }
 }

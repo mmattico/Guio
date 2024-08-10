@@ -124,20 +124,35 @@ class _HomePageState extends State<HomePage> {
     "assets/images/receptionist-bw.png"
   ];
 
+  double _customPaintHeight = 380;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          CustomPaint(
-            painter: BluePainter(),
-            child: Container(
-              height: 380,
+          // El CustomPaint se coloca en una posición fija
+          Positioned(
+            top: 0, // Ajusta según sea necesario
+            left: 0,
+            right: 0,
+            child: CustomPaint(
+              painter: BluePainter(),
+              child: Container(
+                height: _customPaintHeight,
+              ),
             ),
           ),
           SafeArea(
-            child: Padding(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                setState(() {
+                  _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
+                });
+                return true;
+              },
+              child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
               child: SingleChildScrollView(
                 child: Column(
@@ -163,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     const SizedBox(height: 15),
                     _services(context),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 18),
                     _accesibilidad(context),
                     const SizedBox(height: 25),
                     Row(
@@ -179,7 +194,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-          ),
+          ),),
         ],
       ),
     );
@@ -193,7 +208,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+        padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
         child: Column(
           children: [
             Row(
@@ -203,18 +218,22 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.green,
                   size: 35,
                 ),
-                const SizedBox(width: 4),
+                //const SizedBox(width: 1),
                 Row(
                   children: [
                     _origin(context),
                     if (selectedOrigin.isNotEmpty)
                       Row(
                         children: [
-                          Text(
-                            selectedOrigin,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
+                          SizedBox(
+                            width: 115.0,
+                            child: Text(
+                              selectedOrigin,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
                           IconButton(
@@ -245,19 +264,23 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.blue,
                   size: 35,
                 ),
-                const SizedBox(width: 4),
+                //const SizedBox(width: 4),
                 Row(
                   children: [
                     _destino(context),
                     if (selectedArea.isNotEmpty)
                       Row(
                         children: [
-                          Text(
-                            selectedArea,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                            ),
+                          SizedBox(
+                            width: 105.0,
+                            child: Text(
+                              selectedArea,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                           ),
                           IconButton(
                             icon: const Icon(
@@ -349,39 +372,40 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 10),
         GridView.count(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 5,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(serviceTexts.length, (index) {
-            return InkWell(
-              onTap: serviceIsDisabled && selectedIconIndexService != index
-                  ? null
-                  : () => onIconPressedService(index),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: serviceIsDisabled && selectedIconIndexService != index
-                        ? Image.asset(serviceDisabled[index])
-                        : Image.asset(seriviceIcons[index]),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    serviceTexts[index],
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: serviceIsDisabled && selectedIconIndexService != index
-                          ? Colors.grey
-                          : Colors.black,
+            crossAxisCount: 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 4,
+            childAspectRatio: 1/1.1,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: List.generate(serviceTexts.length, (index) {
+              return InkWell(
+                onTap: serviceIsDisabled && selectedIconIndexService != index
+                    ? null
+                    : () => onIconPressedService(index),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: serviceIsDisabled && selectedIconIndexService != index
+                          ? Image.asset(serviceDisabled[index])
+                          : Image.asset(seriviceIcons[index]),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                    const SizedBox(height: 2),
+                    Text(
+                      serviceTexts[index],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: serviceIsDisabled && selectedIconIndexService != index
+                            ? Colors.grey
+                            : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
         ),
       ],
     );
@@ -405,6 +429,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 3,
           crossAxisSpacing: 10,
           mainAxisSpacing: 5,
+          childAspectRatio: 1/1.1,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children:
@@ -467,9 +492,9 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const SizedBox(height: 25),
-                      const Icon(Icons.check_circle, color: Colors.green, size: 120,),
-                      const SizedBox(height: 8),
+                      //const SizedBox(height: 25),
+                      const Icon(Icons.check_circle, color: Colors.green, size: 100,),
+                      //const SizedBox(height: 3),
                       NavigationConfirmation(
                         selectedOrigin: selectedOrigin,
                         selectedArea: selectedArea,

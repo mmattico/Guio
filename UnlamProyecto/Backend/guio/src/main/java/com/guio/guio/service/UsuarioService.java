@@ -4,7 +4,6 @@ import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.repositorio.UsuarioRepositorio;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -17,13 +16,11 @@ import java.util.Optional;
 public class UsuarioService {
 
     @Autowired
-    private JavaMailSender mailSender;
+    private JavaMailSender emailSender;
 
     @Autowired
     private UsuarioRepositorio userRepository;
 
-    @Value("${spring.mail.username}")
-    private String mailGuio;
 
     public UsuarioDAO save(UsuarioDAO user) {
         return userRepository.save(user);
@@ -92,13 +89,12 @@ public class UsuarioService {
         sendEmail(usuario.getEmail(), subject, message);
     }
 
-    private void sendEmail(String to, String subject, String message) {
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(mailGuio);
-        mailMessage.setTo(to);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
-        mailSender.send(mailMessage);
+    public void sendEmail(String to, String subject, String text) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject(subject);
+        message.setText(text);
+        emailSender.send(message);
     }
 
     private static String generatePassword() {
@@ -109,4 +105,5 @@ public class UsuarioService {
 
         return generator.generate(12); // Ajusta la longitud de la contraseña
     }
+
 }
