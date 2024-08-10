@@ -36,6 +36,12 @@ public class UsuarioController {
         return userService.findAll();
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "USERNAME") String nombreUsuario) {
+        userService.resetPassword(nombreUsuario);
+        return ResponseEntity.ok("Password successfully reset");
+    }
+
     @GetMapping("/validar-nombre-usuario")
     public boolean validarNombreUsuario(@RequestParam(name = "USERNAME") String nombreUsuario) {
         return userService.existeNombreUsuario(nombreUsuario);
