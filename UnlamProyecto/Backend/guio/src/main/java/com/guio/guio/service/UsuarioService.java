@@ -81,12 +81,13 @@ public class UsuarioService {
 
     public void resetPassword(String nombreUsuario) {
         String contraseña = generatePassword();
-        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("User not found"));
+        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         usuario.setContraseña(contraseña);
+        usuario.setContraseñaReseteada(true);
         userRepository.save(usuario);
 
-        String subject = "Password Reset Request";
-        String message = "Click the following link to reset your password: " + contraseña;
+        String subject = "Solicitud de reseteo de contraseña";
+        String message = "Su nueva contraseña es: " + contraseña + " por favor acordarse de cambiarla al iniciar sesion";
 
         sendEmail(usuario.getEmail(), subject, message);
     }
