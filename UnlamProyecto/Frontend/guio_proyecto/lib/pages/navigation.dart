@@ -14,66 +14,15 @@ class Navigation extends StatefulWidget {
   final String? selectedPreference;
 
   const Navigation(
-      {Key? key,
+      {super.key,
       required this.selectedOrigin,
       required this.selectedArea,
       required this.selectedService,
-      required this.selectedPreference})
-      : super(key: key);
+      required this.selectedPreference});
 
   @override
   _NavigationState createState() => _NavigationState();
 }
-
-/*
-class _NavigationState extends State<Navigation> {
-  String _stepCountValue = 'Unknown';
-  Pedometer _pedometer;
-
-  @override
-  void initState() {
-    super.initState();
-    _initPedometer();
-  }
-
-  void _initPedometer() {
-    _pedometer = Pedometer();
-    _pedometer.pedometerStream.listen(_onData, onError: _onError);
-  }
-
-  void _onData(int stepCountValue) {
-    setState(() {
-      _stepCountValue = "$stepCountValue";
-    });
-  }
-
-  void _onError(error) {
-    print("Error: $error");
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Pedometer Example'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Step Count:',
-            ),
-            Text(
-              '$_stepCountValue',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}*/
 
 class _NavigationState extends State<Navigation> {
   bool selectedVoiceAssistance = true;
@@ -85,8 +34,9 @@ class _NavigationState extends State<Navigation> {
   String _imagenPath = "";
   FlutterTts tts = FlutterTts();
   bool isTtsInitialized = false;
-
-
+  bool _cancelarRecorrido = false;
+  bool _botonCancelarRecorrido = false;
+  double _customPaintHeight = 380;
 
   void toggleSwitch(bool value) {
     setState(() {
@@ -124,27 +74,27 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
-  Future<void> _showPopup(BuildContext context) async {
+  Future<void> _popupPrimerDestino(BuildContext context) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text('¡Ha llegado a su primer destino!', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          title: const Text('¡Ha llegado a su primer destino!', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
           actions: <Widget>[
             Align(
               alignment: Alignment.center,
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   SizedBox(
                     width: 150,
                     height: 60,
                     child: ElevatedButton(
-                      child: Text('Continuar', style: TextStyle(fontSize: 20, color: Colors.white),),
+                      child: const Text('Continuar', style: TextStyle(fontSize: 20, color: Colors.white),),
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -162,6 +112,59 @@ class _NavigationState extends State<Navigation> {
         );
       },
     );
+  }
+
+  Future<void> _cancelarNavegacion(BuildContext context) async {
+    final respuesta = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('¿Desea finalizar el recorrido?', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          actions: <Widget>[
+            SizedBox(
+              width: 95,
+              height: 60,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+              ),
+              child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
+            ),),
+            TextButton(
+              onPressed: () {
+                _botonCancelarRecorrido = ! _botonCancelarRecorrido;
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18)),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (respuesta == true) {
+      setState(() {
+        _cancelarRecorrido = true;
+        if (selectedVoiceAssistance) {
+          selectedVoiceAssistance = !selectedVoiceAssistance;
+        }
+        _botonCancelarRecorrido = ! _botonCancelarRecorrido;
+      });
+      detenerReproduccion();
+      Vibration.cancel();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
   }
 
   @override
@@ -202,52 +205,56 @@ class _NavigationState extends State<Navigation> {
     print(widget.selectedArea);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-      _isLoading = false;
+            _isLoading = false;
       print(json.decode(response.body));
       var responseData = Autogenerated.fromJson(json.decode(response.body) as Map<String, dynamic>);
       instrucciones = responseData.instrucciones.toList();
       for(int i=0; i<instrucciones.length; i++){
-        /*
-        if(i > 1){
-          if(instrucciones[i-1].distancia! > 0){
-            final stepCountStream = Pedometer.stepCountStream;
-            distanciaARecorrer = instrucciones[i-1].distancia!;
-            distanciaRecorrida = 0;
-            while(distanciaARecorrer > 0) {
-              stepCountStream.listen(_onStepCount).onError(_onStepCountError);
-            }
-          }
-        }*/
+        while (_botonCancelarRecorrido) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+
+        if (_cancelarRecorrido) {
+          break;
+        }
+
         await Future.delayed(const Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
-          if(i == 0){
-            Vibration.vibrate();
-          }
-
-          if(instrucciones[i].haygiro ?? false){
-            _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
-            Vibration.vibrate();
-          } else {
-            _imagenPath = 'assets/images/narrow-top.png';
-          }
-
         });
 
-        if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
-          await _showPopup(context);
+        if(i == 0){
+          Vibration.vibrate(duration: 1500);
         }
+
+        if(instrucciones[i].haygiro ?? false){
+          _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
+          Vibration.vibrate();
+        } else {
+          _imagenPath = 'assets/images/narrow-top.png';
+        }
+
+        if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
+          Vibration.vibrate(pattern: [50, 500, 50, 1000]);
+          await _popupPrimerDestino(context);
+        }
+
+
+
       }
-      _imagenPath = 'assets/images/arrived_2.png';
 
-      Image.asset(
-        _imagenPath,
-        width: 50,
-        height: 50,
-      );
+      if(!_cancelarRecorrido){
+        _imagenPath = 'assets/images/arrived_2.png';
 
-      _instruccion = 'Ha llegado a Destino';
-      Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
+        Image.asset(
+          _imagenPath,
+          width: 50,
+          height: 50,
+        );
+
+        _instruccion = 'Ha llegado a Destino';
+        Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
+      }
     } else {
       setState(() {
         _isLoading = false;
@@ -257,42 +264,6 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
-/*
-  void _onStepCount(StepCount event) {
-    distanciaRecorrida = distanciaRecorrida + event.steps;
-    distanciaARecorrer = distanciaARecorrer - event.steps;
-  }
-
-  void _onStepCountError(error) {
-    print('Step Count not available');
-  }*/
-/*
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Refrescar Pantalla'),
-      ),
-      body: _isLoading && _instruccion == ""
-          ? Center(child: CircularProgressIndicator())
-          : Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Contador:',
-              style: TextStyle(fontSize: 24),
-            ),
-            Text(
-              _instruccion,
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}*/
   @override
   Widget build(BuildContext context) {
     if(_instruccion != "" && selectedVoiceAssistance) {
@@ -305,142 +276,146 @@ class _NavigationState extends State<Navigation> {
           ? const Center(child: CircularProgressIndicator())
           : Stack(
             children: [
-              CustomPaint(
-              painter: BluePainter(),
-              child: Container(
-                height: 335,
+              Positioned(
+                top: 0, // Ajusta según sea necesario
+                left: 0,
+                right: 0,
+                child: CustomPaint(
+                  painter: BluePainter(),
+                  child: Container(
+                    height: _customPaintHeight,
+                  ),
+                ),
               ),
-            ),
           SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(25, 25, 16, 12),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                header(),
-                const SizedBox(height: 9),
-                Text(
-                  (widget.selectedArea != '' && widget.selectedService != '')
-                      ? '${widget.selectedArea} y ${widget.selectedService}'
-                      : (widget.selectedService != '')
-                          ? '${widget.selectedService}'
-                          : (widget.selectedArea != '')
-                              ? '${widget.selectedArea}'
-                              : 'None',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    height: 1.1,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Card(
-                  color: Colors.white,
-                  margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
-                    child: Column(
-                      children: [
-                        SwitchListTile(
-                          title: const Text('Asistencia por voz'),
-                          value: selectedVoiceAssistance,
-                          onChanged: (bool value) {
-                            setState(() {
-                              selectedVoiceAssistance = value;
-                            });
-                            print('$selectedVoiceAssistance');
-                          },
-                          secondary: const Icon(Icons.volume_up),
-                          activeColor: const Color.fromRGBO(17, 116, 186, 1),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Center(
-                  child: SizedBox(
-                      width: 300.0,
-                      height: 300.0,
-                    child: Image.asset(_imagenPath,
-                      height: 280,),
-                  )
-                ),
-                Center(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                setState(() {
+                  _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
+                });
+                return true;
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(25, 25, 16, 12),
+                child: SingleChildScrollView(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        'Instruccion:',
-                        style: TextStyle(fontSize: 20),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 10),
+                      header(),
+                      const SizedBox(height: 9),
+                      Text(
+                        (widget.selectedArea != '' && widget.selectedService != '')
+                            ? '${widget.selectedArea} y ${widget.selectedService}'
+                            : (widget.selectedService != '')
+                                ? '${widget.selectedService}'
+                                : (widget.selectedArea != '')
+                                    ? '${widget.selectedArea}'
+                                    : 'None',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 50,
+                          fontWeight: FontWeight.bold,
+                          height: 1.1,
+                        ),
                       ),
-                      SizedBox(
-                        width: 300,
-                        height: 100,
-                        child: Center(
+                      const SizedBox(height: 15),
+                      Card(
+                        color: Colors.white,
+                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                _instruccion,
-                                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
+                              SwitchListTile(
+                                title: const Text('Asistencia por voz'),
+                                value: selectedVoiceAssistance,
+                                onChanged: (bool value) {
+                                  setState(() {
+                                    selectedVoiceAssistance = value;
+                                  });
+                                  print('$selectedVoiceAssistance');
+                                },
+                                secondary: const Icon(Icons.volume_up),
+                                activeColor: const Color.fromRGBO(17, 116, 186, 1),
                               ),
                             ],
-                            )
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: SizedBox(
+                            width: 300.0,
+                            height: 300.0,
+                          child: Image.asset(_imagenPath,
+                            height: 280,),
                         )
-                      )
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            const Text(
+                              'Instruccion:',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(
+                              width: 300,
+                              height: 100,
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      _instruccion,
+                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ],
+                                  )
+                              )
+                            )
 
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 250,
+                            height: 60,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _botonCancelarRecorrido = true;
+                                _cancelarNavegacion(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                backgroundColor: Colors.grey,
+                              ),
+                              child: const Text(
+                                "Finalizar Recorrido",
+                                style: TextStyle(fontSize: 20, color: Colors.white),
+                              ),
+                            ),),
+                          const SizedBox(width: 10,),
+                          emergencyButton(context),
+                        ],
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 250,
-                      height: 60,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          detenerReproduccion();
-                          Vibration.cancel();
-                          setState(() {
-                            selectedVoiceAssistance = !selectedVoiceAssistance;
-                          });
-                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomePage()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          backgroundColor: Colors.grey,
-                        ),
-                        child: const Text(
-                          "Finalizar Recorrido",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),),
-                    const SizedBox(width: 10,),
-                    emergencyButton(context),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-  ],),
-    );
+              ),
+            ),),
+      ],),
+        );
   }
 }
 
@@ -519,3 +494,4 @@ Widget header() {
     ],
   );
 }
+
