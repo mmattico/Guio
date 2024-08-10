@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import '../other/user_session.dart';
 import 'signup.dart';
 import 'home_page.dart';
-import '../other/password_recovery.dart';
+import 'password_recovery.dart';
 //import 'home_page_accesible.dart';
 
 /*const users =  {
@@ -24,7 +23,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -36,7 +34,6 @@ class _LoginPageState extends State<LoginPage> {
           child: SingleChildScrollView(
             child: Column(
             children: [
-              //_back(context),
               const SizedBox(height: 30),
               _header(context),
               const SizedBox(height: 50),
@@ -45,24 +42,12 @@ class _LoginPageState extends State<LoginPage> {
               _buttonLogin(context),
               const SizedBox(height: 20),
               _forgotPassword(context),
-              const SizedBox(height: 50),
+              const SizedBox(height: 30),
               _signup(context),
             ],
           ),
         ),
       ),),),
-    );
-  }
-
-  _back (context){
-    return AppBar(
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
     );
   }
 
@@ -92,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: _emailController,
               decoration: InputDecoration(
-                  hintText: "Nombre de usuario",
+                  hintText: "Nombre de usuario o Email",
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: BorderSide.none
@@ -101,13 +86,6 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              /*validator: (value) {
-              if (value == null || value.isEmpty) {
-                return  'Por favor, ingrese su nombre de usuario';
-              }
-              UserSession().username = value;
-              return null;
-              },*/
             ),
             const SizedBox(height: 15),
             TextFormField(
@@ -137,21 +115,21 @@ class _LoginPageState extends State<LoginPage> {
 
   _buttonLogin(context) {
     return SizedBox(
-        width: 250,
-        height: 60,
+        //width: 250,
+        width: double.infinity,
+        height: 55,
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          //despues de validar usuario y contraseña
-          //con el UserSession().username vas a buscar el dato del booleano
-          //y lo asignas en UserSession().userAccessibility
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+          //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
         }
       },
       style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(

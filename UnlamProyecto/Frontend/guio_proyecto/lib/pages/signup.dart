@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../other/user_session.dart';
 import 'login.dart';
+
+/*const users =  {
+  'admin@gmail.com': '12345',
+  'guioapp@gmail.com': 'guioapp',
+};*/
+
+
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -41,9 +47,7 @@ class _SignupPageState extends State<SignupPage>{
           margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
           child: SingleChildScrollView(
             child: Column(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                //_back(context),
                 const SizedBox(height: 30),
                 _headerSignUp(context),
                 const SizedBox(height: 30),
@@ -58,18 +62,6 @@ class _SignupPageState extends State<SignupPage>{
             ),
           ),
         ),),),
-    );
-  }
-
-  _back (context){
-    return AppBar(
-      backgroundColor: Colors.white,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.black),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
     );
   }
 
@@ -291,7 +283,7 @@ class _SignupPageState extends State<SignupPage>{
             activeColor: Colors.green,
             visualDensity: VisualDensity.compact,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            title: Text('Deseo tener por defecto activas las opciones de accesibilidad'),
+            title: const Text('Deseo tener por defecto activas las opciones de accesibilidad', style: TextStyle(fontSize: 14),),
             value: _isChecked,
             onChanged: (bool? value) {
               setState(() {
@@ -306,8 +298,8 @@ class _SignupPageState extends State<SignupPage>{
 
   _buttonSignup(BuildContext context) {
     return SizedBox(
-      width: 250,
-      height: 60,
+      width: double.infinity,
+      height: 55,
       child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState!.validate()) {
@@ -346,6 +338,7 @@ class _SignupPageState extends State<SignupPage>{
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+                              //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -366,8 +359,10 @@ class _SignupPageState extends State<SignupPage>{
           }
         },
         style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
         ),
         child: const Text(
@@ -385,7 +380,7 @@ class _SignupPageState extends State<SignupPage>{
         const Text("¿Ya tienes cuenta?"),
         TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()),);
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
             },
             child: const Text("Iniciar Sesión", style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),)
         )

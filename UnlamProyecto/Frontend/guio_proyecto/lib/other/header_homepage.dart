@@ -107,7 +107,7 @@ Widget headerTexto() {
   );
 }
 
-Future<void> _logout(BuildContext context) async {
+Future<void> _logout(context) async {
   // Se eliminan los datos de sesión del usuario
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('isLoggedIn');
