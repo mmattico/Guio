@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,7 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
+  String? nombreUsuario = UserSession().username;
 
 
   Future<void> enviarAlerta() async {
@@ -18,7 +20,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
 
     final payload = {
       'usuario':{
-        'usuarioID':'1'
+        'usuarioID': '1'//nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
       },
       'fecha': DateTime.now().toIso8601String(),
       'comentario': 'PRUEBA',

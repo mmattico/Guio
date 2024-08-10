@@ -124,20 +124,36 @@ class _HomePageState extends State<HomePage> {
     "assets/images/receptionist-bw.png"
   ];
 
+  double _customPaintHeight = 380;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          CustomPaint(
-            painter: BluePainter(),
-            child: Container(
-              height: 380,
+          // El CustomPaint se coloca en una posición fija
+          Positioned(
+            top: 0, // Ajusta según sea necesario
+            left: 0,
+            right: 0,
+            child: CustomPaint(
+              painter: BluePainter(),
+              child: Container(
+                height: _customPaintHeight,
+              ),
             ),
           ),
           SafeArea(
-            child: Padding(
+            child: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                setState(() {
+                  // Ajusta la altura del CustomPaint en función del desplazamiento vertical
+                  _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
+                });
+                return true;
+              },
+              child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
               child: SingleChildScrollView(
                 child: Column(
@@ -163,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     const SizedBox(height: 15),
                     _services(context),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 18),
                     _accesibilidad(context),
                     const SizedBox(height: 25),
                     Row(
@@ -179,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-          ),
+          ),),
         ],
       ),
     );
@@ -349,39 +365,40 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 10),
         GridView.count(
-          crossAxisCount: 3,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 5,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          children: List.generate(serviceTexts.length, (index) {
-            return InkWell(
-              onTap: serviceIsDisabled && selectedIconIndexService != index
-                  ? null
-                  : () => onIconPressedService(index),
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 80,
-                    width: 80,
-                    child: serviceIsDisabled && selectedIconIndexService != index
-                        ? Image.asset(serviceDisabled[index])
-                        : Image.asset(seriviceIcons[index]),
-                  ),
-                  const SizedBox(height: 3),
-                  Text(
-                    serviceTexts[index],
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: serviceIsDisabled && selectedIconIndexService != index
-                          ? Colors.grey
-                          : Colors.black,
+            crossAxisCount: 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 4,
+            childAspectRatio: 1/1.1,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            children: List.generate(serviceTexts.length, (index) {
+              return InkWell(
+                onTap: serviceIsDisabled && selectedIconIndexService != index
+                    ? null
+                    : () => onIconPressedService(index),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: serviceIsDisabled && selectedIconIndexService != index
+                          ? Image.asset(serviceDisabled[index])
+                          : Image.asset(seriviceIcons[index]),
                     ),
-                  ),
-                ],
-              ),
-            );
-          }),
+                    const SizedBox(height: 2),
+                    Text(
+                      serviceTexts[index],
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: serviceIsDisabled && selectedIconIndexService != index
+                            ? Colors.grey
+                            : Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
         ),
       ],
     );
@@ -405,6 +422,7 @@ class _HomePageState extends State<HomePage> {
           crossAxisCount: 3,
           crossAxisSpacing: 10,
           mainAxisSpacing: 5,
+          childAspectRatio: 1/1.1,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children:

@@ -31,16 +31,11 @@ Widget header(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      const Text('         '),
-      const Image(
-        image: AssetImage("assets/images/logo_GUIO.png"),
-        width: 100,
-      ),
       PopupMenuButton<String>(
         icon: const Icon(
           Icons.account_circle,
           color: Colors.white,
-          size: 40,
+          size: 35,
         ),
         color: Colors.white,
         offset: const Offset(-10, 60),
@@ -48,7 +43,7 @@ Widget header(BuildContext context) {
           if (value == '1') {
             // Ir a la página de "Mi cuenta"
           } else if (value == '2') {
-            _logout(context);
+            //Navigator.push(context, MaterialPageRoute(builder: (context) => const ()),); Change password
           }
         },
         itemBuilder: (BuildContext context) => [
@@ -66,14 +61,24 @@ Widget header(BuildContext context) {
               value: '2',
               child: Row(
                 children: [
-                  Icon(Icons.logout, color: Colors.black,),
+                  Icon(Icons.password, color: Colors.black,),
                   SizedBox(width: 20,),
-                  Text('Cerrar Sesión'),
+                  Text('Cambiar Contraseña'),
                 ],
               )
           ),
         ],
       ),
+      const Image(
+        image: AssetImage("assets/images/logo_GUIO.png"),
+        width: 100,
+      ),
+      IconButton(
+        icon: const Icon(Icons.logout, color: Colors.white, size: 30,),
+        onPressed: () {
+          _logout(context);
+        },
+      )
     ],
   );
 }
