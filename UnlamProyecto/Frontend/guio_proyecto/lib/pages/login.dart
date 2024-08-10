@@ -101,13 +101,13 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
-              validator: (value) {
+              /*validator: (value) {
               if (value == null || value.isEmpty) {
                 return  'Por favor, ingrese su nombre de usuario';
               }
               UserSession().username = value;
               return null;
-              },
+              },*/
             ),
             const SizedBox(height: 15),
             TextFormField(
@@ -122,12 +122,12 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIcon: const Icon(Icons.password),
               ),
               obscureText: true,
-              validator: (value) {
+              /*validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su contraseña';
                 }
                 return null;
-              },
+              },*/
             ),
           ],
         )
