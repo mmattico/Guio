@@ -69,12 +69,12 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
             child: Column(
               children: <Widget>[
                 SizedBox(
-                  width: 180,
-                  height: 40,
+                  width: 220,
+                  height: 70,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                     ),
                     onPressed: () async {
@@ -89,8 +89,8 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                             content: const Text('¿Confirma que la emergencia fue solucionada?'),
                             actions: <Widget>[
                               SizedBox(
-                                width: 60,
-                                height: 40,
+                                width: 95,
+                                height: 60,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     shape: const StadiumBorder(),
@@ -100,14 +100,14 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                                   onPressed: () {
                                     Navigator.of(context).pop(true);
                                   },
-                                  child: const Text('Sí', style: TextStyle(color: Colors.white),),
+                                  child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop(false);
                                 },
-                                child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),),
+                                child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
                               ),
                             ],
                           );
@@ -122,7 +122,7 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Emergencia Solucionada', style: TextStyle(color: Colors.white,),
+                    child: const Text('Emergencia\nSolucionada', style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),),
                 SizedBox(height: 10,),
@@ -142,7 +142,7 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                           content: const Text('¿Está seguro que desea cancelar?'),
                           actions: <Widget>[
                             SizedBox(
-                              width: 85,
+                              width: 95,
                               height: 60,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
@@ -154,14 +154,14 @@ Future<void> emergencyPopUp(BuildContext context, int alertaId) {
                                   Navigator.of(context).pop(true);
 
                                 },
-                                child: const Text('Sí', style: TextStyle(color: Colors.white),),
+                                child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
                               ),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),),
+                              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
                             ),
                           ],
                         );
