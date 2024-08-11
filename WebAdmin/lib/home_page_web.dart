@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class HomePageWeb extends StatefulWidget {
-  final List<Ticket> tickets;
+  List<Ticket> tickets;
   final void Function(Ticket) onOpenTicketDetails;
   final void Function(Ticket, String) onStatusChanged;
   int cantidadAlertas = 0;
-  int cantidadAlertasActz = 0;
+
 
   HomePageWeb({
     required this.tickets,
@@ -25,6 +25,8 @@ class HomePageWeb extends StatefulWidget {
 class _HomePageWebState extends State<HomePageWeb> {
   late List<Ticket> _filteredTickets;
   late TextEditingController _searchController;
+  late int cantidadAlertasPrev = 0;
+  late int cantidadAlertasNuevas = 0;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _HomePageWebState extends State<HomePageWeb> {
     _filteredTickets = widget.tickets;
     _searchController = TextEditingController();
     _searchController.addListener(_filterTickets);
+    cantidadAlertasPrev = widget.cantidadAlertas;
   }
 
   void dispose() {
@@ -54,11 +57,29 @@ class _HomePageWebState extends State<HomePageWeb> {
         ticket.estado = newStatus;
         widget.onStatusChanged(ticket, newStatus);
       });
-
       updateTicketStatus(ticket.id, newStatus);
 
     } catch (e) {
       print('Error al actualizar el estado: $e');
+    }
+  }
+
+  late List<Ticket> oldTickets;
+
+  Future<void> _refreshAlertas() async {
+    try {
+      List<Ticket> nuevasAlertas = await fetchAlertas('PRUEBA');
+      setState(() {
+        oldTickets = _filteredTickets;
+        cantidadAlertasNuevas = nuevasAlertas.length;
+        setState(() {
+          _filteredTickets = nuevasAlertas;
+          cantidadAlertasPrev = oldTickets.length;
+        });
+
+      });
+    } catch (e) {
+      print('Error al actualizar alertas: $e');
     }
   }
 
@@ -70,6 +91,7 @@ class _HomePageWebState extends State<HomePageWeb> {
           Row(
             children: [
               const Spacer(),
+              Text('Cantidad Alertas (previa): $cantidadAlertasPrev'),
               //boton de refresh
               IconButton(
                 icon: Icon(Icons.refresh),
@@ -77,10 +99,11 @@ class _HomePageWebState extends State<HomePageWeb> {
                 color: Color.fromRGBO(17, 116, 186, 1),
                 tooltip: 'Actualizar listado de alertas',
                 onPressed: () async {
-                  await fetchAlertas('PRUEBA');
-                  print('Alertas actualizadas');
+                  await _refreshAlertas();
                 },
               ),
+              Text('Cantidad Alertas (actual): $cantidadAlertasNuevas'),
+
               Flexible(child: SizedBox(
                   width: 500,
                   child: TextField(
@@ -98,12 +121,13 @@ class _HomePageWebState extends State<HomePageWeb> {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
-              columns: [
-                const DataColumn(label: Text('N° Ticket')),
-                const DataColumn(label: Text('Fecha y Hora')),
-                const DataColumn(label: Text('Ubicacion')),
-                const DataColumn(label: Text('Estado')),
-                const DataColumn(label: Text('Comentarios')),
+              columns: const [
+                DataColumn(label: Text('N° Ticket')),
+                DataColumn(label: Text('Fecha y Hora')),
+                DataColumn(label: Text('Apellido y Nombre')),
+                DataColumn(label: Text('Ubicacion')),
+                DataColumn(label: Text('Estado')),
+                DataColumn(label: Text('Comentarios')),
               ],
               rows: _filteredTickets.map((ticket) => DataRow(
                 cells: [
@@ -130,6 +154,7 @@ class _HomePageWebState extends State<HomePageWeb> {
                     ),
                   ),
                   DataCell(Text('${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}')),
+                  DataCell(Text(ticket.apellido)),
                   DataCell(Text(ticket.areaEmergencia)),
                   DataCell(
                     DropdownButton<String>(
