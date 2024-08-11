@@ -31,7 +31,9 @@ public class AlertaController {
     }
 
     @PutMapping("/{id}/estado")
-    public ResponseEntity<AlertaDAO> updateAlertaEstado(@PathVariable Integer id, @RequestBody String estadoNuevo) {
+    public ResponseEntity<AlertaDAO> updateAlertaEstado(@PathVariable Integer id,
+                                                        @RequestParam(value = "COMENTARIO", required = false) String comentario,
+                                                        @RequestBody String estadoNuevo) {
         Optional<AlertaDAO> alertaOpt = alertaService.getAlertaById(id.longValue());
         if (!alertaOpt.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -39,6 +41,9 @@ public class AlertaController {
 
         AlertaDAO alerta = alertaOpt.get();
         alerta.setEstado(estadoNuevo);
+        if(comentario!=null) {
+            alerta.setComentario(comentario);
+        }
         AlertaDAO updatedAlerta = alertaService.save(alerta);
 
         return ResponseEntity.ok(updatedAlerta);
