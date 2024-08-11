@@ -269,12 +269,8 @@ class _NavigationState extends State<Navigation> {
         await Future.delayed(const Duration(seconds: 6));
         setState(() {
           if(i > 0) {
-            if (instrucciones[i].haygiro ?? false) {
-              _angle = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
-              Vibration.vibrate();
-            } else if (instrucciones[i].sentidoDestino != '') {
-              _angle = _mapSentidoConSentidoDestinoAImagen(
-                  instrucciones[i].sentidoOrigen ?? '');
+            if (instrucciones[i].sentidoDestino != '') {
+              _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
             }
           }
         });
