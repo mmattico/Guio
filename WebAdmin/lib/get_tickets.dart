@@ -36,6 +36,7 @@ class Ticket {
   final String apellido;
   final String telefono;
   final String dni;
+  final String nombre;
 
   Ticket({
     required this.id,
@@ -46,6 +47,7 @@ class Ticket {
     required this.apellido,
     required this.telefono,
     required this.dni,
+    required this.nombre
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
@@ -57,7 +59,8 @@ class Ticket {
       estado: json['estado']?.toString() ?? '',
       apellido: json['apellido']?.toString() ?? '',
       telefono: json['telefono']?.toString() ?? '',
-      dni: json['dni']?.toString() ?? ''
+      dni: json['dni']?.toString() ?? '',
+        nombre: json['nombre']?.toString() ?? ''
     );
   }
 

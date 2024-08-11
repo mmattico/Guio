@@ -45,7 +45,7 @@ class _TicketDetailsDialogState extends State<TicketDetailsDialog> {
         child: ListBody(
           children: [
             const Text('Datos del usuario:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-            Text('Apellido: ${_ticket.apellido} \nDNI: ${_ticket.dni} \nTelefono: ${_ticket.telefono}'),
+            Text('Apellido y nombre: ${_ticket.apellido} ${_ticket.nombre}\nDNI: ${_ticket.dni} \nTelefono: ${_ticket.telefono}'),
             //Text(widget.ticket.name),
             //Text(widget.ticket.numberPhone),
             const SizedBox(height: 20),

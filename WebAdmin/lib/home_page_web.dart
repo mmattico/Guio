@@ -65,6 +65,7 @@ class _HomePageWebState extends State<HomePageWeb> {
   }
 
   late List<Ticket> oldTickets;
+  int qtyAlertasNuevas = 0;
 
   Future<void> _refreshAlertas() async {
     try {
@@ -75,6 +76,7 @@ class _HomePageWebState extends State<HomePageWeb> {
         setState(() {
           _filteredTickets = nuevasAlertas;
           cantidadAlertasPrev = oldTickets.length;
+          qtyAlertasNuevas = cantidadAlertasNuevas - cantidadAlertasPrev;
         });
 
       });
@@ -85,36 +87,55 @@ class _HomePageWebState extends State<HomePageWeb> {
 
   @override
   Widget build(BuildContext context) {
+
     return SingleChildScrollView(
       child: Column(
         children: [
           Row(
             children: [
-              const Spacer(),
-              Text('Cantidad Alertas (previa): $cantidadAlertasPrev'),
+              const SizedBox(width: 450,),
+              Flexible(child: SizedBox(
+                width: 300,
+                child: TextField(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    labelText: 'Buscar por número de Ticket...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              ),
+              const SizedBox(width: 430,),
+              //Text('Cantidad Alertas (previa): $cantidadAlertasPrev'),
               //boton de refresh
               IconButton(
-                icon: Icon(Icons.refresh),
-                iconSize: 35.0,
-                color: Color.fromRGBO(17, 116, 186, 1),
+                icon: const Icon(Icons.refresh),
+                iconSize: 45.0,
+                color: const Color.fromRGBO(17, 116, 186, 1),
                 tooltip: 'Actualizar listado de alertas',
                 onPressed: () async {
                   await _refreshAlertas();
                 },
               ),
-              Text('Cantidad Alertas (actual): $cantidadAlertasNuevas'),
+              //Text('Cantidad Alertas (actual): $cantidadAlertasNuevas'),
+              const SizedBox(width: 10.0,),
+              Container(
+                child: qtyAlertasNuevas > 0
+                    ? Row(
+                        children: [
+                          const Icon(Icons.notification_add, color: Colors.red, size: 25,),
+                          Text('Hay alertas nuevas: $qtyAlertasNuevas', style: const TextStyle(color: Colors.red, fontSize: 16))
+                        ],
+                      )
+                    : const Row(
+                        children: [
+                          Icon(Icons.check, color: Colors.green, size: 25,),
+                          Text('No hay alertas nuevas', style: TextStyle(color: Colors.green, fontSize: 16),),
+                        ],
+                    )
+              ),
+              const SizedBox(width: 30),
 
-              Flexible(child: SizedBox(
-                  width: 500,
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: const InputDecoration(
-                      labelText: 'Buscar por número de Ticket...',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
           const SizedBox(height: 20),
@@ -154,7 +175,7 @@ class _HomePageWebState extends State<HomePageWeb> {
                     ),
                   ),
                   DataCell(Text('${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}')),
-                  DataCell(Text(ticket.apellido)),
+                  DataCell(Text(ticket.apellido + ' ' + ticket.nombre)),
                   DataCell(Text(ticket.areaEmergencia)),
                   DataCell(
                     DropdownButton<String>(
