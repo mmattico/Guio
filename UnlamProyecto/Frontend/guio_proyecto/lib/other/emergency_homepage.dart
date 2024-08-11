@@ -14,10 +14,6 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
   String? nombreUsuario = UserSession().username;
 
-  int alertaId = 0;
-
-  List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
-
 
   Future<void> enviarAlerta() async {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
@@ -47,8 +43,6 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
-        alertaId = responseData['alertaID'];
-        print('alerta id : $alertaId');
       } else {
         // If the server did not return a 200 OK response,
         // throw an exception or handle it as needed
@@ -110,14 +104,12 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
-                      onPressed: areaEmergencia == null ? null : () async {
+                      onPressed: areaEmergencia == null ? null : () {
                         if (areaEmergencia != null) {
                           print('Área seleccionada: $areaEmergencia');
-                          print('alerta id en codigo $alertaId');
-                          await enviarAlerta();
                           Navigator.of(context).pop();
-                          emergencyPopUp(context, alertaId);
-                          print('alerta id en codigo $alertaId');
+                          emergencyPopUp(context);
+                          enviarAlerta();
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(

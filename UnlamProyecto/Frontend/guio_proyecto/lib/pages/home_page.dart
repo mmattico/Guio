@@ -132,8 +132,9 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          // El CustomPaint se coloca en una posición fija
           Positioned(
-            top: 0,
+            top: 0, // Ajusta según sea necesario
             left: 0,
             right: 0,
             child: CustomPaint(
