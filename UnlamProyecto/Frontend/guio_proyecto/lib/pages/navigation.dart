@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/model/instruccion_node.dart';
+import '../other/header_homepage.dart';
+import '../other/text_to_voice.dart';
 import 'home_page.dart';
 import '../other/emergency.dart';
 import 'package:http/http.dart' as http;
@@ -37,6 +39,7 @@ class _NavigationState extends State<Navigation> {
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
   double _customPaintHeight = 380;
+  String finalizarRecorrido = 'Desea finalizar el recorrido';
 
   void toggleSwitch(bool value) {
     setState(() {
@@ -44,35 +47,6 @@ class _NavigationState extends State<Navigation> {
     });
   }
 
-  /*Future<void> hablarTexto(String texto) async {
-    await tts.setLanguage('es-AR');
-    await tts.setPitch(1.0);
-    await tts.setSpeechRate(0.7);
-
-    String text = texto;
-    await tts.speak(texto);
-  }*/
-
-  Future<void> detenerReproduccion() async {
-    await tts.stop();
-  }
-
-  Future<void> hablarTexto(String texto) async {
-    if (isTtsInitialized) {
-      try {
-        await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
-        await tts.setPitch(1.0);
-        //await tts.setVolume(1.0);
-        //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
-        var result = await tts.speak(texto);
-        print("TTS Speak Result: $result");
-      } catch (e) {
-        print("Error: $e");
-      }
-    } else {
-      print("TTS not initialized");
-    }
-  }
 
   Future<void> _popupPrimerDestino(BuildContext context) async {
     return showDialog<void>(
@@ -115,34 +89,54 @@ class _NavigationState extends State<Navigation> {
   }
 
   Future<void> _cancelarNavegacion(BuildContext context) async {
+    // Lee en voz alta el título del AlertDialog
+    const String titulo = "¿Desea finalizar el recorrido?";
+
+    // Verifica si la asistencia por voz está habilitada
+    if (selectedVoiceAssistance) {
+      await speak(titulo);
+    }
+
+    // Espera hasta que el TTS termine de hablar antes de mostrar el AlertDialog
     final respuesta = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: const Text('¿Desea finalizar el recorrido?', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          title: const Text(
+            titulo,
+            style: TextStyle(fontSize: 25),
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             SizedBox(
               width: 95,
               height: 60,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                ),
+                child: const Text(
+                  'Sí',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
-              child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
-            ),),
+            ),
             TextButton(
               onPressed: () {
-                _botonCancelarRecorrido = ! _botonCancelarRecorrido;
+                _botonCancelarRecorrido = !_botonCancelarRecorrido;
                 Navigator.of(context).pop(false);
               },
-              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18)),
+              child: const Text(
+                'No',
+                style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),
+              ),
             ),
           ],
         );
@@ -212,13 +206,13 @@ class _NavigationState extends State<Navigation> {
       for(int i=0; i<instrucciones.length; i++){
         while (_botonCancelarRecorrido) {
           await Future.delayed(const Duration(milliseconds: 100));
+          detenerReproduccion();
         }
 
         if (_cancelarRecorrido) {
           break;
         }
 
-        await Future.delayed(const Duration(seconds: 6));
         setState(() {
           _instruccion = instrucciones[i].instruccionToString();
         });
@@ -237,10 +231,9 @@ class _NavigationState extends State<Navigation> {
         if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
           await _popupPrimerDestino(context);
+        } else {
+          await Future.delayed(const Duration(seconds: 6));
         }
-
-
-
       }
 
       if(!_cancelarRecorrido){
@@ -268,7 +261,10 @@ class _NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     if(_instruccion != "" && selectedVoiceAssistance) {
       detenerReproduccion();
-      hablarTexto(_instruccion);
+      if(_instruccion == "Fin parte 1 del recorrido"){
+        _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
+      }
+      speak(_instruccion);
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -277,7 +273,7 @@ class _NavigationState extends State<Navigation> {
           : Stack(
             children: [
               Positioned(
-                top: 0, // Ajusta según sea necesario
+                top: 0,
                 left: 0,
                 right: 0,
                 child: CustomPaint(
@@ -432,43 +428,6 @@ String _mapSentidoAImagen(String sentido) {
   }
 }
 
-FlutterTts tts = FlutterTts();
-
-void detenerReproduccion() async {
-  await tts.stop();
-}
-
-void hablarTexto(String texto) async {
-  await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
-  await tts.setPitch(1.0);
-  await tts.setVolume(1.0);
-  //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
-  await tts.speak(texto);
-}
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
-}
-
 Widget header() {
   return const Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -494,4 +453,10 @@ Widget header() {
     ],
   );
 }
+
+
+
+
+
+
 
