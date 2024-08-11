@@ -7,6 +7,7 @@ public class Grafo {
 
     private Integer grafoID;
     private Set<Nodo> nodos = new HashSet<>();
+    private int norteGrado;
 
     public void addNode(Nodo nodeA) {
         nodos.add(nodeA);
@@ -26,5 +27,13 @@ public class Grafo {
 
     public void setGrafoID(Integer grafoID) {
         this.grafoID = grafoID;
+    }
+
+    public int getNorteGrado() {
+        return norteGrado;
+    }
+
+    public void setNorteGrado(int norteGrado) {
+        this.norteGrado = norteGrado;
     }
 }
