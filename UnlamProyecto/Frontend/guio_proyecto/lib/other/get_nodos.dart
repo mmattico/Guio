@@ -26,7 +26,7 @@ class Nodo {
   final int nodoId;
   final String nombre;
   final String tipo;
-  final String activo;
+  final bool activo;
 
   Nodo({
     required this.nodoId,
@@ -40,7 +40,7 @@ class Nodo {
         nodoId: json['nodoId'] ?? 000,
         nombre: json['nombre']?.toString() ?? '',
         tipo: json['tipo']?.toString() ?? '',
-        activo: json['activo']?.toString() ?? '',
+        activo: json['activo'],
     );
   }
 
