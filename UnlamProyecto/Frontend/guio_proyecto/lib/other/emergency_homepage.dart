@@ -194,7 +194,6 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
-  List<String> _nodosAreas = [];
 
   @override
   void initState() {
@@ -203,8 +202,6 @@ class _SearchWidgetState extends State<SearchWidget> {
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
-        _nodosAreas = getNodosAreas(_nodos);
-        print('Nodos Areas: $_nodosAreas');
       });
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
@@ -225,7 +222,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             onPressed: () async {
               final result = await showSearch<String>(
                 context: context,
-                delegate: CustomSearchDelegate(nodos: _nodosAreas),
+                delegate: CustomSearchDelegate(nodos: _nodos),
               );
               if (result != null) {
                 setState(() {

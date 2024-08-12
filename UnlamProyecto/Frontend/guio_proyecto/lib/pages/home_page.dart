@@ -120,7 +120,6 @@ class _HomePageState extends State<HomePage> {
 
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
-  List<String> _nodosAreas = [];
 
   @override
   void initState() {
@@ -129,11 +128,8 @@ class _HomePageState extends State<HomePage> {
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
-        _nodosAreas = getNodosAreas(_nodos);
-        print('Nodos Areas: $_nodosAreas');
       });
     }).catchError((error) {
-      // Manejo de errores
       print('Error al obtener nodos homepage: $error');
     });
   }
@@ -342,7 +338,7 @@ class _HomePageState extends State<HomePage> {
         final resultOrigin =
         await showSearch<String>(
           context: context,
-          delegate: CustomSearchDelegate(nodos: _nodosAreas),
+          delegate: CustomSearchDelegate(nodos: _nodos),
         );
         if (resultOrigin != null && resultOrigin.isNotEmpty) {
           setState(() {
@@ -366,7 +362,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () async {
         final result = await showSearch<String>(
           context: context,
-          delegate: CustomSearchDelegate(nodos: _nodosAreas),
+          delegate: CustomSearchDelegate(nodos: _nodos),
         );
         if (result != null &&
             result.isNotEmpty) {
