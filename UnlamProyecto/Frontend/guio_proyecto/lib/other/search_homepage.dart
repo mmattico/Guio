@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/get_nodos.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class CustomSearchDelegate extends SearchDelegate<String> {
-  // Definición de áreas
-  List<String> searchTerms = [
-    "Cardiología",
-    "Traumatología",
-    "Oftalmología",
-    "Clínica Médica",
-    "Obstetricia",
-    "Cirugía",
-    "Internaciones",
-    "Dermatología"
-  ];
+  final List<String>? nodos;
+
+  CustomSearchDelegate({required this.nodos});
 
   // Instancia de SpeechToText
   final stt.SpeechToText _speechToText = stt.SpeechToText();
@@ -68,9 +61,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     List<String> matchQuery = [];
-    for (var term in searchTerms) {
-      if (term.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(term);
+    for (var nodo in nodos!) {
+      if (nodo.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(nodo);
       }
     }
     return Container(
@@ -94,9 +87,9 @@ class CustomSearchDelegate extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     List<String> matchQuery = [];
-    for (var term in searchTerms) {
-      if (term.toLowerCase().contains(query.toLowerCase())) {
-        matchQuery.add(term);
+    for (var nodo in nodos!) {
+      if (nodo.toLowerCase().contains(query.toLowerCase())) {
+        matchQuery.add(nodo);
       }
     }
     return Container(
@@ -116,3 +109,4 @@ class CustomSearchDelegate extends SearchDelegate<String> {
     );
   }
 }
+
