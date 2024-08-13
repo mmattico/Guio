@@ -307,9 +307,9 @@ class _NavigationState extends State<Navigation> {
       });
 
       _imagenPath = 'assets/images/narrow-top.png';
+      resetStepCount();
       for(int i=0; i<instrucciones.length; i++){
         print("________Ciclo: $i");
-        resetStepCount();
         if(i > 0){
           if(instrucciones[i-1].distancia! > 0){
             setState(() {
@@ -319,6 +319,7 @@ class _NavigationState extends State<Navigation> {
             while (distanciaRecorrida < distanciaARecorrer) {
               await Future.delayed(Duration(milliseconds: 500));
             }
+            resetStepCount();
           }
         }
         setState(() {
