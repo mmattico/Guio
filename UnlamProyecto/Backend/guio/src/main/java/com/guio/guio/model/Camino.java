@@ -8,6 +8,7 @@ import java.util.Set;
 public class Camino {
 
     private List<Instruccion> instrucciones = new LinkedList<>();
+    int norteGrado = 0;
 
     public Camino(){
     }
@@ -33,5 +34,13 @@ public class Camino {
 
     public void setInstrucciones(List<Instruccion> instrucciones) {
         this.instrucciones = instrucciones;
+    }
+
+    public int getNorteGrado() {
+        return norteGrado;
+    }
+
+    public void setNorteGrado(int norteGrado) {
+        this.norteGrado = norteGrado;
     }
 }
