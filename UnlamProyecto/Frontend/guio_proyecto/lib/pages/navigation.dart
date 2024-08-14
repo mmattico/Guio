@@ -48,8 +48,10 @@ class _NavigationState extends State<Navigation> {
   bool _botonCancelarRecorrido = false;
   double _customPaintHeight = 380;
   String _finalizarRecorrido = 'Desea finalizar el recorrido';
+  String _recorridoFinalizado = 'Recorrido finalizado';
 
   bool _primerDestino = false;
+  String _llegadaDestino = 'Ha llegado a Destino';
 
   // Podometro
   String _pasosValue = '0';
@@ -178,6 +180,8 @@ class _NavigationState extends State<Navigation> {
       });
       detenerReproduccion();
       Vibration.cancel();
+
+      await speak(_recorridoFinalizado);
 
       Navigator.push(
         context,
@@ -330,7 +334,6 @@ class _NavigationState extends State<Navigation> {
         }
 
         if (_cancelarRecorrido) {
-          speak('Recorrido Finalizado');
           break;
         }
 
@@ -387,18 +390,16 @@ class _NavigationState extends State<Navigation> {
       _angle = 0;
       _norteGrado = 0;
 
-      if(!_cancelarRecorrido){
+      if (!_cancelarRecorrido) {
+        detenerReproduccion();
         _imagenPath = 'assets/images/arrived_2.png';
-
-        Image.asset(
-          _imagenPath,
-          width: 50,
-          height: 50,
-        );
-
-        _instruccion = 'Ha llegado a Destino';
+        _instruccion = _llegadaDestino;
+        speak(_instruccion);
         Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
       }
+
+
+
     } else {
       setState(() {
         _isLoading = false;
@@ -523,27 +524,33 @@ class _NavigationState extends State<Navigation> {
                         ),
                       ),
                       Center(
-                        child: SizedBox(
-                            width: 300.0,
-                            height: 300.0,
-                            child: Transform.rotate(
-                              angle: (_norteGrado + _angle - direccionMagnetometro) * math.pi / 180, // Rotar 45 grados
-                              child: Image.asset(_imagenPath,
-                                height: 280,),
+                        child: _instruccion == _llegadaDestino ? Column(
+                          children: [
+                            const SizedBox(height: 25,),
+                            Image.asset(
+                              _imagenPath,
+                              width: 230.0,
+                              height: 230.0,
                             )
+                          ],
+                        ): SizedBox(
+                                  width: 300.0,
+                                  height: 300.0,
+                                  child: Transform.rotate(
+                                    angle: (_norteGrado + _angle - direccionMagnetometro) * math.pi / 180, // Rotar 45 grados
+                                    child: Image.asset(_imagenPath,
+                                      height: 280,),
+                              )
                         )
                       ),
                       Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            const Text(
-                              'Instruccion:',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            const SizedBox(height: 10,),
                             SizedBox(
                               width: 300,
-                              height: 100,
+                              height: 120,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -561,7 +568,7 @@ class _NavigationState extends State<Navigation> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
