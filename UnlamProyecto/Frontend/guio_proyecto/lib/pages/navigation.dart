@@ -44,8 +44,6 @@ class _NavigationState extends State<Navigation> {
   double _angle = 0;
   int _norteGrado = 0;
 
-  FlutterTts tts = FlutterTts();
-  bool isTtsInitialized = false;
 
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
@@ -63,12 +61,6 @@ class _NavigationState extends State<Navigation> {
   // Magnetometro
   StreamSubscription<CompassEvent>? _compassSubscription;
   double direccionMagnetometro = 0;
-
-  void toggleSwitch(bool value) {
-    setState(() {
-      selectedVoiceAssistance = !selectedVoiceAssistance;
-    });
-  }
 
   Future<void> _popupPrimerDestino(BuildContext context) async {
     return showDialog<void>(
@@ -116,6 +108,7 @@ class _NavigationState extends State<Navigation> {
 
     // Verifica si la asistencia por voz está habilitada
     if (selectedVoiceAssistance) {
+      await detenerReproduccion();
       await speak(titulo);
     }
 
@@ -183,15 +176,14 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
-  Future<void> detenerReproduccion() async {
-    await tts.stop();
-  }
-
   @override
   void initState() {
     super.initState();
     _isLoading = true;
     requestPermisos();
+    if (selectedVoiceAssistance) {
+      speak("Asistencia por voz activada.");
+    }
     startListening();
     obtenerInstruccionesCamino();
   }
@@ -286,52 +278,42 @@ class _NavigationState extends State<Navigation> {
 
       subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) {
         setState(() {
-          if (_instruccionActual > 0) {
-            if (direccionMagnetometro - _angle > 15 ||
-                direccionMagnetometro - _angle < -15) {
-              _girando = true;
-              _instruccion = "Gira hasta que dejes de sentir vibraciones";
-              Vibration.vibrate();
-            } else {
-              _girando = false;
-              _instruccion = instrucciones[_instruccionActual].instruccionToString();
+          if (_cancelarRecorrido) {
+            _girando = false;
+            Vibration.cancel();
+          } else {
+            if (_instruccionActual > 0) {
+              if (direccionMagnetometro - _angle > 15 ||
+                  direccionMagnetometro - _angle < -15) {
+                _girando = true;
+                _instruccion = "Gira hasta que dejes de sentir vibraciones";
+                Vibration.vibrate();
+              } else {
+                _girando = false;
+                _instruccion = instrucciones[_instruccionActual].instruccionToString();
+              }
             }
           }
         });
       });
 
       subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) {
-        setState(() {
-          speak(_instruccion);
+        setState(() async {
+          if(_cancelarRecorrido){
+            await detenerReproduccion();
+          }else
+          if (selectedVoiceAssistance) {
+            detenerReproduccion();
+            speak(_instruccion);
+          } else {
+            detenerReproduccion();
+          }
         });
       });
 
       _imagenPath = 'assets/images/narrow-top.png';
       resetStepCount();
       for(int i=0; i<instrucciones.length; i++){
-        print("________Ciclo: $i");
-        if(i > 0){
-          if(instrucciones[i-1].distancia! > 0){
-            setState(() {
-              distanciaRecorrida = 0;
-              distanciaARecorrer = instrucciones[i - 1].distancia!;
-            });
-            while (distanciaRecorrida < distanciaARecorrer) {
-              await Future.delayed(Duration(milliseconds: 500));
-            }
-            resetStepCount();
-          }
-        }
-        setState(() {
-          if(i > 0) {
-            _instruccionActual = i;
-            if (instrucciones[i].sentidoDestino != '') {
-              _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
-            }
-          }
-        });
-        print("Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
-
         while (_botonCancelarRecorrido) {
           await Future.delayed(const Duration(milliseconds: 100));
           detenerReproduccion();
@@ -341,9 +323,48 @@ class _NavigationState extends State<Navigation> {
           break;
         }
 
+        if(i == 0){
+          Vibration.vibrate(duration: 1500);
+        }
+
+        print("________Ciclo: $i");
+
         if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
           await _popupPrimerDestino(context);
+        } else {
+          if (i > 0) {
+            if (instrucciones[i - 1].distancia! > 0) {
+              setState(() {
+                distanciaRecorrida = 0;
+                distanciaARecorrer = instrucciones[i - 1].distancia!;
+              });
+              while (distanciaRecorrida < distanciaARecorrer) {
+                await Future.delayed(Duration(milliseconds: 500));
+                if (_cancelarRecorrido) {
+                  break;
+                }
+              }
+              resetStepCount();
+            }
+          }
+          if (_cancelarRecorrido) {
+            break;
+          }
+          setState(() {
+            if (i > 0) {
+              _instruccionActual = i;
+              if (instrucciones[i].sentidoDestino != '') {
+                _angle = _mapSentidoConSentidoDestinoAImagen(
+                    instrucciones[i].sentidoOrigen ?? '');
+              }
+            }
+          });
+          print("Instruccion actual: ${instrucciones[_instruccionActual]
+              .instruccionToString()}");
+        }
+        if (_cancelarRecorrido) {
+          break;
         }
       }
       subscriptionInstruccion.cancel();
@@ -365,6 +386,8 @@ class _NavigationState extends State<Navigation> {
 
         _instruccion = 'Ha llegado a Destino';
         Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
+      } else {
+        detenerReproduccion();
       }
     } else {
       setState(() {
@@ -581,35 +604,6 @@ double _mapSentidoConSentidoDestinoAImagen(String sentidoDestino) {
       return 0;
     default:
       return 180;
-  }
-}
-
-FlutterTts tts = FlutterTts();
-
-void detenerReproduccion() async {
-  await tts.stop();
-}
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }
 
