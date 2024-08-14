@@ -44,13 +44,12 @@ class _NavigationState extends State<Navigation> {
   double _angle = 0;
   int _norteGrado = 0;
 
-  FlutterTts tts = FlutterTts();
-  bool isTtsInitialized = false;
-
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
   double _customPaintHeight = 380;
   String finalizarRecorrido = 'Desea finalizar el recorrido';
+
+  bool primerDestino = false;
 
   // Podometro
   String _pasosValue = '0';
@@ -64,10 +63,13 @@ class _NavigationState extends State<Navigation> {
   StreamSubscription<CompassEvent>? _compassSubscription;
   double direccionMagnetometro = 0;
 
-  void toggleSwitch(bool value) {
-    setState(() {
-      selectedVoiceAssistance = !selectedVoiceAssistance;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = true;
+    requestPermisos();
+    startListening();
+    obtenerInstruccionesCamino();
   }
 
   Future<void> _popupPrimerDestino(BuildContext context) async {
@@ -97,6 +99,7 @@ class _NavigationState extends State<Navigation> {
                         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: () {
+                        primerDestino = false;
                         Navigator.of(context).pop();
                       },
                     ),
@@ -181,19 +184,6 @@ class _NavigationState extends State<Navigation> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
-  }
-
-  Future<void> detenerReproduccion() async {
-    await tts.stop();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _isLoading = true;
-    requestPermisos();
-    startListening();
-    obtenerInstruccionesCamino();
   }
 
   Future<void> requestPermisos() async {
@@ -284,53 +274,49 @@ class _NavigationState extends State<Navigation> {
       instrucciones = responseData.instrucciones.toList();
       _norteGrado = responseData.norteGrado;
 
-      subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) {
+      subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) async {
+        while (primerDestino) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        };
         setState(() {
-          if (_instruccionActual > 0) {
-            if (direccionMagnetometro - _angle > 15 ||
-                direccionMagnetometro - _angle < -15) {
-              _girando = true;
-              _instruccion = "Gira hasta que dejes de sentir vibraciones";
-              Vibration.vibrate();
-            } else {
-              _girando = false;
-              _instruccion = instrucciones[_instruccionActual].instruccionToString();
+          if (_cancelarRecorrido) {
+            _girando = false;
+            Vibration.cancel();
+          } else {
+            if (_instruccionActual > 0) {
+              if (direccionMagnetometro - _angle > 15 ||
+                  direccionMagnetometro - _angle < -15) {
+                _girando = true;
+                _instruccion = "Gira hasta que dejes de sentir vibraciones";
+                Vibration.vibrate();
+              } else {
+                _girando = false;
+                _instruccion = instrucciones[_instruccionActual].instruccionToString();
+              }
             }
           }
         });
       });
 
-      subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) {
-        setState(() {
+      subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) async {
+        if (_cancelarRecorrido) {
+          detenerReproduccion();
+        } else if (selectedVoiceAssistance) {
+          while (primerDestino) {
+            await Future.delayed(const Duration(milliseconds: 100));
+          };
+          detenerReproduccion();
           speak(_instruccion);
-        });
+        }
       });
 
       _imagenPath = 'assets/images/narrow-top.png';
       resetStepCount();
       for(int i=0; i<instrucciones.length; i++){
-        print("________Ciclo: $i");
-        if(i > 0){
-          if(instrucciones[i-1].distancia! > 0){
-            setState(() {
-              distanciaRecorrida = 0;
-              distanciaARecorrer = instrucciones[i - 1].distancia!;
-            });
-            while (distanciaRecorrida < distanciaARecorrer) {
-              await Future.delayed(Duration(milliseconds: 500));
-            }
-            resetStepCount();
-          }
+        if(i == 0){
+          Vibration.vibrate(duration: 1500);
+          speak('Se ha iniciado el recorrido. El asistente de voz está activo.');
         }
-        setState(() {
-          if(i > 0) {
-            _instruccionActual = i;
-            if (instrucciones[i].sentidoDestino != '') {
-              _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
-            }
-          }
-        });
-        print("Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
 
         while (_botonCancelarRecorrido) {
           await Future.delayed(const Duration(milliseconds: 100));
@@ -341,9 +327,49 @@ class _NavigationState extends State<Navigation> {
           break;
         }
 
+        if(_instruccion != "" && selectedVoiceAssistance) {
+          detenerReproduccion();
+          speak(_instruccion);
+        }
+
+        print("________Ciclo: $i");
+
         if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
+          primerDestino = true;
+          if(_instruccion != "" && selectedVoiceAssistance) {
+            detenerReproduccion();
+            _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
+            speak(_instruccion);
+          }
           await _popupPrimerDestino(context);
+        } else {
+          if(i > 0){
+            if(instrucciones[i-1].distancia! > 0){
+              setState(() {
+                distanciaRecorrida = 0;
+                distanciaARecorrer = instrucciones[i - 1].distancia!;
+              });
+              while (distanciaRecorrida < distanciaARecorrer) {
+                await Future.delayed(Duration(milliseconds: 500));
+              }
+              resetStepCount();
+            }
+          }
+          setState(() {
+            if(i > 0) {
+              _instruccionActual = i;
+              if (instrucciones[i].sentidoDestino != '') {
+                _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
+              }
+            }
+          });
+          print("Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+        }
+
+        if(_instruccion != "" && selectedVoiceAssistance) {
+          detenerReproduccion();
+          speak(_instruccion);
         }
       }
       subscriptionInstruccion.cancel();
@@ -410,15 +436,11 @@ class _NavigationState extends State<Navigation> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
-    if(_instruccion != "" && selectedVoiceAssistance) {
-      detenerReproduccion();
-      if(_instruccion == "Fin parte 1 del recorrido"){
-        _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
-      }
-      speak(_instruccion);
-    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: _isLoading && _instruccion == ""
