@@ -47,9 +47,9 @@ class _NavigationState extends State<Navigation> {
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
   double _customPaintHeight = 380;
-  String finalizarRecorrido = 'Desea finalizar el recorrido';
+  String _finalizarRecorrido = 'Desea finalizar el recorrido';
 
-  bool primerDestino = false;
+  bool _primerDestino = false;
 
   // Podometro
   String _pasosValue = '0';
@@ -99,7 +99,7 @@ class _NavigationState extends State<Navigation> {
                         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: () {
-                        primerDestino = false;
+                        _primerDestino = false;
                         Navigator.of(context).pop();
                       },
                     ),
@@ -275,9 +275,12 @@ class _NavigationState extends State<Navigation> {
       _norteGrado = responseData.norteGrado;
 
       subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) async {
-        while (primerDestino) {
+        while (_primerDestino) {
           await Future.delayed(const Duration(milliseconds: 100));
         };
+        while(_botonCancelarRecorrido){
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
         setState(() {
           if (_cancelarRecorrido) {
             _girando = false;
@@ -299,15 +302,18 @@ class _NavigationState extends State<Navigation> {
       });
 
       subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) async {
-        if (_cancelarRecorrido) {
-          detenerReproduccion();
-        } else if (selectedVoiceAssistance) {
-          while (primerDestino) {
+          while (_primerDestino) {
             await Future.delayed(const Duration(milliseconds: 100));
           };
-          detenerReproduccion();
-          speak(_instruccion);
-        }
+          while(_botonCancelarRecorrido){
+            await Future.delayed(const Duration(milliseconds: 100));
+          }
+          if (_cancelarRecorrido) {
+            detenerReproduccion();
+          } else if (selectedVoiceAssistance) {
+            detenerReproduccion();
+            speak(_instruccion);
+          }
       });
 
       _imagenPath = 'assets/images/narrow-top.png';
@@ -324,6 +330,7 @@ class _NavigationState extends State<Navigation> {
         }
 
         if (_cancelarRecorrido) {
+          speak('Recorrido Finalizado');
           break;
         }
 
@@ -336,7 +343,7 @@ class _NavigationState extends State<Navigation> {
 
         if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
-          primerDestino = true;
+          _primerDestino = true;
           if(_instruccion != "" && selectedVoiceAssistance) {
             detenerReproduccion();
             _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
@@ -435,8 +442,6 @@ class _NavigationState extends State<Navigation> {
       _pasosValue = 'Error: $error';
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -603,35 +608,6 @@ double _mapSentidoConSentidoDestinoAImagen(String sentidoDestino) {
       return 0;
     default:
       return 180;
-  }
-}
-
-FlutterTts tts = FlutterTts();
-
-void detenerReproduccion() async {
-  await tts.stop();
-}
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
   }
 }
 
