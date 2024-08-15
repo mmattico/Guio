@@ -20,18 +20,8 @@ class _ChangePasswordState extends State<ChangePassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.fromLTRB(22,70,22,50),
         child: SingleChildScrollView(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,12 +101,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                     ),
                   ),
                   const SizedBox(height: 40.0),
-                  // Botón para restablecer la contraseña
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
                       onPressed: () {
+                        //aca hay que actualizar password en BD
                         Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
                       },
                       style: ElevatedButton.styleFrom(
@@ -131,6 +121,22 @@ class _ChangePasswordState extends State<ChangePassword> {
                         style: TextStyle(fontSize: 20, color: Colors.white),
                       ),),
                   ),
+                  SizedBox(height: 20,),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromRGBO(17, 116, 186, 1),
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
         ),),
       ),
