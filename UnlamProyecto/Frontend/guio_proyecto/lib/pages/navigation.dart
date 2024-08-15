@@ -1,11 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/model/instruccion_node.dart';
+import '../other/header_homepage.dart';
+import '../other/text_to_voice.dart';
 import 'home_page.dart';
 import '../other/emergency.dart';
 import 'package:http/http.dart' as http;
 import 'package:vibration/vibration.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:pedometer/pedometer.dart';
+import 'package:flutter_compass/flutter_compass.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:math' as math;
 
 class Navigation extends StatefulWidget {
   final String? selectedService;
@@ -28,50 +35,43 @@ class _NavigationState extends State<Navigation> {
   bool selectedVoiceAssistance = true;
   List<Instrucciones> instrucciones = [];
   String _instruccion = "";
+  int _instruccionActual = 0;
   bool _isLoading = false;
+  bool _girando = true;
   int distanciaARecorrer = 0;
   int distanciaRecorrida = 0;
   String _imagenPath = "";
-  FlutterTts tts = FlutterTts();
-  bool isTtsInitialized = false;
+  double _angle = 0;
+  int _norteGrado = 0;
+
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
   double _customPaintHeight = 380;
+  String _finalizarRecorrido = 'Desea finalizar el recorrido';
+  String _recorridoFinalizado = 'Recorrido finalizado';
 
-  void toggleSwitch(bool value) {
-    setState(() {
-      selectedVoiceAssistance = !selectedVoiceAssistance;
-    });
-  }
+  bool _primerDestino = false;
+  String _llegadaDestino = 'Ha llegado a Destino';
 
-  /*Future<void> hablarTexto(String texto) async {
-    await tts.setLanguage('es-AR');
-    await tts.setPitch(1.0);
-    await tts.setSpeechRate(0.7);
+  // Podometro
+  String _pasosValue = '0';
+  int _pasosIniciales = 0;
+  bool _primeraLectura = true; // Chequeo primera lectura de paso sino da el total del podometro
+  final double stepLength = 0.762; // Valor de paso promedio
+  Stream<StepCount>? _stepCountStream;
+  StreamSubscription<StepCount>? _stepCountSubscription;
 
-    String text = texto;
-    await tts.speak(texto);
-  }*/
+  // Magnetometro
+  StreamSubscription<CompassEvent>? _compassSubscription;
+  double direccionMagnetometro = 0;
 
-  Future<void> detenerReproduccion() async {
-    await tts.stop();
-  }
-
-  Future<void> hablarTexto(String texto) async {
-    if (isTtsInitialized) {
-      try {
-        await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
-        await tts.setPitch(1.0);
-        //await tts.setVolume(1.0);
-        //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
-        var result = await tts.speak(texto);
-        print("TTS Speak Result: $result");
-      } catch (e) {
-        print("Error: $e");
-      }
-    } else {
-      print("TTS not initialized");
-    }
+  @override
+  void initState() {
+    super.initState();
+    _isLoading = true;
+    requestPermisos();
+    startListening();
+    obtenerInstruccionesCamino();
   }
 
   Future<void> _popupPrimerDestino(BuildContext context) async {
@@ -101,6 +101,7 @@ class _NavigationState extends State<Navigation> {
                         backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: () {
+                        _primerDestino = false;
                         Navigator.of(context).pop();
                       },
                     ),
@@ -115,34 +116,54 @@ class _NavigationState extends State<Navigation> {
   }
 
   Future<void> _cancelarNavegacion(BuildContext context) async {
+    // Lee en voz alta el título del AlertDialog
+    const String titulo = "¿Desea finalizar el recorrido?";
+
+    // Verifica si la asistencia por voz está habilitada
+    if (selectedVoiceAssistance) {
+      await speak(titulo);
+    }
+
+    // Espera hasta que el TTS termine de hablar antes de mostrar el AlertDialog
     final respuesta = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: const Text('¿Desea finalizar el recorrido?', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          title: const Text(
+            titulo,
+            style: TextStyle(fontSize: 25),
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             SizedBox(
               width: 95,
               height: 60,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: const StadiumBorder(),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                ),
+                child: const Text(
+                  'Sí',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
-              child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
-            ),),
+            ),
             TextButton(
               onPressed: () {
-                _botonCancelarRecorrido = ! _botonCancelarRecorrido;
+                _botonCancelarRecorrido = !_botonCancelarRecorrido;
                 Navigator.of(context).pop(false);
               },
-              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18)),
+              child: const Text(
+                'No',
+                style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),
+              ),
             ),
           ],
         );
@@ -160,6 +181,8 @@ class _NavigationState extends State<Navigation> {
       detenerReproduccion();
       Vibration.cancel();
 
+      await speak(_recorridoFinalizado);
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -167,16 +190,57 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _isLoading = true;
-    obtenerInstruccionesCamino();
+  Future<void> requestPermisos() async {
+    var status = await Permission.activityRecognition.status;
+    if (status.isDenied) {
+      if (await Permission.activityRecognition.request().isGranted) {
+        initPodometro();
+      }
+    } else {
+      initPodometro();
+    }
   }
+
+  // Inicio podometro
+  void initPodometro() {
+    if (_stepCountSubscription != null) {
+      _stepCountSubscription!.cancel();
+    }
+    _stepCountStream = Pedometer.stepCountStream;
+    _stepCountSubscription = _stepCountStream!.listen(onStepCount, onError: onStepCountError, cancelOnError: false);
+  }
+  void resetStepCount() {
+    setState(() {
+      _primeraLectura=true;
+      _pasosIniciales = int.tryParse(_pasosValue) ?? 0;
+      _pasosValue = '0';
+    });
+  }
+  @override
+  void dispose() {
+    _stepCountSubscription?.cancel();
+    super.dispose();
+  }
+  // Fin podometro
+
+  // Inicio magnetometro
+  void startListening() {
+    _compassSubscription = FlutterCompass.events!.listen((CompassEvent event) {
+      setState(() {
+        direccionMagnetometro = event.heading ?? 0;
+      });
+    });
+  }
+
+  // Detiene la suscripción al magnetómetro
+  void stopListening() {
+    _compassSubscription?.cancel();
+  }
+  // Fin magnetometro
 
   Future<void> obtenerInstruccionesCamino() async {
     //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': widget.selectedOrigin, 'DESTINO': widget.selectedArea});
-    //var url = Uri.http('localhost:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
+    //var url = Uri.http('192.168.0.11:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     var url;
     if(widget.selectedService!.isEmpty){
@@ -205,56 +269,137 @@ class _NavigationState extends State<Navigation> {
     print(widget.selectedArea);
     final response = await http.get(url);
     if (response.statusCode == 200) {
-            _isLoading = false;
+      _isLoading = false;
       print(json.decode(response.body));
       var responseData = Autogenerated.fromJson(json.decode(response.body) as Map<String, dynamic>);
+      late StreamSubscription? subscriptionInstruccion;
+      late StreamSubscription? subscriptionTts;
+
       instrucciones = responseData.instrucciones.toList();
+      _norteGrado = responseData.norteGrado;
+
+      subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) async {
+        while (_primerDestino) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        };
+        while(_botonCancelarRecorrido){
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+        setState(() {
+          if (_cancelarRecorrido) {
+            _girando = false;
+            Vibration.cancel();
+          } else {
+            if (_instruccionActual > 0) {
+              if (direccionMagnetometro - _angle > 15 ||
+                  direccionMagnetometro - _angle < -15) {
+                _girando = true;
+                _instruccion = "Gira hasta que dejes de sentir vibraciones";
+                Vibration.vibrate();
+              } else {
+                _girando = false;
+                _instruccion = instrucciones[_instruccionActual].instruccionToString();
+              }
+            }
+          }
+        });
+      });
+
+      subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) async {
+          while (_primerDestino) {
+            await Future.delayed(const Duration(milliseconds: 100));
+          };
+          while(_botonCancelarRecorrido){
+            await Future.delayed(const Duration(milliseconds: 100));
+          }
+          if (_cancelarRecorrido) {
+            detenerReproduccion();
+          } else if (selectedVoiceAssistance) {
+            detenerReproduccion();
+            speak(_instruccion);
+          }
+      });
+
+      _imagenPath = 'assets/images/narrow-top.png';
+      resetStepCount();
       for(int i=0; i<instrucciones.length; i++){
+        if(i == 0){
+          Vibration.vibrate(duration: 1500);
+          speak('Se ha iniciado el recorrido. El asistente de voz está activo.');
+        }
+
         while (_botonCancelarRecorrido) {
           await Future.delayed(const Duration(milliseconds: 100));
+          detenerReproduccion();
         }
 
         if (_cancelarRecorrido) {
           break;
         }
 
-        await Future.delayed(const Duration(seconds: 6));
-        setState(() {
-          _instruccion = instrucciones[i].instruccionToString();
-        });
-
-        if(i == 0){
-          Vibration.vibrate(duration: 1500);
+        if(_instruccion != "" && selectedVoiceAssistance) {
+          detenerReproduccion();
+          speak(_instruccion);
         }
 
-        if(instrucciones[i].haygiro ?? false){
-          _imagenPath = _mapSentidoAImagen(instrucciones[i].sentido ?? '');
-          Vibration.vibrate();
-        } else {
-          _imagenPath = 'assets/images/narrow-top.png';
-        }
+        print("________Ciclo: $i");
 
         if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
+          _primerDestino = true;
+          if(_instruccion != "" && selectedVoiceAssistance) {
+            detenerReproduccion();
+            _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
+            speak(_instruccion);
+          }
           await _popupPrimerDestino(context);
+        } else {
+          if(i > 0){
+            if(instrucciones[i-1].distancia! > 0){
+              setState(() {
+                distanciaRecorrida = 0;
+                distanciaARecorrer = instrucciones[i - 1].distancia!;
+              });
+              while (distanciaRecorrida < distanciaARecorrer) {
+                await Future.delayed(Duration(milliseconds: 500));
+              }
+              resetStepCount();
+            }
+          }
+          setState(() {
+            if(i > 0) {
+              _instruccionActual = i;
+              if (instrucciones[i].sentidoDestino != '') {
+                _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
+              }
+            }
+          });
+          print("Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
         }
 
-
-
+        if(_instruccion != "" && selectedVoiceAssistance) {
+          detenerReproduccion();
+          speak(_instruccion);
+        }
       }
+      subscriptionInstruccion.cancel();
+      subscriptionTts.cancel();
+      stopListening();
 
-      if(!_cancelarRecorrido){
+      direccionMagnetometro = 0;
+      _angle = 0;
+      _norteGrado = 0;
+
+      if (!_cancelarRecorrido) {
+        detenerReproduccion();
         _imagenPath = 'assets/images/arrived_2.png';
-
-        Image.asset(
-          _imagenPath,
-          width: 50,
-          height: 50,
-        );
-
-        _instruccion = 'Ha llegado a Destino';
+        _instruccion = _llegadaDestino;
+        speak(_instruccion);
         Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
       }
+
+
+
     } else {
       setState(() {
         _isLoading = false;
@@ -264,12 +409,44 @@ class _NavigationState extends State<Navigation> {
     }
   }
 
+  void onStepCount(StepCount event) {
+    if(!_girando) {
+      int pasosActuales = event.steps;
+      if (_primeraLectura) { //seteo de primer lectura
+        setState(() {
+          _pasosIniciales = pasosActuales;
+          _pasosValue = '0';
+          _primeraLectura = false;
+          distanciaRecorrida = 0;
+        });
+      } else {
+        // Calcula pasos despues de la primer lectura cuando no esta girando
+        setState(() {
+          if(distanciaRecorrida < distanciaARecorrer) {
+            int pasosReales = pasosActuales - _pasosIniciales;
+            _pasosValue = pasosReales.toString();
+            distanciaRecorrida = (pasosReales.toDouble() * stepLength).toInt(); // Actualiza distancia recorrida
+          } else {
+            distanciaRecorrida = distanciaARecorrer;
+          }
+        });
+      }
+      print("DistanciaRecorrida $distanciaRecorrida  ---  DistanciaARecorrer: $distanciaARecorrer");
+    } else {
+      print("El paso no fue contabilizado, apunta hacia la flecha");
+    }
+  }
+
+  void onStepCountError(error) {
+    print('onStepCountError: $error');
+    setState(() {
+      _pasosValue = 'Error: $error';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if(_instruccion != "" && selectedVoiceAssistance) {
-      detenerReproduccion();
-      hablarTexto(_instruccion);
-    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: _isLoading && _instruccion == ""
@@ -277,7 +454,7 @@ class _NavigationState extends State<Navigation> {
           : Stack(
             children: [
               Positioned(
-                top: 0, // Ajusta según sea necesario
+                top: 0,
                 left: 0,
                 right: 0,
                 child: CustomPaint(
@@ -347,24 +524,33 @@ class _NavigationState extends State<Navigation> {
                         ),
                       ),
                       Center(
-                        child: SizedBox(
-                            width: 300.0,
-                            height: 300.0,
-                          child: Image.asset(_imagenPath,
-                            height: 280,),
+                        child: _instruccion == _llegadaDestino ? Column(
+                          children: [
+                            const SizedBox(height: 25,),
+                            Image.asset(
+                              _imagenPath,
+                              width: 230.0,
+                              height: 230.0,
+                            )
+                          ],
+                        ): SizedBox(
+                                  width: 300.0,
+                                  height: 300.0,
+                                  child: Transform.rotate(
+                                    angle: (_norteGrado + _angle - direccionMagnetometro) * math.pi / 180, // Rotar 45 grados
+                                    child: Image.asset(_imagenPath,
+                                      height: 280,),
+                              )
                         )
                       ),
                       Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            const Text(
-                              'Instruccion:',
-                              style: TextStyle(fontSize: 20),
-                            ),
+                            const SizedBox(height: 10,),
                             SizedBox(
                               width: 300,
-                              height: 100,
+                              height: 120,
                               child: Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -382,7 +568,7 @@ class _NavigationState extends State<Navigation> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 15),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -419,53 +605,16 @@ class _NavigationState extends State<Navigation> {
   }
 }
 
-String _mapSentidoAImagen(String sentido) {
-  switch (sentido) {
-    case 'Izquierda':
-      return 'assets/images/narrow-left.png';
-    case 'Derecha':
-      return 'assets/images/narrow-right.png';
-    case 'Regresar':
-      return 'assets/images/narrow-down.png';
+double _mapSentidoConSentidoDestinoAImagen(String sentidoDestino) {
+  switch (sentidoDestino) {
+    case 'E':
+      return -90;
+    case 'O':
+      return 90;
+    case 'S':
+      return 0;
     default:
-      return 'assets/images/narrow-top.png';
-  }
-}
-
-FlutterTts tts = FlutterTts();
-
-void detenerReproduccion() async {
-  await tts.stop();
-}
-
-void hablarTexto(String texto) async {
-  await tts.setLanguage("es-AR"); // Configura el idioma español (Argentina)
-  await tts.setPitch(1.0);
-  await tts.setVolume(1.0);
-  //await tts.setSpeechRate(1.0); // Descomentado para controlar la velocidad de habla si es necesario
-  await tts.speak(texto);
-}
-
-class BluePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = const Color.fromRGBO(137, 182, 235, 1)
-      ..style = PaintingStyle.fill;
-
-    Path path = Path()
-      ..moveTo(0, 0)
-      ..lineTo(size.width, 0)
-      ..lineTo(size.width, size.height * 0.80)
-      ..quadraticBezierTo(size.width * 0.5, size.height, 0, size.height * 0.80)
-      ..close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+      return 180;
   }
 }
 
@@ -494,4 +643,3 @@ Widget header() {
     ],
   );
 }
-

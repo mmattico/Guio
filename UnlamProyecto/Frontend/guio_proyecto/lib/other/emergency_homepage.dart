@@ -3,7 +3,9 @@ import 'package:guio_proyecto/other/user_session.dart';
 import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';  // For jsonEncode
+import 'dart:convert';
+
+import 'get_nodos.dart';  // For jsonEncode
 
 class AreaSelectionDialog extends StatefulWidget {
   @override
@@ -190,22 +192,55 @@ class SearchWidget extends StatefulWidget {
 class _SearchWidgetState extends State<SearchWidget> {
   String buttonText = 'Buscar Área';
 
+  late Future<List<Nodo>> futureNodos;
+  List<Nodo> _nodos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    futureNodos = fetchNodos();
+    futureNodos.then((nodos) {
+      setState(() {
+        _nodos = nodos;
+      });
+    }).catchError((error) {
+      print('Error al obtener nodos homepage: $error');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () async {
-        final result = await showSearch(
-          context: context,
-          delegate: CustomSearchDelegate(),
-        );
-        if (result != null) {
-          setState(() {
-            buttonText = result;
-          });
-          widget.onAreaSelected(result);
+    return FutureBuilder(
+      future: futureNodos,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return TextButton(
+            onPressed: () async {
+              final result = await showSearch<String>(
+                context: context,
+                delegate: CustomSearchDelegate(nodos: _nodos),
+              );
+              if (result != null) {
+                setState(() {
+                  buttonText = result;
+                });
+                widget.onAreaSelected(result);
+              }
+            },
+            child: Text(
+              buttonText,
+              style: const TextStyle(
+                fontSize: 18,
+                color: Color.fromRGBO(17, 116, 186, 1),
+              ),
+            ),
+          );
         }
       },
-      child: Text(buttonText, style: const TextStyle(fontSize: 18, color: Color.fromRGBO(17, 116, 186, 1),),),
     );
   }
 }

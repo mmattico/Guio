@@ -5,8 +5,10 @@ import 'package:flutter/services.dart';
 import '../other/search_homepage.dart';
 import '/other/header_homepage.dart';
 import '../other/emergency_homepage.dart';
+import '../other/get_nodos.dart';
 
 class HomePage extends StatefulWidget {
+
   const HomePage({super.key});
 
   @override
@@ -101,15 +103,6 @@ class _HomePageState extends State<HomePage> {
     "assets/images/thumbs-up-bw.png"
   ];
 
-  List<String> areaTexts = [
-    'Cardiología',
-    'Neurología',
-    'Dermatología',
-    'Pediatría',
-    'Clinica Medica',
-    'Ginecología'
-  ];
-
   List<String> serviceTexts = ['Baño', 'Snack', 'Ventanilla'];
 
   List<String> seriviceIcons = [
@@ -126,78 +119,111 @@ class _HomePageState extends State<HomePage> {
 
   double _customPaintHeight = 380;
 
+  late Future<List<Nodo>> futureNodos;
+  List<Nodo> _nodos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    futureNodos = fetchNodos();
+    futureNodos.then((nodos) {
+      setState(() {
+        _nodos = nodos;
+      });
+    }).catchError((error) {
+      print('Error al obtener nodos homepage: $error');
+    });
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: CustomPaint(
-              painter: BluePainter(),
-              child: Container(
-                height: _customPaintHeight,
-              ),
-            ),
-          ),
-          SafeArea(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                setState(() {
-                  _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
-                });
-                return true;
-              },
-              child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    header(context),
-                    const SizedBox(height: 10),
-                    headerTexto(),
-                    const SizedBox(height: 20),
-                    _fromTo(context),
-                    const SizedBox(height: 4),
-                    if ((selectedArea == selectedOrigin) &&
-                        (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Text(
-                          'El lugar de origen y destino deben ser diferentes',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+      body: FutureBuilder<List<Nodo>>(
+        future: futureNodos,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No hay nodos disponibles'));
+          } else {
+            return Stack(
+              children: [
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: CustomPaint(
+                    painter: BluePainter(),
+                    child: Container(
+                      height: _customPaintHeight,
+                    ),
+                  ),
+                ),
+                SafeArea(
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (scrollInfo) {
+                      setState(() {
+                        _customPaintHeight = (380 - scrollInfo.metrics.pixels)
+                            .clamp(0.0, 380.0);
+                      });
+                      return true;
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 25, 16, 12),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            header(context),
+                            const SizedBox(height: 10),
+                            headerTexto(),
+                            const SizedBox(height: 20),
+                            _fromTo(context),
+                            const SizedBox(height: 4),
+                            if ((selectedArea == selectedOrigin) &&
+                                (selectedArea.isNotEmpty || selectedOrigin.isNotEmpty))
+                              const Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Text(
+                                  'El lugar de origen y destino deben ser diferentes',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 15),
+                            _services(context),
+                            const SizedBox(height: 18),
+                            _accesibilidad(context),
+                            const SizedBox(height: 25),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                _button(context),
+                                const SizedBox(width: 10),
+                                emergencyButtonHome(context),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                    const SizedBox(height: 15),
-                    _services(context),
-                    const SizedBox(height: 18),
-                    _accesibilidad(context),
-                    const SizedBox(height: 25),
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                        _button(context),
-                        const SizedBox(width: 10,),
-                        emergencyButtonHome(context),
-                      ],
-                    )
-                  ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),),
-        ],
+              ],
+            );
+          }
+        },
       ),
     );
   }
+
 
   //Tarjetas de origen y destino
   _fromTo(context){
@@ -313,7 +339,7 @@ class _HomePageState extends State<HomePage> {
         final resultOrigin =
         await showSearch<String>(
           context: context,
-          delegate: CustomSearchDelegate(),
+          delegate: CustomSearchDelegate(nodos: _nodos),
         );
         if (resultOrigin != null && resultOrigin.isNotEmpty) {
           setState(() {
@@ -337,7 +363,7 @@ class _HomePageState extends State<HomePage> {
       onPressed: () async {
         final result = await showSearch<String>(
           context: context,
-          delegate: CustomSearchDelegate(),
+          delegate: CustomSearchDelegate(nodos: _nodos),
         );
         if (result != null &&
             result.isNotEmpty) {

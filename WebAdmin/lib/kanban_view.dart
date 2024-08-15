@@ -12,7 +12,8 @@ class KanbanView extends StatelessWidget {
     Map<String, List<Ticket>> groupedTickets = {
       'ABIERTO': tickets.where((ticket) => ticket.estado == 'pendiente').toList(),
       'EN CURSO': tickets.where((ticket) => ticket.estado == 'en curso').toList(),
-      'FINALIZADO': tickets.where((ticket) => ticket.estado == 'cerrado').toList(),
+      'FINALIZADO': tickets.where((ticket) => ticket.estado == 'finalizada').toList(),
+      'CANCELADA': tickets.where((ticket) => ticket.estado == 'cancelada').toList(),
     };
 
     return SingleChildScrollView(
