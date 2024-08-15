@@ -10,8 +10,10 @@ class TicketSystemApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: TicketListPage(),
+      //home: TicketListPage(),
+      home: LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }
 }
+

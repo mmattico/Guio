@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/login.dart';
 import 'home_page_web.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
@@ -171,7 +172,9 @@ class _TicketListPageState extends State<TicketListPage> {
             ListTile(
               title: const Text('Cerrar Sesion'),
               leading: const Icon(Icons.exit_to_app),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+              },
             ),
           ],
         ),
