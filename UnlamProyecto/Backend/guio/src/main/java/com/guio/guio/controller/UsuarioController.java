@@ -57,6 +57,11 @@ public class UsuarioController {
         return userService.existeCorreoElectronico(correoElectronico);
     }
 
+    @PutMapping("/actualizar-password")
+    public boolean actualizarpassword(@RequestParam Long idUsuario, @RequestParam(name = "PASSWORD") String contraseña) {
+        return userService.actualizarPassword(idUsuario, contraseña);
+    }
+
     @PutMapping("/actualizar-email")
     public boolean actualizarCorreoElectronico(@RequestParam Long idUsuario, @RequestParam(name = "EMAIL") String nuevoCorreoElectronico) {
         return userService.actualizarCorreoElectronico(idUsuario, nuevoCorreoElectronico);
