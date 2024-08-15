@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
 
+import '../pages/change_password.dart';
+
 //*********** HEADER ***********
 
 class BluePainter extends CustomPainter {
@@ -43,7 +45,7 @@ Widget header(BuildContext context) {
           if (value == '1') {
             // Ir a la página de "Mi cuenta"
           } else if (value == '2') {
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => const ()),); Change password
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
           }
         },
         itemBuilder: (BuildContext context) => [
