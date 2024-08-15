@@ -76,6 +76,20 @@ public class UsuarioService {
         }
     }
 
+    @Transactional
+    public boolean actualizarPassword(Long idUsuario, String contraseña){
+        Optional<UsuarioDAO> optionalUsuario = userRepository.findById(idUsuario);
+        if (optionalUsuario.isPresent()) {
+            UsuarioDAO usuario = optionalUsuario.get();
+            usuario.setContraseña(contraseña);
+            usuario.setContraseñaReseteada(false);
+            userRepository.save(usuario);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void resetPassword(String nombreUsuario) {
         String contraseña = generatePassword();
         UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
