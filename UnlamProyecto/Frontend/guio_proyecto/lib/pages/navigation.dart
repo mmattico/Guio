@@ -291,8 +291,8 @@ class _NavigationState extends State<Navigation> {
             Vibration.cancel();
           } else {
             if (_instruccionActual > 0) {
-              if (direccionMagnetometro - _angle > 15 ||
-                  direccionMagnetometro - _angle < -15) {
+              if ((_norteGrado + _angle - direccionMagnetometro) % 180 > 15 ||
+                  (_norteGrado + _angle - direccionMagnetometro) % 180 < -15) {
                 _girando = true;
                 _instruccion = "Gira hasta que dejes de sentir vibraciones";
                 Vibration.vibrate();
@@ -361,6 +361,7 @@ class _NavigationState extends State<Navigation> {
                 distanciaARecorrer = instrucciones[i - 1].distancia!;
               });
               while (distanciaRecorrida < distanciaARecorrer) {
+                print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 180} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
                 await Future.delayed(Duration(milliseconds: 500));
               }
               resetStepCount();
