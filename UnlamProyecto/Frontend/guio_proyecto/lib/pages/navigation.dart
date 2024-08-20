@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/model/instruccion_node.dart';
+import 'package:guio_proyecto/other/emergency_navigation.dart';
 import '../other/header_homepage.dart';
 import '../other/text_to_voice.dart';
 import 'home_page.dart';
@@ -27,6 +28,7 @@ class Navigation extends StatefulWidget {
       required this.selectedService,
       required this.selectedPreference});
 
+
   @override
   _NavigationState createState() => _NavigationState();
 }
@@ -49,6 +51,7 @@ class _NavigationState extends State<Navigation> {
   double _customPaintHeight = 380;
   String _finalizarRecorrido = 'Desea finalizar el recorrido';
   String _recorridoFinalizado = 'Recorrido finalizado';
+  String posicionActual = "";
 
   bool _primerDestino = false;
   String _llegadaDestino = 'Ha llegado a Destino';
@@ -72,6 +75,12 @@ class _NavigationState extends State<Navigation> {
     requestPermisos();
     startListening();
     obtenerInstruccionesCamino();
+  }
+
+  void _updateCancelarRecorrido(bool value) {
+    setState(() {
+      _cancelarRecorrido = value;
+    });
   }
 
   Future<void> _popupPrimerDestino(BuildContext context) async {
@@ -263,7 +272,7 @@ class _NavigationState extends State<Navigation> {
             'PREFERENCIA': widget.selectedPreference,
             'UBICACION':'PRUEBA'});
     }
-
+    posicionActual=widget.selectedOrigin.toString();
     print(url);
     print(widget.selectedOrigin);
     print(widget.selectedArea);
@@ -291,8 +300,8 @@ class _NavigationState extends State<Navigation> {
             Vibration.cancel();
           } else {
             if (_instruccionActual > 0) {
-              if ((_norteGrado + _angle - direccionMagnetometro) % 180 > 15 ||
-                  (_norteGrado + _angle - direccionMagnetometro) % 180 < -15) {
+              if ((_norteGrado + _angle - direccionMagnetometro) % 180 > 22 ||
+                  (_norteGrado + _angle - direccionMagnetometro) % 180 < -22) {
                 _girando = true;
                 _instruccion = "Gira hasta que dejes de sentir vibraciones";
                 Vibration.vibrate();
@@ -356,6 +365,9 @@ class _NavigationState extends State<Navigation> {
         } else {
           if(i > 0){
             if(instrucciones[i-1].distancia! > 0){
+              if(i>2){
+                posicionActual=instrucciones[i-2].siguienteNodo.toString();
+              }
               setState(() {
                 distanciaRecorrida = 0;
                 distanciaARecorrer = instrucciones[i - 1].distancia!;
@@ -593,7 +605,26 @@ class _NavigationState extends State<Navigation> {
                               ),
                             ),),
                           const SizedBox(width: 10,),
-                          //emergencyButton(context), //queda comentado hasta que se haga el boton de alerta desde navegacion
+                          SizedBox(
+                            width: 60,
+                            height: 60,
+                            child: IconButton(
+                              onPressed: () {
+                                _cancelarRecorrido = true;
+                                print(posicionActual);
+                                confirmacionAreaActual(context, posicionActual,_updateCancelarRecorrido);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                backgroundColor: Colors.red,
+                              ),
+                              icon: const Icon(
+                                Icons.sos,
+                                color: Colors.white,
+                                size: 40,
+                              ),
+                            ),
+                          ), //queda comentado hasta que se haga el boton de alerta desde navegacion
                         ],
                       ),
                     ],
