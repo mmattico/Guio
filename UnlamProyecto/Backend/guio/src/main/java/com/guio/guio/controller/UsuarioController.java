@@ -21,10 +21,16 @@ public class UsuarioController {
         return userService.save(user);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/get-username/{username}")
     public UsuarioDAO getUser(@PathVariable String username) {
         return userService.findByUsername(username);
     }
+
+    @GetMapping("/get-email/{email}")
+    public UsuarioDAO getUserByEmail(@PathVariable String email) {
+        return userService.findByEmail(email);
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {

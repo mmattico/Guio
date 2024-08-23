@@ -30,6 +30,10 @@ public class UsuarioService {
         return userRepository.findUsuarioDAOByUsuario(username).get();
     }
 
+    public UsuarioDAO findByEmail(String email) {
+        return userRepository.findByEmail(email).get();
+    }
+
     public boolean existeNombreUsuario(String nombreUsuario) {
         return userRepository.findByUsuario(nombreUsuario).isPresent();
     }
