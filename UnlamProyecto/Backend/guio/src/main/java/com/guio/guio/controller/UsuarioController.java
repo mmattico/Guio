@@ -21,10 +21,16 @@ public class UsuarioController {
         return userService.save(user);
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/get-username/{username}")
     public UsuarioDAO getUser(@PathVariable String username) {
         return userService.findByUsername(username);
     }
+
+    @GetMapping("/get-email/{email}")
+    public UsuarioDAO getUserByEmail(@PathVariable String email) {
+        return userService.findByEmail(email);
+    }
+
 
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
@@ -55,6 +61,11 @@ public class UsuarioController {
     @GetMapping("/validar-correo")
     public boolean validarCorreoElectronico(@RequestParam(name = "EMAIL") String correoElectronico) {
         return userService.existeCorreoElectronico(correoElectronico);
+    }
+
+    @PutMapping("/actualizar-password")
+    public boolean actualizarpassword(@RequestParam Long idUsuario, @RequestParam(name = "PASSWORD") String contraseña) {
+        return userService.actualizarPassword(idUsuario, contraseña);
     }
 
     @PutMapping("/actualizar-email")

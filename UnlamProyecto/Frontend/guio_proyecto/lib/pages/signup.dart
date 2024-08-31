@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../model/user.dart';
 import 'login.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -18,12 +21,19 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage>{
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _firstnameController = TextEditingController();
+  final _lastnameController = TextEditingController();
   final _dniController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isChecked = false; // este se envía para lo de accesibilidad :)
+  String errorUsernameMessage = "";
+  String errorDocumentMessage = "";
+  String errorEmailMessage = "";
+
+  bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Registrate"
 
   String nombre = '';
   String apellido = '';
@@ -33,6 +43,62 @@ class _SignupPageState extends State<SignupPage>{
   String usuario = '';
   String password = '';
 
+  Future<void> _validateUsername() async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/validar-nombre-usuario',
+        {'USERNAME': usuario});
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      print("Retorno usuario $responseData");
+      if(!responseData) {
+        errorUsernameMessage = "";
+      } else {
+        errorUsernameMessage = "El nombre de usuario ingresado ya esta en uso";
+      }
+    } else {
+      errorUsernameMessage = "Error al validar usuario, intente de nuevo";
+    }
+  }
+
+  Future<void> _validateDocument() async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/validar-documento',
+        {'DNI': dni.toString()});
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      print("Retorno documento $responseData");
+      if(!responseData) {
+        errorDocumentMessage = "";
+      } else {
+        errorDocumentMessage = "El dni ingresado ya esta en uso";
+      }
+    } else {
+      errorDocumentMessage = "Error al validar dni, intente de nuevo";
+    }
+  }
+
+  Future<void> _validateEmail() async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/validar-correo',
+        {'EMAIL': email});
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      print("Retorno email $responseData");
+      if(!responseData) {
+        errorEmailMessage = "";
+      } else {
+        errorEmailMessage = "El correo ingresado ya esta en uso";
+      }
+    } else {
+      errorEmailMessage = "Error al validar correo, intente de nuevo";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +161,7 @@ class _SignupPageState extends State<SignupPage>{
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 TextFormField(
-                  controller: _nameController,
+                  controller: _firstnameController,
                   decoration: InputDecoration(
                       hintText: "Nombre",
                       border: OutlineInputBorder(
@@ -119,7 +185,7 @@ class _SignupPageState extends State<SignupPage>{
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  controller: _nameController,
+                  controller: _lastnameController,
                   decoration: InputDecoration(
                       hintText: "Apellido",
                       border: OutlineInputBorder(
@@ -165,8 +231,18 @@ class _SignupPageState extends State<SignupPage>{
                     if (value.length < 7 || value.length > 8) {
                       return 'El DNI debe tener entre 7 y 8 caracteres';
                     }
-                    dni = value as int;
-                    return null;
+
+                    try {
+                      dni = int.parse(value); // Conversión segura de String a int
+                    } catch (e) {
+                      return 'El DNI debe contener solo números';
+                    }
+
+                    if(errorDocumentMessage == "") {
+                      return null;
+                    } else {
+                      return errorDocumentMessage;
+                    }
                   },
                 ),
                 const SizedBox(height: 15),
@@ -190,7 +266,12 @@ class _SignupPageState extends State<SignupPage>{
                       return 'Formato inválido de correo electrónico';
                     }
                     email = value;
-                    return null;
+
+                    if(errorEmailMessage == "") {
+                      return null;
+                    } else {
+                      return errorEmailMessage;
+                    }
                   },
                 ),
                 const SizedBox(height: 15),
@@ -217,13 +298,18 @@ class _SignupPageState extends State<SignupPage>{
                       if (value.length != 10) {
                         return 'El número telefónico debe tener 10 dígitos';
                       }
-                      telefono = value as int;
+                      try {
+                        telefono = int.parse(value); // Conversión segura de String a int
+                      } catch (e) {
+                        return 'El número telefónico debe contener solo números';
+                      }
+
                       return null;
                     },
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
-                  controller: _nameController,
+                  controller: _usernameController,
                   decoration: InputDecoration(
                       hintText: "Nombre de usuario",
                       border: OutlineInputBorder(
@@ -239,8 +325,12 @@ class _SignupPageState extends State<SignupPage>{
                       return 'Por favor, ingrese un nombre de usuario';
                     }
                     usuario = value;
-                    //Acá hay que controlar que el username no esté repetido.
-                    return null;
+
+                    if(errorUsernameMessage == "") {
+                      return null;
+                    } else {
+                      return errorUsernameMessage;
+                    }
                   },
                 ),
                 const SizedBox(height: 15),
@@ -257,15 +347,15 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   obscureText: true,
                   validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese una contraseña';
-                }
-                if (value.length <10) {
-                  return 'La contraseña debe tener un mínimo de 10 caracteres';
-                }
-                password = value;
-                return null;
-              },
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, ingrese una contraseña';
+                    }
+                    if (value.length <10) {
+                      return 'La contraseña debe tener un mínimo de 10 caracteres';
+                    }
+                    password = value;
+                    return null;
+                  },
                 ),
               ],
             )
@@ -301,61 +391,95 @@ class _SignupPageState extends State<SignupPage>{
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: _isValidatingInfo? null : () async {
+          setState(() {
+            _isValidatingInfo = true; // Deshabilita el botón
+          });
+
+          _formKey.currentState!.validate();
+
+          try {
+            await _validateUsername();
+            await _validateDocument();
+            await _validateEmail();
+          } finally {
+            setState(() {
+              _isValidatingInfo = false; // Habilita el botón de nuevo
+            });
+          }
+
           if (_formKey.currentState!.validate()) {
             //Acá se envian los datos a la BD de usuario
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: Colors.white,
-                  content: const Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.check, color: Colors.green, size: 90,),
-                      SizedBox(height: 8),
-                      Text(
-                        '¡Te haz registrado en GUIO App!',
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 20),
-                      Text(
-                        'Inicia sesión para comenzar a utilizar las funcionalidades',
-                        style: TextStyle(fontSize: 18,),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                  actions: <Widget>[
-                    Center(
-                      child: SizedBox(
-                        width: 250,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
-                              //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: const StadiumBorder(),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
-                          ),
-                          child: const Text(
-                            "Iniciar Sesión",
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),),
-                      ),
-                    ),
-                  ],
-                );
-              },
+            User user = User(
+              nombre: nombre,
+              apellido: apellido,
+              dni: dni.toString(),
+              email: email,
+              telefono: telefono.toString(),
+              permisos: 'USER',
+              usuario: usuario,
+              password: password,
+              accesibilidadDefault: _isChecked,
+              contraseniaReseteada: false,
             );
+
+            final response = await createUser(user);
+
+            if (response.statusCode == 200) {
+              // Usuario creado con éxito
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    content: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.check, color: Colors.green, size: 90,),
+                        SizedBox(height: 8),
+                        Text(
+                          '¡Te haz registrado en GUIO App!',
+                          style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          'Inicia sesión para comenzar a utilizar las funcionalidades',
+                          style: TextStyle(fontSize: 18,),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 20),
+                      ],
+                    ),
+                    actions: <Widget>[
+                      Center(
+                        child: SizedBox(
+                          width: 250,
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+                                //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                            ),
+                            child: const Text(
+                              "Iniciar Sesión",
+                              style: TextStyle(fontSize: 20, color: Colors.white),
+                            ),),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            }
           }
         },
         style: ElevatedButton.styleFrom(
@@ -363,7 +487,9 @@ class _SignupPageState extends State<SignupPage>{
             borderRadius: BorderRadius.circular(18),
           ),
           padding: const EdgeInsets.symmetric(vertical: 10),
-          backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+          backgroundColor: _isValidatingInfo
+              ? const Color.fromRGBO(17, 116, 186, 0.25) // Cambia el color del botón cuando está deshabilitado
+              : const Color.fromRGBO(17, 116, 186, 1),
         ),
         child: const Text(
           "Registrate",

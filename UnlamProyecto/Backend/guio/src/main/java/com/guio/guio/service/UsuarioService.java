@@ -30,6 +30,10 @@ public class UsuarioService {
         return userRepository.findUsuarioDAOByUsuario(username).get();
     }
 
+    public UsuarioDAO findByEmail(String email) {
+        return userRepository.findByEmail(email).get();
+    }
+
     public boolean existeNombreUsuario(String nombreUsuario) {
         return userRepository.findByUsuario(nombreUsuario).isPresent();
     }
@@ -69,6 +73,20 @@ public class UsuarioService {
         if (optionalUsuario.isPresent()) {
             UsuarioDAO usuario = optionalUsuario.get();
             usuario.setTelefono(nuevoTelefono);
+            userRepository.save(usuario);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Transactional
+    public boolean actualizarPassword(Long idUsuario, String contraseña){
+        Optional<UsuarioDAO> optionalUsuario = userRepository.findById(idUsuario);
+        if (optionalUsuario.isPresent()) {
+            UsuarioDAO usuario = optionalUsuario.get();
+            usuario.setContraseña(contraseña);
+            usuario.setContraseñaReseteada(false);
             userRepository.save(usuario);
             return true;
         } else {
