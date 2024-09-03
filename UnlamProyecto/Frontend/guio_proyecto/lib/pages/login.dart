@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/pages/change_password.dart';
+import 'location_selection.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import 'password_recovery.dart';
@@ -212,8 +213,7 @@ class _LoginPageState extends State<LoginPage> {
           if(passwordReset){
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
           } else {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-            //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
           }
         }
       },
