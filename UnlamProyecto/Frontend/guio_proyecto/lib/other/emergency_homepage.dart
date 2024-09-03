@@ -14,7 +14,6 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
-  String? nombreUsuario = UserSession().username;
   Future<int?> userID = getUserID();
 
   int alertaId = 0;

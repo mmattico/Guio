@@ -42,7 +42,7 @@ class _LocationSelectionState extends State<LocationSelection> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               'Elegí tu locación',
               style: TextStyle(
                 fontSize: 24,
@@ -50,11 +50,11 @@ class _LocationSelectionState extends State<LocationSelection> {
                 color: Colors.black,
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             TextField(
               decoration: InputDecoration(
                 hintText: 'Buscar',
-                prefixIcon: Icon(Icons.search),
+                prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -68,7 +68,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                 });
               },
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
                 itemCount: filteredLevels.length,
@@ -83,13 +83,13 @@ class _LocationSelectionState extends State<LocationSelection> {
                       });
                     },
                     child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.all(16.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: isSelected ? Colors.blue.shade50 : Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isSelected ? Color.fromRGBO(17, 116, 186, .7) : Colors.transparent,
+                          color: isSelected ? const Color.fromRGBO(17, 116, 186, .7) : Colors.transparent,
                           width: 2,
                         ),
                       ),
@@ -97,10 +97,10 @@ class _LocationSelectionState extends State<LocationSelection> {
                         children: [
                           Icon(
                             isSelected ? Icons.check_circle : Icons.circle_outlined,
-                            color: isSelected ? Color.fromRGBO(17, 116, 186, 1) : Colors.grey,
+                            color: isSelected ? const Color.fromRGBO(17, 116, 186, 1) : Colors.grey,
                             size: 24,
                           ),
-                          SizedBox(width: 16),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +110,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: isSelected ? Color.fromRGBO(17, 116, 186, 1) : Colors.black,
+                                    color: isSelected ? const Color.fromRGBO(17, 116, 186, 1) : Colors.black,
                                   ),
                                   softWrap: true,
                                   overflow: TextOverflow.visible,
@@ -126,7 +126,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                 },
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Container(
               width: double.infinity,
               height: 60,
@@ -146,7 +146,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
                   //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
                     },
-                child: Text(
+                child: const Text(
                   'Continuar',
                   style: TextStyle(
                     fontSize: 20,
