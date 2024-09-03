@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import 'package:guio_proyecto/pages/change_password.dart';
 import 'location_selection.dart';
 import 'signup.dart';
@@ -7,6 +8,7 @@ import 'password_recovery.dart';
 //import 'home_page_accesible.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -42,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
+        saveUserID(jsonMap["usuarioID"]);
         passwordReset = jsonMap["contraseÃ±aReseteada"];
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
@@ -64,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         passwordReset = jsonMap["contraseÃ±aReseteada"];
+        saveUserID(jsonMap["usuarioID"]);
         errorContraseniaMessage = "";
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
