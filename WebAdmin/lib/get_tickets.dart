@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/area_management.dart';
+import 'package:guio_web_admin/login.dart';
 import 'home_page_web.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
@@ -165,13 +167,25 @@ class _TicketListPageState extends State<TicketListPage> {
               title: const Text('Dashboard'),
               leading: const Icon(Icons.bar_chart),
               onTap: () {
-
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => GridSearchPage()),);
+              },
+            ),
+            ListTile(
+              title: const Text('Gestión de Espacios'),
+              leading: const Icon(Icons.space_dashboard),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GridPage()),
+                );
               },
             ),
             ListTile(
               title: const Text('Cerrar Sesion'),
               leading: const Icon(Icons.exit_to_app),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
+              },
             ),
           ],
         ),
