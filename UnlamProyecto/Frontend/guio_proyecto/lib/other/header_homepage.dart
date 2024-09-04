@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
 
@@ -112,6 +113,7 @@ Widget headerTexto() {
 Future<void> _logout(context) async {
   // Se eliminan los datos de sesión del usuario
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  await deleteUserID();
   await prefs.remove('isLoggedIn');
 
   Navigator.of(context).pushReplacement(

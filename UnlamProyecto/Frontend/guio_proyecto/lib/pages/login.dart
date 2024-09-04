@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/change_password.dart';
+import 'location_selection.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import 'password_recovery.dart';
 //import 'home_page_accesible.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -20,6 +26,57 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Iniciar Sesión"
+  String usuarioOEmail = '';
+  String contrasenia = '';
+  String errorUsuarioOEmailMessage = "";
+  String errorContraseniaMessage = "";
+  bool passwordReset = false;
+
+  Future<void> _getUserByEmail(String email) async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/get-email/$email');
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Response.body en _getUserByEmail: ${response.body}");
+      Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      if(jsonMap["contraseÃ±a"] == contrasenia) {
+        errorContraseniaMessage = "";
+        saveUserID(jsonMap["usuarioID"]);
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
+      } else {
+        errorContraseniaMessage = "La contraseña ingresada es incorrecta";
+      }
+      errorUsuarioOEmailMessage = "";
+    } else {
+      errorUsuarioOEmailMessage = "El email ingresado no esta registrado";
+    }
+  }
+
+  Future<void> _getUserByUsername(String username) async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/get-username/$username');
+    print("Url: ${url.toString()}");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Response.body en _getUserByUsername: ${response.body}");
+      Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      print("JsonMap: $jsonMap");
+      print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
+      if(jsonMap["contraseÃ±a"] == contrasenia) {
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
+        saveUserID(jsonMap["usuarioID"]);
+        errorContraseniaMessage = "";
+      } else {
+        errorContraseniaMessage = "La contraseña ingresada es incorrecta";
+      }
+      errorUsuarioOEmailMessage = "";
+    } else {
+      errorUsuarioOEmailMessage = "El usuario ingresado no esta registrado";
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +143,18 @@ class _LoginPageState extends State<LoginPage> {
                   filled: true,
                   prefixIcon: const Icon(Icons.person)
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Por favor, ingrese su nombre de usuario o su email';
+                }
+                usuarioOEmail = value;
+
+                if(errorUsuarioOEmailMessage == "") {
+                  return null;
+                } else {
+                  return errorUsuarioOEmailMessage;
+                }
+              },
             ),
             const SizedBox(height: 15),
             TextFormField(
@@ -100,12 +169,18 @@ class _LoginPageState extends State<LoginPage> {
                 prefixIcon: const Icon(Icons.password),
               ),
               obscureText: true,
-              /*validator: (value) {
+              validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su contraseña';
                 }
-                return null;
-              },*/
+                contrasenia = value;
+
+                if(errorContraseniaMessage == "") {
+                  return null;
+                } else {
+                  return errorContraseniaMessage;
+                }
+              },
             ),
           ],
         )
@@ -119,10 +194,31 @@ class _LoginPageState extends State<LoginPage> {
         width: double.infinity,
         height: 55,
         child: ElevatedButton(
-      onPressed: () {
+      onPressed: _isValidatingInfo? null : () async {
+        setState(() {
+          _isValidatingInfo = true; // Deshabilita el botón
+        });
+
+        _formKey.currentState!.validate();
+
+        try {
+          if(RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(usuarioOEmail)) {
+            await _getUserByEmail(usuarioOEmail);
+          } else {
+            await _getUserByUsername(usuarioOEmail);
+          }
+        } finally {
+          setState(() {
+            _isValidatingInfo = false; // Habilita el botón de nuevo
+          });
+        }
+
         if (_formKey.currentState!.validate()) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+          if(passwordReset){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -130,7 +226,9 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(18),
         ),
         padding: const EdgeInsets.symmetric(vertical: 10),
-        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+        backgroundColor: _isValidatingInfo
+            ? const Color.fromRGBO(17, 116, 186, 0.25) // Cambia el color del botón cuando está deshabilitado
+            : const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(
         "Iniciar Sesión",

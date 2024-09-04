@@ -180,7 +180,7 @@ class _HomePageWebState extends State<HomePageWeb> {
                   DataCell(
                     DropdownButton<String>(
                       value: ticket.estado,
-                      items: ['pendiente', 'en curso', 'finalizada', 'cancelada']
+                      items: ['pendiente', 'en curso', 'finalizada', 'cancelada', '{\"estadoNuevo\":\"cancelada\",\"COMENTARIO\":\"Cancelada por el usuario\"}']
                           .map((status) => DropdownMenuItem<String>(
                         value: status,
                         child: Text(status),
