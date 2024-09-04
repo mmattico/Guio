@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_web_admin/get_nodos.dart';
+import 'package:http/http.dart' as http;
 
 class GridPage extends StatefulWidget {
   @override
@@ -110,7 +111,7 @@ class _GridPageState extends State<GridPage> {
                                             Text('Estado actual: ' + (_nodos[index].activo ? 'Habilitado' : 'Deshabilitado')),
                                             const SizedBox(height: 10,),
                                             const Text('Nuevo estado:'),
-                                            DropdownButton<String>(
+                                            /*DropdownButton<String>(
                                               value: _selectedStatus,
                                               items: ['Habilitado', 'Deshabilitado']
                                                   .map((status) => DropdownMenuItem<String>(
@@ -123,20 +124,26 @@ class _GridPageState extends State<GridPage> {
                                                   setState(() {
                                                     _selectedStatus = status;
                                                   });
-                                                  _updateStatusNodo(snapshot.data![index].nodoId, status);
                                                 }
                                               },
                                               dropdownColor: Colors.white,
+                                            ),*/
+                                            ElevatedButton(
+                                              child: Text((_nodos[index].activo ? 'DESHABILITAR' : 'HABILITAR')),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                _showDialog(context, snapshot.data![index].nombre, snapshot.data![index].activo, _selectedStatus);
+                                              },
                                             ),
                                           ],
                                         );
                                       },
                                     ),
                                     actions: [
-                                      ElevatedButton(
-                                        child: const Text('Continuar'),
+                                      TextButton(
+                                        child: const Text('Cancelar'),
                                         onPressed: () {
-                                          _showDialog(context, snapshot.data![index].nombre);
+                                          Navigator.of(context).pop();
                                         },
                                       ),
                                     ],
@@ -177,16 +184,41 @@ class _GridPageState extends State<GridPage> {
     );
   }
 
-  void _updateStatusNodo(int nodoId, String newStatus) {
+  Future<void> _updateStatusNodo(String nodoNombre, String newStatus) async {
+    final url;
+    if(newStatus == "Deshabilitado"){
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/desactivar/$nodoNombre/PRUEBA');
+    } else {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/activar/$nodoNombre/PRUEBA');
+    };
 
+    print('nuevo estado: ' + newStatus);
+    print('nombre nodo: ' + nodoNombre);
+    print('*******************************************************');
+
+    final response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Estado actualizado con éxito');
+      print('*******************************************************');
+    } else {
+      print('Error al actualizar el ticket: ${response.statusCode}');
+      print('Respuesta: ${response.body}');
+      print('*******************************************************');
+    }
   }
 
-  void _showDialog(BuildContext context, String nodo) {
+  void _showDialog(BuildContext context, String nodoNombre, bool estado, String newStatus) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('¿Confirma el cambio de estado para \nel área/servicio ' + nodo + '?'),
+          title: Text('¿Confirma que desea \n' + (estado ? 'DESHABILITAR' : 'HABILITAR') + '\nel área/servicio ' + nodoNombre + '?', textAlign: TextAlign.center,),
           actions: <Widget>[
             TextButton(
               child: const Text('Cancelar'),
@@ -197,6 +229,7 @@ class _GridPageState extends State<GridPage> {
             TextButton(
               child: const Text('Confirmar'),
               onPressed: () {
+                _updateStatusNodo(nodoNombre, newStatus);
                 Navigator.of(context).pop(); // Cierra el primer diálogo
                 _showConfirmationDialog(context);
               },
