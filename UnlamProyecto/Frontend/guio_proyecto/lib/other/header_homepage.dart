@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
-
+import '../pages/my_data.dart';
 import '../pages/change_password.dart';
 
 //*********** HEADER ***********
@@ -44,7 +44,7 @@ Widget header(BuildContext context) {
         offset: const Offset(-10, 60),
         onSelected: (String value) {
           if (value == '1') {
-            // Ir a la página de "Mi cuenta"
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MyDataPage()),);
           } else if (value == '2') {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
           }
