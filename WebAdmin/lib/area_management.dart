@@ -187,9 +187,9 @@ class _GridPageState extends State<GridPage> {
   Future<void> _updateStatusNodo(String nodoNombre, String newStatus) async {
     final url;
     if(newStatus == "Deshabilitado"){
-      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/desactivar/$nodoNombre/PRUEBA');
-    } else {
       url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/activar/$nodoNombre/PRUEBA');
+    } else {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/desactivar/$nodoNombre/PRUEBA');
     };
 
     print('nuevo estado: ' + newStatus);
