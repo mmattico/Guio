@@ -10,11 +10,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-/*const users =  {
-  'admin@gmail.com': '12345',
-  'guioapp@gmail.com': 'guioapp',
-};*/
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
