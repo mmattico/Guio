@@ -22,7 +22,6 @@ class AreaDialog extends StatefulWidget {
 
 class _AreaDialogState extends State<AreaDialog> {
   String? areaEmergencia;
-  String? nombreUsuario = UserSession().username;
 
   int alertaId = 0;
 

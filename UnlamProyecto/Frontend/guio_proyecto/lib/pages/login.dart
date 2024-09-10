@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/change_password.dart';
+import 'location_selection.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import 'password_recovery.dart';
 //import 'home_page_accesible.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-/*const users =  {
-  'admin@gmail.com': '12345',
-  'guioapp@gmail.com': 'guioapp',
-};*/
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -28,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
   String contrasenia = '';
   String errorUsuarioOEmailMessage = "";
   String errorContraseniaMessage = "";
+  bool passwordReset = false;
 
   Future<void> _getUserByEmail(String email) async{
     var url;
@@ -39,6 +39,8 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
+        saveUserID(jsonMap["usuarioID"]);
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
       }
@@ -59,6 +61,8 @@ class _LoginPageState extends State<LoginPage> {
       print("JsonMap: $jsonMap");
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
       if(jsonMap["contraseÃ±a"] == contrasenia) {
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
+        saveUserID(jsonMap["usuarioID"]);
         errorContraseniaMessage = "";
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
@@ -205,8 +209,11 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (_formKey.currentState!.validate()) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+          if(passwordReset){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
+          }
         }
       },
       style: ElevatedButton.styleFrom(

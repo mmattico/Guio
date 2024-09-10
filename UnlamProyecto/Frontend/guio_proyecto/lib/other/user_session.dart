@@ -1,12 +1,16 @@
-class UserSession {
-  static final UserSession _instance = UserSession._internal();
+import 'package:shared_preferences/shared_preferences.dart';
 
-  String? username;
-  bool? userAccessibility;
+Future<void> saveUserID(int usuarioId) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('usuarioId', usuarioId);
+}
 
-  factory UserSession() {
-    return _instance;
-  }
+Future<int?> getUserID() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('usuarioId');
+}
 
-  UserSession._internal();
+Future<void> deleteUserID() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.remove('usuarioId');
 }
