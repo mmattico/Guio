@@ -46,6 +46,33 @@ class _GridPageState extends State<GridPage> {
     });
   }
 
+  void _filterAreas() {
+    _clearFilters();
+    setState(() {
+      filteredItems =
+          filteredItems.where((nodo) =>
+                nodo.tipo == '')
+              .toList();
+    });
+  }
+
+  void _filterPreferencias() {
+    _clearFilters();
+    setState(() {
+      filteredItems =
+          filteredItems.where((nodo) =>
+          nodo.tipo == 'Escaleras' || nodo.tipo == 'Ascensor')
+              .toList();
+    });
+  }
+
+  void _clearFilters() {
+    setState(() {
+      filteredItems = _nodos;
+      searchController.text = ''; // Limpiar la consulta de búsqueda
+    });
+  }
+
   Future<void> _refreshAreas() async {
     setState(() {
       isLoading = true;
@@ -81,7 +108,8 @@ class _GridPageState extends State<GridPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(150, 25, 1000, 0),
-            child: TextField(
+            child:
+            TextField(
               controller: searchController,
               decoration: const InputDecoration(
                 labelText: 'Buscar por nombre de nodo',
@@ -89,6 +117,27 @@ class _GridPageState extends State<GridPage> {
                 prefixIcon: Icon(Icons.search),
               ),
             ),
+          ),
+          SizedBox(height: 8,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: _filterAreas,
+                child: Text('Áreas'),
+              ),
+              SizedBox(width: 12,),
+              ElevatedButton(
+                onPressed: _filterPreferencias,
+                child: Text('Escaleras / Ascensores'),
+              ),
+              SizedBox(width: 12),
+              ElevatedButton(
+                onPressed: _clearFilters,
+                child: Text('Eliminar Filtros'),
+              ),
+            ],
           ),
           Expanded(
             child: isLoading
