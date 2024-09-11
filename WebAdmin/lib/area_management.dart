@@ -12,6 +12,8 @@ class _GridPageState extends State<GridPage> {
   late List<Nodo> filteredItems = [];
   TextEditingController searchController = TextEditingController();
   late Future<List<Nodo>> futureNodos;
+  bool isLoading = false;
+  String _selectedStatus = '';
 
   @override
   void initState() {
@@ -37,27 +39,48 @@ class _GridPageState extends State<GridPage> {
 
   void _filterItems() {
     setState(() {
-      filteredItems = _nodos
-          .where((nodo) =>
+      filteredItems =
+          _nodos.where((nodo) =>
           nodo.nombre.toLowerCase().contains(searchController.text.toLowerCase()))
           .toList();
     });
   }
 
-  String _selectedStatus = '';
+  Future<void> _refreshAreas() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      List<Nodo> nuevasAlertas = await fetchNodos();
+      setState(() {
+        setState(() {
+          _nodos = nuevasAlertas;
+          filteredItems = nuevasAlertas;
+          isLoading = false;
+        });
+
+      });
+    } catch (e) {
+      print('Error al actualizar alertas: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+
+        centerTitle: true,
         backgroundColor: Colors.white,
-        title: const Text('Gestión de Espacios'),
+        foregroundColor: const Color(0xFF1174ba),
+        title: const Text('Gestión de Espacios', style: TextStyle(fontFamily: 'Oswald', fontSize: 50, fontWeight: FontWeight.bold),),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(150, 50, 1000, 0),
+            padding: const EdgeInsets.fromLTRB(150, 25, 1000, 0),
             child: TextField(
               controller: searchController,
               decoration: const InputDecoration(
@@ -68,7 +91,11 @@ class _GridPageState extends State<GridPage> {
             ),
           ),
           Expanded(
-            child: Padding(
+            child: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(), // Mostrar la ruedita cuando esté cargando
+                  )
+                : Padding(
               padding: const EdgeInsets.fromLTRB(150, 15, 150, 15),
               child: FutureBuilder<List<Nodo>>(
                 future: futureNodos,
@@ -87,7 +114,8 @@ class _GridPageState extends State<GridPage> {
                         mainAxisSpacing: 10.0,
                         childAspectRatio: 2.0,
                       ),
-                      itemCount: snapshot.data!.length,
+                      //itemCount: snapshot.data!.length,
+                      itemCount: filteredItems.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -96,9 +124,9 @@ class _GridPageState extends State<GridPage> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  _selectedStatus = snapshot.data![index].activo ? 'Habilitado' : 'Deshabilitado';
+                                  _selectedStatus = filteredItems[index].activo ? 'Habilitado' : 'Deshabilitado';
                                   return AlertDialog(
-                                    title: Text('Modificar estado de \n' + snapshot.data![index].nombre, textAlign: TextAlign.center,),
+                                    title: Text('Modificar estado de \n' + filteredItems[index].nombre, textAlign: TextAlign.center,),
                                     backgroundColor: Colors.white,
                                     content: StatefulBuilder(
                                       builder: (BuildContext context, StateSetter setState) {
@@ -108,31 +136,14 @@ class _GridPageState extends State<GridPage> {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
                                             const SizedBox(height: 10,),
-                                            Text('Estado actual: ' + (_nodos[index].activo ? 'Habilitado' : 'Deshabilitado')),
+                                            Text('Estado actual: ' + (filteredItems[index].activo ? 'Habilitado' : 'Deshabilitado')),
                                             const SizedBox(height: 10,),
                                             const Text('Nuevo estado:'),
-                                            /*DropdownButton<String>(
-                                              value: _selectedStatus,
-                                              items: ['Habilitado', 'Deshabilitado']
-                                                  .map((status) => DropdownMenuItem<String>(
-                                                value: status,
-                                                child: Text(status),
-                                              ))
-                                                  .toList(),
-                                              onChanged: (status) {
-                                                if (status != null) {
-                                                  setState(() {
-                                                    _selectedStatus = status;
-                                                  });
-                                                }
-                                              },
-                                              dropdownColor: Colors.white,
-                                            ),*/
                                             ElevatedButton(
-                                              child: Text((_nodos[index].activo ? 'DESHABILITAR' : 'HABILITAR')),
+                                              child: Text((filteredItems[index].activo ? 'DESHABILITAR' : 'HABILITAR')),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
-                                                _showDialog(context, snapshot.data![index].nombre, snapshot.data![index].activo, _selectedStatus);
+                                                _showDialog(context, filteredItems[index].nombre, filteredItems[index].activo, _selectedStatus);
                                               },
                                             ),
                                           ],
@@ -152,7 +163,8 @@ class _GridPageState extends State<GridPage> {
                               );
                             },
                             child: Card(
-                              color: Colors.blueAccent,
+                              //color: Colors.blueAccent,
+                              color: (filteredItems[index].activo ? Colors.green : Colors.grey),
                               child: Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
@@ -160,9 +172,9 @@ class _GridPageState extends State<GridPage> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'TIPO: ' + _nodos[index].tipo + '\n\n' +
-                                          _nodos[index].nombre + '\n' +
-                                          'Estado: ' + (_nodos[index].activo ? 'Habilitado' : 'Deshabilitado'),
+                                      'TIPO: ' + filteredItems[index].tipo + '\n\n' +
+                                          filteredItems[index].nombre + '\n' +
+                                          'Estado: ' + (filteredItems[index].activo ? 'Habilitado' : 'Deshabilitado'),
                                       style: const TextStyle(color: Colors.white),
                                       textAlign: TextAlign.center,
                                     ),
@@ -250,11 +262,9 @@ class _GridPageState extends State<GridPage> {
           actions: <Widget>[
             TextButton(
               child: const Text('Aceptar'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GridPage()),
-                );
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await _refreshAreas();
               },
             ),
           ],
