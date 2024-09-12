@@ -22,7 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Iniciar Sesión"
+  bool _isValidatingInfo = false;
   String usuarioOEmail = '';
   String contrasenia = '';
   String errorUsuarioOEmailMessage = "";
@@ -40,6 +40,13 @@ class _LoginPageState extends State<LoginPage> {
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
         saveUserID(jsonMap["usuarioID"]);
+        saveUserFirstName(jsonMap["nombre"]);
+        saveUserLastName(jsonMap["apellido"]);
+        saveUserEmail(jsonMap["email"]);
+        saveUserPhone(jsonMap["telefono"]);
+        saveUserDNI(jsonMap["dni"]);
+        saveUsername(jsonMap["usuario"]);
+        saveUserAccessibility(jsonMap["accesibilidadDefault"]);
         passwordReset = jsonMap["contraseÃ±aReseteada"];
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
