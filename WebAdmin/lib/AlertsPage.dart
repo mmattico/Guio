@@ -10,7 +10,6 @@ class Alerts extends StatefulWidget {
   final void Function(Ticket, String) onStatusChanged;
   int cantidadAlertas = 0;
 
-
   Alerts({
     required this.tickets,
     required this.onOpenTicketDetails,
@@ -27,12 +26,13 @@ class _AlertsState extends State<Alerts> {
   late TextEditingController _searchController;
   late int cantidadAlertasPrev = 0;
   late int cantidadAlertasNuevas = 0;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _filteredTickets = widget.tickets;
-    //_searchController = TextEditingController();
+    _searchController = TextEditingController();
     _searchController.addListener(_filterTickets);
     cantidadAlertasPrev = widget.cantidadAlertas;
   }
@@ -68,6 +68,10 @@ class _AlertsState extends State<Alerts> {
   int qtyAlertasNuevas = 0;
 
   Future<void> _refreshAlertas() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       List<Ticket> nuevasAlertas = await fetchAlertas('PRUEBA');
       setState(() {
@@ -77,6 +81,7 @@ class _AlertsState extends State<Alerts> {
           _filteredTickets = nuevasAlertas;
           cantidadAlertasPrev = oldTickets.length;
           qtyAlertasNuevas = cantidadAlertasNuevas - cantidadAlertasPrev;
+          isLoading = false;
         });
 
       });
@@ -85,16 +90,65 @@ class _AlertsState extends State<Alerts> {
     }
   }
 
+  void _filterStatusOpen() {
+    _clearFilters();
+    setState(() {
+      _filteredTickets =
+          _filteredTickets.where((ticket) =>
+          ticket.estado == 'pendiente')
+              .toList();
+    });
+  }
+
+  void _filterStatusEnCurso() {
+    _clearFilters();
+    setState(() {
+      _filteredTickets =
+          _filteredTickets.where((ticket) =>
+          ticket.estado == 'en curso')
+              .toList();
+    });
+  }
+
+  void _filterStatusFinalizada() {
+    _clearFilters();
+    setState(() {
+      _filteredTickets =
+          _filteredTickets.where((ticket) =>
+          ticket.estado == 'finalizada')
+              .toList();
+    });
+  }
+
+  void _filterStatusCancelada() {
+    _clearFilters();
+    setState(() {
+      _filteredTickets =
+          _filteredTickets.where((ticket) =>
+          ticket.estado == 'cancelada')
+              .toList();
+    });
+  }
+
+  void _clearFilters() {
+    setState(() {
+      _filteredTickets = widget.tickets;
+      _searchController.text = '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
 
     return SingleChildScrollView(
       child: Column(
         children: [
+          SizedBox(height: 10,),
           Row(
             children: [
               const SizedBox(width: 250,),
-              Flexible(child: SizedBox(
+              Flexible(child:
+              SizedBox(
                 width: 300,
                 child: TextField(
                   controller: _searchController,
@@ -138,7 +192,46 @@ class _AlertsState extends State<Alerts> {
 
             ],
           ),
+          SizedBox(height: 28,),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Filtrar por: '),
+              SizedBox(width: 12,),
+              ElevatedButton(
+                onPressed: _filterStatusOpen,
+                child: Text('Pendientes'),
+              ),
+              SizedBox(width: 12,),
+              ElevatedButton(
+                onPressed: _filterStatusEnCurso,
+                child: Text('En curso'),
+              ),
+              SizedBox(width: 12,),
+              ElevatedButton(
+                onPressed: _filterStatusFinalizada,
+                child: Text('Finalizada'),
+              ),
+              SizedBox(width: 12,),
+              ElevatedButton(
+                onPressed: _filterStatusCancelada,
+                child: Text('Cancelada'),
+              ),
+              SizedBox(width: 12),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey
+                ),
+                onPressed: _clearFilters,
+                child: Text('Eliminar Filtros', style: TextStyle(color: Colors.white),),
+              ),
+            ],
+          ),
           const SizedBox(height: 20),
+          isLoading ? Center(
+            child: CircularProgressIndicator(), // Mostrar la ruedita cuando esté cargando
+          ):
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: DataTable(
