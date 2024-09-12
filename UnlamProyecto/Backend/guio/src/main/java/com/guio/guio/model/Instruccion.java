@@ -6,6 +6,7 @@ public class Instruccion {
     private String siguienteNodo = "";
     private Integer distancia = 0;
     private boolean existePuerta;
+    private boolean existeEscalon;
     private boolean pausa;
     private String sentidoOrigen = "";
     private String sentidoDestino = "";
@@ -64,5 +65,13 @@ public class Instruccion {
 
     public void setSentidoDestino(String sentidoDestino) {
         this.sentidoDestino = sentidoDestino;
+    }
+
+    public boolean isExisteEscalon() {
+        return existeEscalon;
+    }
+
+    public void setExisteEscalon(boolean existeEscalon) {
+        this.existeEscalon = existeEscalon;
     }
 }

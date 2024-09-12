@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guio_web_admin/area_management.dart';
 import 'package:guio_web_admin/login_admin.dart';
-import 'home_page_web.dart';
+import 'package:guio_web_admin/AlertsPage.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -133,7 +133,7 @@ class _TicketListPageState extends State<TicketListPage> {
           ),
         ],
       ),
-      drawer: Drawer(
+      /*drawer: Drawer(
         backgroundColor: Colors.white,
         child: ListView(
           children: [
@@ -189,7 +189,7 @@ class _TicketListPageState extends State<TicketListPage> {
             ),
           ],
         ),
-      ),
+      ),*/
       body: FutureBuilder<List<Ticket>>(
         future: futureAlertas,
         builder: (context, snapshot) {
@@ -206,7 +206,7 @@ class _TicketListPageState extends State<TicketListPage> {
               padding: const EdgeInsets.all(16.0),
               child: _isKanbanView
                   ? KanbanView(tickets: tickets)
-                  : HomePageWeb(
+                  : Alerts(
                 tickets: tickets,
                 onOpenTicketDetails: _openTicketDetails,
                 onStatusChanged: _updateTicketStatus,
