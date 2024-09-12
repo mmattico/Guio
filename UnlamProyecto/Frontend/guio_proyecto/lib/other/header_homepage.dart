@@ -113,7 +113,7 @@ Widget headerTexto() {
 Future<void> _logout(context) async {
   // Se eliminan los datos de sesión del usuario
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await deleteUserID();
+  await deleteUserSession();
   await prefs.remove('isLoggedIn');
 
   Navigator.of(context).pushReplacement(
