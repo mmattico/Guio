@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import 'password_recovery.dart';
-//import 'home_page_accesible.dart';
+import 'home_page_accesible.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
 
   bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Iniciar Sesión"
+  bool _accesibilidadDefault = false;
   String usuarioOEmail = '';
   String contrasenia = '';
   String errorUsuarioOEmailMessage = "";
@@ -37,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       print("Response.body en _getUserByEmail: ${response.body}");
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      _accesibilidadDefault = jsonMap["accesibilidadDefault"] ?? false;
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
       } else {
@@ -56,6 +58,7 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       print("Response.body en _getUserByUsername: ${response.body}");
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      _accesibilidadDefault = jsonMap["accesibilidadDefault"] ?? false;
       print("JsonMap: $jsonMap");
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
       if(jsonMap["contraseÃ±a"] == contrasenia) {
@@ -205,8 +208,11 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (_formKey.currentState!.validate()) {
+        if(_accesibilidadDefault){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+        }else{
           Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
-          //Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
+        }
         }
       },
       style: ElevatedButton.styleFrom(
