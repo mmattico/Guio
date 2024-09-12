@@ -97,17 +97,25 @@ class _GridPageState extends State<GridPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1174ba),
-        title: const Text('Gestión de Espacios', style: TextStyle(fontFamily: 'Oswald', fontSize: 50, fontWeight: FontWeight.bold),),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0), // Altura total incluyendo el espacio
+        child: Column(
+        children: [
+        SizedBox(height: 20.0),
+        AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          foregroundColor: const Color(0xFF1174ba),
+          title: const Text('Gestión de Espacios', style: TextStyle(fontFamily: 'Oswald', fontSize: 50, fontWeight: FontWeight.bold),),
+        ),
+        ],
+        ),
       ),
       body: Column(
         children: [
+          SizedBox(height: 10,),
           Padding(
-            padding: const EdgeInsets.fromLTRB(150, 25, 1000, 0),
+            padding: const EdgeInsets.fromLTRB(500, 25, 500, 0),
             child:
             TextField(
               controller: searchController,
@@ -118,11 +126,13 @@ class _GridPageState extends State<GridPage> {
               ),
             ),
           ),
-          SizedBox(height: 8,),
+          SizedBox(height: 28,),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Text('Filtrar por: '),
+              SizedBox(width: 12,),
               ElevatedButton(
                 onPressed: _filterAreas,
                 child: Text('Áreas'),
