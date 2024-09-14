@@ -80,7 +80,7 @@ public class DijkstraService {
 
     public static Camino convertirGrafoACamino(Grafo grafo, String nodoDestinoNombre) {
         Nodo nodoDestino = getNodoFromGrafo(grafo, nodoDestinoNombre);
-        Camino camino;
+        Camino camino = new Camino();
         if(nodoDestino.getCaminoCorto().isEmpty()){
             camino = obtenerInstruccionCaminoNoExiste();
         }else {
@@ -381,7 +381,9 @@ public class DijkstraService {
         instruccionFin.setPausa(true);
         caminoADestino.addInstruccion(instruccionFin);
 
-        return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+        Camino caminoFinal = new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+        caminoFinal.setNorteGrado(grafoServicio.getNorteGrado());
+        return caminoFinal;
     }
 
     private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino) {
