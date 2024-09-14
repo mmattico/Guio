@@ -382,7 +382,7 @@ public class DijkstraService {
         caminoADestino.addInstruccion(instruccionFin);
 
         Camino caminoFinal = new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
-        caminoFinal.setNorteGrado(grafoServicio.getNorteGrado());
+        caminoFinal.setNorteGrado(planificacion.getNorteGrado());
         return caminoFinal;
     }
 
