@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'get_tickets.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import "string_extension.dart";
 
 class Alerts extends StatefulWidget {
   List<Ticket> tickets;
@@ -10,12 +10,11 @@ class Alerts extends StatefulWidget {
   final void Function(Ticket, String) onStatusChanged;
   int cantidadAlertas = 0;
 
-  Alerts({
-    required this.tickets,
-    required this.onOpenTicketDetails,
-    required this.onStatusChanged,
-    required this.cantidadAlertas
-  });
+  Alerts(
+      {required this.tickets,
+      required this.onOpenTicketDetails,
+      required this.onStatusChanged,
+      required this.cantidadAlertas});
 
   @override
   _AlertsState createState() => _AlertsState();
@@ -58,7 +57,6 @@ class _AlertsState extends State<Alerts> {
         widget.onStatusChanged(ticket, newStatus);
       });
       updateTicketStatus(ticket.id, newStatus);
-
     } catch (e) {
       print('Error al actualizar el estado: $e');
     }
@@ -83,7 +81,6 @@ class _AlertsState extends State<Alerts> {
           qtyAlertasNuevas = cantidadAlertasNuevas - cantidadAlertasPrev;
           isLoading = false;
         });
-
       });
     } catch (e) {
       print('Error al actualizar alertas: $e');
@@ -93,40 +90,36 @@ class _AlertsState extends State<Alerts> {
   void _filterStatusOpen() {
     _clearFilters();
     setState(() {
-      _filteredTickets =
-          _filteredTickets.where((ticket) =>
-          ticket.estado == 'pendiente')
-              .toList();
+      _filteredTickets = _filteredTickets
+          .where((ticket) => ticket.estado == 'pendiente')
+          .toList();
     });
   }
 
   void _filterStatusEnCurso() {
     _clearFilters();
     setState(() {
-      _filteredTickets =
-          _filteredTickets.where((ticket) =>
-          ticket.estado == 'en curso')
-              .toList();
+      _filteredTickets = _filteredTickets
+          .where((ticket) => ticket.estado == 'en curso')
+          .toList();
     });
   }
 
   void _filterStatusFinalizada() {
     _clearFilters();
     setState(() {
-      _filteredTickets =
-          _filteredTickets.where((ticket) =>
-          ticket.estado == 'finalizada')
-              .toList();
+      _filteredTickets = _filteredTickets
+          .where((ticket) => ticket.estado == 'finalizada')
+          .toList();
     });
   }
 
   void _filterStatusCancelada() {
     _clearFilters();
     setState(() {
-      _filteredTickets =
-          _filteredTickets.where((ticket) =>
-          ticket.estado == 'cancelada')
-              .toList();
+      _filteredTickets = _filteredTickets
+          .where((ticket) => ticket.estado == 'cancelada')
+          .toList();
     });
   }
 
@@ -139,27 +132,32 @@ class _AlertsState extends State<Alerts> {
 
   @override
   Widget build(BuildContext context) {
-
     return SingleChildScrollView(
       child: Column(
         children: [
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             children: [
-              const SizedBox(width: 250,),
-              Flexible(child:
-              SizedBox(
-                width: 300,
-                child: TextField(
-                  controller: _searchController,
-                  decoration: const InputDecoration(
-                    labelText: 'Buscar por número de Ticket...',
-                    border: OutlineInputBorder(),
+              const SizedBox(
+                width: 250,
+              ),
+              Flexible(
+                child: SizedBox(
+                  width: 300,
+                  child: TextField(
+                    controller: _searchController,
+                    decoration: const InputDecoration(
+                      labelText: 'Buscar por número de Ticket...',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(
+                width: 430,
               ),
-              const SizedBox(width: 430,),
               //Text('Cantidad Alertas (previa): $cantidadAlertasPrev'),
               //boton de refresh
               IconButton(
@@ -172,135 +170,182 @@ class _AlertsState extends State<Alerts> {
                 },
               ),
               //Text('Cantidad Alertas (actual): $cantidadAlertasNuevas'),
-              const SizedBox(width: 10.0,),
+              const SizedBox(
+                width: 10.0,
+              ),
               Container(
                   child: qtyAlertasNuevas > 0
                       ? Row(
-                    children: [
-                      const Icon(Icons.notification_add, color: Colors.red, size: 25,),
-                      Text('Hay alertas nuevas: $qtyAlertasNuevas', style: const TextStyle(color: Colors.red, fontSize: 16))
-                    ],
-                  )
+                          children: [
+                            const Icon(
+                              Icons.notification_add,
+                              color: Colors.red,
+                              size: 25,
+                            ),
+                            Text('Hay alertas nuevas: $qtyAlertasNuevas',
+                                style: const TextStyle(
+                                    color: Colors.red, fontSize: 16))
+                          ],
+                        )
                       : const Row(
-                    children: [
-                      Icon(Icons.check, color: Colors.green, size: 25,),
-                      Text('No hay alertas nuevas', style: TextStyle(color: Colors.green, fontSize: 16),),
-                    ],
-                  )
-              ),
+                          children: [
+                            Icon(
+                              Icons.check,
+                              color: Colors.green,
+                              size: 25,
+                            ),
+                            Text(
+                              'No hay alertas nuevas',
+                              style:
+                                  TextStyle(color: Colors.green, fontSize: 16),
+                            ),
+                          ],
+                        )),
               const SizedBox(width: 30),
-
             ],
           ),
-          SizedBox(height: 28,),
+          SizedBox(
+            height: 28,
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text('Filtrar por: '),
-              SizedBox(width: 12,),
+              SizedBox(
+                width: 12,
+              ),
               ElevatedButton(
                 onPressed: _filterStatusOpen,
                 child: Text('Pendientes'),
               ),
-              SizedBox(width: 12,),
+              SizedBox(
+                width: 12,
+              ),
               ElevatedButton(
                 onPressed: _filterStatusEnCurso,
                 child: Text('En curso'),
               ),
-              SizedBox(width: 12,),
+              SizedBox(
+                width: 12,
+              ),
               ElevatedButton(
                 onPressed: _filterStatusFinalizada,
                 child: Text('Finalizada'),
               ),
-              SizedBox(width: 12,),
+              SizedBox(
+                width: 12,
+              ),
               ElevatedButton(
                 onPressed: _filterStatusCancelada,
                 child: Text('Cancelada'),
               ),
               SizedBox(width: 12),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey
-                ),
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
                 onPressed: _clearFilters,
-                child: Text('Eliminar Filtros', style: TextStyle(color: Colors.white),),
+                child: Text(
+                  'Eliminar Filtros',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          isLoading ? Center(
-            child: CircularProgressIndicator(), // Mostrar la ruedita cuando esté cargando
-          ):
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: const [
-                DataColumn(label: Text('N° Ticket')),
-                DataColumn(label: Text('Fecha y Hora')),
-                DataColumn(label: Text('Apellido y Nombre')),
-                DataColumn(label: Text('Ubicacion')),
-                DataColumn(label: Text('Estado')),
-                DataColumn(label: Text('Comentarios')),
-              ],
-              rows: _filteredTickets.map((ticket) => DataRow(
-                cells: [
-                  DataCell(
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: GestureDetector(
-                        onTap: () => widget.onOpenTicketDetails(ticket),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(color: Colors.blueAccent, width: 1.0),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Text(
-                            ticket.id.toString().padLeft(4, '0'),
-                            style: const TextStyle(
-                              color: Colors.blueAccent,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+          isLoading
+              ? Center(
+                  child:
+                      CircularProgressIndicator(), // Mostrar la ruedita cuando esté cargando
+                )
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: const [
+                      DataColumn(label: Text('N° Alerta')),
+                      DataColumn(label: Text('Fecha')),
+                      DataColumn(label: Text('Hora')),
+                      DataColumn(label: Text('Apellido y Nombre')),
+                      DataColumn(label: Text('Ubicacion')),
+                      DataColumn(label: Text('Estado')),
+                      DataColumn(label: Text('Comentarios')),
+                    ],
+                    rows: _filteredTickets
+                        .map((ticket) => DataRow(
+                              cells: [
+                                DataCell(
+                                  MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      onTap: () =>
+                                          widget.onOpenTicketDetails(ticket),
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 28.0, vertical: 4.0),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF1174ba),
+                                          border: Border.all(
+                                              color: Color(0xFF1174ba),
+                                              width: 1.0),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                        ),
+                                        child: Text(
+                                          ticket.id.toString().padLeft(3, '0'),
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                DataCell(Text(
+                                    '${DateFormat('dd-MM-yyyy').format(ticket.fecha)}')),
+                                DataCell(Text(
+                                    '${DateFormat('kk:mm').format(ticket.fecha)}')),
+                                DataCell(Text(ticket.areaEmergencia)),
+                                DataCell(Text(ticket.apellido.capitalize() +
+                                    ' ' +
+                                    ticket.nombre.capitalize())),
+                                DataCell(
+                                  DropdownButton<String>(
+                                    value: ticket.estado,
+                                    items: [
+                                      'pendiente',
+                                      'en curso',
+                                      'finalizada',
+                                      'cancelada'
+                                    ]
+                                        .map((status) =>
+                                            DropdownMenuItem<String>(
+                                              value: status,
+                                              child: Text(status),
+                                            ))
+                                        .toList(),
+                                    onChanged: (newStatus) {
+                                      if (newStatus != null) {
+                                        _updateStatus(ticket, newStatus);
+                                      }
+                                    },
+                                    dropdownColor: Colors.white,
+                                  ),
+                                ),
+                                DataCell(Text(ticket.comentario)),
+                              ],
+                            ))
+                        .toList(),
                   ),
-                  DataCell(Text('${DateFormat('dd-MM-yyyy – kk:mm').format(ticket.fecha)}')),
-                  DataCell(Text(ticket.apellido + ' ' + ticket.nombre)),
-                  DataCell(Text(ticket.areaEmergencia)),
-                  DataCell(
-                    DropdownButton<String>(
-                      value: ticket.estado,
-                      items: ['pendiente', 'en curso', 'finalizada', 'cancelada']
-                          .map((status) => DropdownMenuItem<String>(
-                        value: status,
-                        child: Text(status),
-                      ))
-                          .toList(),
-                      onChanged: (newStatus) {
-                        if (newStatus != null) {
-                          _updateStatus(ticket, newStatus);
-                        }
-                      },
-                      dropdownColor: Colors.white,
-                    ),
-                  ),
-                  DataCell(Text(ticket.comentario)),
-                ],
-              )).toList(),
-            ),
-          ),
+                ),
         ],
       ),
     );
   }
-
 }
 
 Future<void> updateTicketStatus(int ticketId, String newStatus) async {
-  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado');
+  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+      '/api/alerta/$ticketId/estado');
 
   print('nuevo estado: ' + newStatus);
 
