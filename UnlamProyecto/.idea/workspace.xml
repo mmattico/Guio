@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="" />
+    <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +39,14 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
+                  <RecentBranch>
+                    <option name="branchName" value="develop2" />
+                    <option name="lastUsedInstant" value="1726337153" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="CorreccionesMartin4" />
+                    <option name="lastUsedInstant" value="1726336483" />
+                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="MartinMatticoliAlertas" />
                     <option name="lastUsedInstant" value="1722662085" />
@@ -148,8 +158,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java</url>
-          <line>48</line>
+          <line>49</line>
           <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
+          <line>385</line>
+          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
