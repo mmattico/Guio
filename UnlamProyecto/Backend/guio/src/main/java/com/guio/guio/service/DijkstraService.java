@@ -170,7 +170,7 @@ public class DijkstraService {
 
             resultSet = statement.executeQuery(queryNorteGrado);
             if(resultSet.next()) {
-                planificacion.setNorteGrado(resultSet.getInt(0));
+                planificacion.setNorteGrado(resultSet.getInt("norte_grado"));
             }
 
             String query = "SELECT BSNodo.* " +
