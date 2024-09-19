@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/pages/home_page.dart';
+import 'package:guio_proyecto/pages/login.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -107,7 +108,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     child: ElevatedButton(
                       onPressed: () {
                         //aca hay que actualizar password en BD
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

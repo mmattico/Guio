@@ -80,6 +80,16 @@ Future<bool?> getUserAccessibility() async {
   return prefs.getBool('userAccessibility');
 }
 
+Future<void> saveGraphCode(String graph) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('graph', graph);
+}
+
+Future<String?> getGraphCode() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('graph');
+}
+
 Future<void> deleteUserSession() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('usuarioId');
@@ -90,4 +100,5 @@ Future<void> deleteUserSession() async {
   await prefs.remove('userDNI');
   await prefs.remove('username');
   await prefs.remove('userAccessibility');
+  await prefs.remove('graph');
 }
