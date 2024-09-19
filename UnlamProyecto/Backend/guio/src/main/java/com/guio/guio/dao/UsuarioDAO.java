@@ -14,7 +14,7 @@ public class UsuarioDAO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "UsuarioID")
-    private Integer usuarioID;
+    private Long usuarioID;
     @ManyToOne
     @JoinColumn(name = "GrafoID") // Definir la columna que actúa como clave foránea
     @JsonBackReference
@@ -43,7 +43,7 @@ public class UsuarioDAO {
     @Column(name = "contraseña_reseteada")
     private boolean contraseñaReseteada;
 
-    public UsuarioDAO(Integer usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
+    public UsuarioDAO(Long usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
         this.usuarioID = usuarioID;
         this.grafo = grafo;
         this.alertas = alertas;
@@ -60,14 +60,6 @@ public class UsuarioDAO {
     }
 
     public UsuarioDAO() {
-    }
-
-    public Integer getUsuarioID() {
-        return usuarioID;
-    }
-
-    public void setUsuarioID(Integer usuarioID) {
-        this.usuarioID = usuarioID;
     }
 
     public GrafoDAO getGrafo() {
@@ -164,5 +156,13 @@ public class UsuarioDAO {
 
     public void setContraseñaReseteada(boolean contraseñaReseteada) {
         this.contraseñaReseteada = contraseñaReseteada;
+    }
+
+    public Long getUsuarioID() {
+        return usuarioID;
+    }
+
+    public void setUsuarioID(Long usuarioID) {
+        this.usuarioID = usuarioID;
     }
 }
