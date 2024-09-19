@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
 import 'package:flutter/services.dart';
@@ -129,6 +130,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 height: 38,
                 child: TextButton(
                   onPressed: () {
+
                     Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const HomePage()),);
                   },
