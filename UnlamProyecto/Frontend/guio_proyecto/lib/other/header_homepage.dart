@@ -87,28 +87,57 @@ Widget header(BuildContext context) {
 }
 
 Widget headerTexto() {
-  return const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Bienvenido',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 45,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Text(
-        'Seleccione origen y destino para comenzar',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          //fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
+  Future<String?> ubicacion = getGraphName();
+
+  return FutureBuilder<String?>(
+    future: ubicacion,
+    builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        return const Text(
+          'Error al cargar la ubicación',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 45,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+                height: 1.3,
+              ),
+            ),
+            Text(
+              snapshot.data ?? '',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              'Seleccione origen y destino para comenzar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        );
+      }
+    },
   );
 }
+
 
 Future<void> _logout(context) async {
   // Se eliminan los datos de sesión del usuario

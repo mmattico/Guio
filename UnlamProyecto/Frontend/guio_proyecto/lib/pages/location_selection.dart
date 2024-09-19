@@ -169,7 +169,9 @@ class _LocationSelectionState extends State<LocationSelection> {
                             : () {
                           // Obtener el nombre del grafo seleccionado
                           final codigoGrafo = _grafos[selectedLocation!].codigo;
+                          final nombreGrafo = _grafos[selectedLocation!].nombre;
                           saveGraphCode(codigoGrafo);
+                          saveGraphName(nombreGrafo);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

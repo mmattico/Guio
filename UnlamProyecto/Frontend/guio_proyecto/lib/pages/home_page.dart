@@ -200,9 +200,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             const SizedBox(height: 15),
                             _services(context),
-                            const SizedBox(height: 18),
+                            const SizedBox(height: 4),
                             _accesibilidad(context),
-                            const SizedBox(height: 25),
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
