@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/location_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
 
@@ -47,6 +48,8 @@ Widget header(BuildContext context) {
             // Ir a la página de "Mi cuenta"
           } else if (value == '2') {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+          } else if (value == '3') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
           }
         },
         itemBuilder: (BuildContext context) => [
@@ -67,6 +70,16 @@ Widget header(BuildContext context) {
                   Icon(Icons.password, color: Colors.black,),
                   SizedBox(width: 20,),
                   Text('Cambiar Contraseña'),
+                ],
+              )
+          ),
+          const PopupMenuItem<String>(
+              value: '3',
+              child: Row(
+                children: [
+                  Icon(Icons.change_circle_outlined, color: Colors.black,),
+                  SizedBox(width: 20,),
+                  Text('Cambiar de Ubicación'),
                 ],
               )
           ),
@@ -140,7 +153,6 @@ Widget headerTexto() {
 
 
 Future<void> _logout(context) async {
-  // Se eliminan los datos de sesión del usuario
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await deleteUserSession();
   await prefs.remove('isLoggedIn');
