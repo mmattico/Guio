@@ -143,63 +143,6 @@ class _TicketListPageState extends State<TicketListPage> {
         ],
         ),
       ),
-      /*drawer: Drawer(
-        backgroundColor: Colors.white,
-        child: ListView(
-          children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text('Usuario Admin'),
-              accountEmail: Text(''),
-              currentAccountPicture: CircleAvatar(
-                child: Icon(Icons.person),
-              ),
-            ),
-            ListTile(
-              title: const Text('Inicio'),
-              leading: const Icon(Icons.home),
-              onTap: () {
-                if (_tickets != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TicketListPage(),
-                    ),
-                  );
-                } else {
-                  // Manejar el caso en que _tickets es null
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('No hay tickets disponibles')),
-                  );
-                }
-              },
-            ),
-            ListTile(
-              title: const Text('Dashboard'),
-              leading: const Icon(Icons.bar_chart),
-              onTap: () {
-                //Navigator.push(context, MaterialPageRoute(builder: (context) => GridSearchPage()),);
-              },
-            ),
-            ListTile(
-              title: const Text('Gestión de Espacios'),
-              leading: const Icon(Icons.space_dashboard),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => GridPage()),
-                );
-              },
-            ),
-            ListTile(
-              title: const Text('Cerrar Sesion'),
-              leading: const Icon(Icons.exit_to_app),
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()),);
-              },
-            ),
-          ],
-        ),
-      ),*/
       body: FutureBuilder<List<Ticket>>(
         future: futureAlertas,
         builder: (context, snapshot) {
