@@ -94,9 +94,9 @@ public class UsuarioService {
         }
     }
 
-    public void resetPassword(String nombreUsuario) {
+    public void resetPassword(String emailUsuario) {
         String contraseña = generatePassword();
-        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioDAO usuario = userRepository.findByEmail(emailUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         usuario.setContraseña(contraseña);
         usuario.setContraseñaReseteada(true);
         userRepository.save(usuario);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/location_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
 
@@ -47,6 +48,8 @@ Widget header(BuildContext context) {
             // Ir a la página de "Mi cuenta"
           } else if (value == '2') {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+          } else if (value == '3') {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
           }
         },
         itemBuilder: (BuildContext context) => [
@@ -70,6 +73,16 @@ Widget header(BuildContext context) {
                 ],
               )
           ),
+          const PopupMenuItem<String>(
+              value: '3',
+              child: Row(
+                children: [
+                  Icon(Icons.change_circle_outlined, color: Colors.black,),
+                  SizedBox(width: 20,),
+                  Text('Cambiar de Ubicación'),
+                ],
+              )
+          ),
         ],
       ),
       const Image(
@@ -87,31 +100,59 @@ Widget header(BuildContext context) {
 }
 
 Widget headerTexto() {
-  return const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Text(
-        'Bienvenido',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 45,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      Text(
-        'Seleccione origen y destino para comenzar',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-          //fontWeight: FontWeight.bold,
-        ),
-      ),
-    ],
+  Future<String?> ubicacion = getGraphName();
+
+  return FutureBuilder<String?>(
+    future: ubicacion,
+    builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return const CircularProgressIndicator();
+      } else if (snapshot.hasError) {
+        return const Text(
+          'Error al cargar la ubicación',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 45,
+            fontWeight: FontWeight.bold,
+          ),
+        );
+      } else {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Bienvenido',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 45,
+                fontWeight: FontWeight.bold,
+                height: 1.3,
+              ),
+            ),
+            Text(
+              snapshot.data ?? '',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Text(
+              'Seleccione origen y destino para comenzar',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+          ],
+        );
+      }
+    },
   );
 }
 
+
 Future<void> _logout(context) async {
-  // Se eliminan los datos de sesión del usuario
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await deleteUserSession();
   await prefs.remove('isLoggedIn');
