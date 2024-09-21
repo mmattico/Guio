@@ -80,7 +80,7 @@ public class DijkstraService {
 
     public static Camino convertirGrafoACamino(Grafo grafo, String nodoDestinoNombre) {
         Nodo nodoDestino = getNodoFromGrafo(grafo, nodoDestinoNombre);
-        Camino camino;
+        Camino camino = new Camino();
         if(nodoDestino.getCaminoCorto().isEmpty()){
             camino = obtenerInstruccionCaminoNoExiste();
         }else {
@@ -170,7 +170,7 @@ public class DijkstraService {
 
             resultSet = statement.executeQuery(queryNorteGrado);
             if(resultSet.next()) {
-                planificacion.setNorteGrado(resultSet.getInt(0));
+                planificacion.setNorteGrado(resultSet.getInt("norte_grado"));
             }
 
             String query = "SELECT BSNodo.* " +
@@ -381,7 +381,9 @@ public class DijkstraService {
         instruccionFin.setPausa(true);
         caminoADestino.addInstruccion(instruccionFin);
 
-        return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+        Camino caminoFinal = new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
+        caminoFinal.setNorteGrado(planificacion.getNorteGrado());
+        return caminoFinal;
     }
 
     private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino) {

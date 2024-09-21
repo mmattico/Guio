@@ -210,11 +210,12 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
+  Future<String?> graphCode = getGraphCode();
 
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos();
+    futureNodos = fetchNodos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
