@@ -132,12 +132,134 @@ class _AlertsState extends State<Alerts> {
 
   @override
   Widget build(BuildContext context) {
+    int enCurso = widget.tickets.where((alerta) => alerta.estado == 'en curso').length;
+    int pendientes = widget.tickets.where((alerta) => alerta.estado == 'pendiente').length;
+    int canceladas = widget.tickets.where((alerta) => alerta.estado == 'cancelada').length;
+    int finalizadas = widget.tickets.where((alerta) => alerta.estado == 'finalizada').length;
     return SingleChildScrollView(
       child: Column(
         children: [
           SizedBox(
             height: 10,
           ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              InkWell(
+                onTap: () {
+                  _filterStatusOpen();
+                },
+                child:
+                SizedBox(
+                  height: 100,
+                  width: 180,
+                  child:
+                Card(
+                  color: Color.lerp(Color.fromRGBO(17, 116, 186, 1), Colors.white, 0.75)!,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 10, 6, 6),
+                    child: Column(
+                      children: [
+                        Text("Pendientes", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 10),
+                        Text("$pendientes", style: TextStyle(fontSize: 24)),
+                      ],
+                    ),),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              InkWell(
+                onTap: () {
+                  _filterStatusEnCurso();
+                },
+                child:
+                SizedBox(
+                  height: 100,
+                  width: 180,
+                  child:
+                  Card(
+                    color: Color.lerp(Color.fromRGBO(17, 116, 186, 1), Colors.white, 0.75)!,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(6, 10, 6, 6),
+                      child: Column(
+                        children: [
+                          Text("En curso", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 10),
+                          Text("$enCurso", style: TextStyle(fontSize: 24)),
+                        ],
+                      ),
+                    ),),
+                  ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              InkWell(
+                onTap: () {
+                  _filterStatusFinalizada();
+                },
+                child:
+                SizedBox(
+                height: 100,
+                width: 180,
+                child:
+                Card(
+                  color: Color.lerp(Color.fromRGBO(17, 116, 186, 1), Colors.white, 0.75)!,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 10, 6, 6),
+                    child: Column(
+                      children: [
+                        Text("Finalizadas", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        SizedBox(height: 10),
+                        Text("$finalizadas", style: TextStyle(fontSize: 24)),
+                      ],
+                    ),
+                  ),
+                ),),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              InkWell(
+                onTap: () {
+                  _filterStatusCancelada();
+                },
+                child:
+                    SizedBox(
+                      height: 100,
+                      width: 180,
+                      child: Card(
+                        color: Color.lerp(Color.fromRGBO(17, 116, 186, 1), Colors.white, 0.75)!,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(6, 10, 6, 6),
+                          child: Column(
+                            children: [
+                              Text("Canceladas", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              SizedBox(height: 10),
+                              Text("$canceladas", style: TextStyle(fontSize: 24)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+              ),
+              SizedBox(width: 12),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
+            onPressed: _clearFilters,
+            child: Text(
+              'Eliminar Filtros',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 20),
           Row(
             children: [
               const SizedBox(
@@ -158,7 +280,6 @@ class _AlertsState extends State<Alerts> {
               const SizedBox(
                 width: 430,
               ),
-              //Text('Cantidad Alertas (previa): $cantidadAlertasPrev'),
               //boton de refresh
               IconButton(
                 icon: const Icon(Icons.refresh),
@@ -169,89 +290,43 @@ class _AlertsState extends State<Alerts> {
                   await _refreshAlertas();
                 },
               ),
-              //Text('Cantidad Alertas (actual): $cantidadAlertasNuevas'),
               const SizedBox(
                 width: 10.0,
               ),
               Container(
                   child: qtyAlertasNuevas > 0
                       ? Row(
-                          children: [
-                            const Icon(
-                              Icons.notification_add,
-                              color: Colors.red,
-                              size: 25,
-                            ),
-                            Text('Hay alertas nuevas: $qtyAlertasNuevas',
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 16))
-                          ],
-                        )
+                    children: [
+                      const Icon(
+                        Icons.notification_add,
+                        color: Colors.red,
+                        size: 25,
+                      ),
+                      Text('Hay alertas nuevas: $qtyAlertasNuevas',
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 16))
+                    ],
+                  )
                       : const Row(
-                          children: [
-                            Icon(
-                              Icons.check,
-                              color: Colors.green,
-                              size: 25,
-                            ),
-                            Text(
-                              'No hay alertas nuevas',
-                              style:
-                                  TextStyle(color: Colors.green, fontSize: 16),
-                            ),
-                          ],
-                        )),
+                    children: [
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                        size: 25,
+                      ),
+                      Text(
+                        'No hay alertas nuevas',
+                        style:
+                        TextStyle(color: Colors.green, fontSize: 16),
+                      ),
+                    ],
+                  )),
               const SizedBox(width: 30),
             ],
           ),
           SizedBox(
             height: 28,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('Filtrar por: '),
-              SizedBox(
-                width: 12,
-              ),
-              ElevatedButton(
-                onPressed: _filterStatusOpen,
-                child: Text('Pendientes'),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-              ElevatedButton(
-                onPressed: _filterStatusEnCurso,
-                child: Text('En curso'),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-              ElevatedButton(
-                onPressed: _filterStatusFinalizada,
-                child: Text('Finalizada'),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-              ElevatedButton(
-                onPressed: _filterStatusCancelada,
-                child: Text('Cancelada'),
-              ),
-              SizedBox(width: 12),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.grey),
-                onPressed: _clearFilters,
-                child: Text(
-                  'Eliminar Filtros',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
           isLoading
               ? Center(
                   child:
