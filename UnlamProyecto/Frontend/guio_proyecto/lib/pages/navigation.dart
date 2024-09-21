@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/model/instruccion_node.dart';
 import 'package:guio_proyecto/other/emergency_navigation.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../other/header_homepage.dart';
 import '../other/text_to_voice.dart';
 import 'home_page.dart';
@@ -56,6 +57,8 @@ class _NavigationState extends State<Navigation> {
   bool _primerDestino = false;
   String _llegadaDestino = 'Ha llegado a Destino';
 
+  String _location = '';
+
   // Podometro
   String _pasosValue = '0';
   int _pasosIniciales = 0;
@@ -74,7 +77,20 @@ class _NavigationState extends State<Navigation> {
     _isLoading = true;
     requestPermisos();
     startListening();
+    _iniciarProceso();
+  }
+
+  Future<void> _iniciarProceso() async {
+    await _cargarLocation();
     obtenerInstruccionesCamino();
+  }
+
+  Future<void> _cargarLocation() async {
+    String? location = await getGraphCode();
+    setState(() {
+      _location = location!;
+      print("LOCATION: " + _location!);
+    });
   }
 
   void _updateCancelarRecorrido(bool value) {
@@ -253,24 +269,25 @@ class _NavigationState extends State<Navigation> {
     //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     var url;
     if(widget.selectedService!.isEmpty){
+      print("LOCATION ISSSS: " + _location);
       url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascorto',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
             'PREFERENCIA': widget.selectedPreference,
-            'UBICACION':'PRUEBA'});
+            'UBICACION': _location});
     }else if(widget.selectedArea!.isEmpty) {
       url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/portipo',
           { 'ORIGEN': widget.selectedOrigin,
             'SERVICIO': widget.selectedService,
             'PREFERENCIA': widget.selectedPreference,
-            'UBICACION':'PRUEBA'});
+            'UBICACION': _location});
     } else {
       url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascortoconnodointermedio',
           {'ORIGEN': widget.selectedOrigin,
             'DESTINO': widget.selectedArea,
             'SERVICIO': widget.selectedService,
             'PREFERENCIA': widget.selectedPreference,
-            'UBICACION':'PRUEBA'});
+            'UBICACION': _location});
     }
     posicionActual=widget.selectedOrigin.toString();
     print(url);
@@ -298,6 +315,9 @@ class _NavigationState extends State<Navigation> {
           if (_cancelarRecorrido) {
             _girando = false;
             Vibration.cancel();
+            subscriptionInstruccion?.cancel();
+            subscriptionTts?.cancel();
+            stopListening();
           } else {
             if (_instruccionActual > 0) {
               if ((_norteGrado + _angle - direccionMagnetometro) % 180 > 22 ||
@@ -375,6 +395,9 @@ class _NavigationState extends State<Navigation> {
               while (distanciaRecorrida < distanciaARecorrer) {
                 print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 180} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
                 await Future.delayed(Duration(milliseconds: 500));
+                if (_cancelarRecorrido) {
+                  break;
+                }
               }
               resetStepCount();
             }
@@ -405,6 +428,7 @@ class _NavigationState extends State<Navigation> {
 
       if (!_cancelarRecorrido) {
         detenerReproduccion();
+        stopListening();
         _imagenPath = 'assets/images/arrived_2.png';
         _instruccion = _llegadaDestino;
         speak(_instruccion);
