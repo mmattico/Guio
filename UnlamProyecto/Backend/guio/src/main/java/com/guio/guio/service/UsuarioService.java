@@ -27,11 +27,17 @@ public class UsuarioService {
     }
 
     public UsuarioDAO findByUsername(String username) {
-        return userRepository.findUsuarioDAOByUsuario(username).get();
+        UsuarioDAO usuario = userRepository.findUsuarioDAOByUsuario(username).get();
+        if(usuario.getGrafo()!= null)
+            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+        return usuario;
     }
 
     public UsuarioDAO findByEmail(String email) {
-        return userRepository.findByEmail(email).get();
+        UsuarioDAO usuario = userRepository.findByEmail(email).get();
+        if(usuario.getGrafo()!= null)
+            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+        return usuario;
     }
 
     public boolean existeNombreUsuario(String nombreUsuario) {
