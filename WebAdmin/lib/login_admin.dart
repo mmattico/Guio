@@ -23,9 +23,10 @@ class _LoginPageState extends State<LoginPage> {
   bool _isValidatingInfo = false;
   final _formKey = GlobalKey<FormState>();
 
-  Future<void> _getUserByUsername(String username) async{
+  Future<void> _getUserByUsername(String username) async {
     var url;
-    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/get-username/$username');
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+        '/api/users/get-username/$username');
     print("Url: ${url.toString()}");
     final response = await http.get(url);
     if (response.statusCode == 200) {
@@ -33,13 +34,13 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
       print("JsonMap: $jsonMap");
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
-      if(jsonMap["contraseÃ±a"] == contrasenia) {
+      if (jsonMap["contraseÃ±a"] == contrasenia) {
         //saveUserID(jsonMap["usuarioID"]);
         errorContraseniaMessage = "";
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
       }
-      if(jsonMap["permisos"] != "ADMIN"){
+      if (jsonMap["permisos"] != "ADMIN") {
         errorUsuarioMessage = "El usuario no es administrador";
       } else {
         errorUsuarioMessage = "";
@@ -54,27 +55,32 @@ class _LoginPageState extends State<LoginPage> {
       width: 500,
       height: 55,
       child: ElevatedButton(
-        onPressed: _isValidatingInfo? null : () async {
-          setState(() {
-            print("validando = ");
-            _isValidatingInfo = true;
-            print("validando ======= ");
-          });
-          _formKey.currentState!.validate();
-          try {
-            print("buscando username");
-            await _getUserByUsername(username);
-            print("finalizo busqueda");
-          } finally {
-            setState(() {
-              _isValidatingInfo = false; // Habilita el botón de nuevo
-            });
-          }
+        onPressed: _isValidatingInfo
+            ? null
+            : () async {
+                setState(() {
+                  print("validando = ");
+                  _isValidatingInfo = true;
+                  print("validando ======= ");
+                });
+                _formKey.currentState!.validate();
+                try {
+                  print("buscando username");
+                  await _getUserByUsername(username);
+                  print("finalizo busqueda");
+                } finally {
+                  setState(() {
+                    _isValidatingInfo = false; // Habilita el botón de nuevo
+                  });
+                }
 
-          if (_formKey.currentState!.validate()) {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => TicketListPage()),);
-          }
-        },
+                if (_formKey.currentState!.validate()) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => WebHomePage()),
+                  );
+                }
+              },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
@@ -87,7 +93,8 @@ class _LoginPageState extends State<LoginPage> {
         child: const Text(
           "Iniciar Sesión",
           style: TextStyle(fontSize: 20, color: Colors.white),
-        ),),
+        ),
+      ),
     );
   }
 
@@ -108,7 +115,11 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Image.network('https://cdn-icons-png.flaticon.com/512/5332/5332306.png', height: 400,),
+                      /*Image.network(
+                        'https://cdn-icons-png.flaticon.com/512/5332/5332306.png',
+                        height: 400,
+                      ),*/
+                      Image.asset('assets/images/logo_GUIO_2.png', height: 450),
                     ],
                   ),
                 ),
@@ -118,6 +129,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      Image.asset('assets/images/logo_GUIO.png', height: 100, width: 150),
                       const Text(
                         'Inicio de Sesión de Administrador',
                         style: TextStyle(
@@ -127,26 +139,25 @@ class _LoginPageState extends State<LoginPage> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 80),
-
-                      // TextFormField con tamaño fijo
                       Form(
                         key: _formKey,
                         child: Column(
                           children: [
                             SizedBox(
                               width: 500,
-                              height: 50,
                               child: TextFormField(
                                 controller: _userController,
                                 decoration: InputDecoration(
-                                    hintText: "Nombre de usuario administrador",
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(18),
-                                        borderSide: BorderSide.none
-                                    ),
-                                    fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
-                                    filled: true,
-                                    prefixIcon: const Icon(Icons.person)
+                                  hintText: "Nombre de usuario administrador",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                                  filled: true,
+                                  prefixIcon: const Icon(Icons.person),
+                                  errorStyle: const TextStyle(height: 0),
+                                  errorMaxLines: 1,
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
@@ -154,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                   username = value;
 
-                                  if(errorUsuarioMessage == "") {
+                                  if (errorUsuarioMessage == "") {
                                     return null;
                                   } else {
                                     return errorUsuarioMessage;
@@ -163,11 +174,8 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                             const SizedBox(height: 15),
-
-                            // Otro TextFormField con tamaño fijo
                             SizedBox(
-                              width: 500, // Ancho fijo
-                              height: 50, // Alto fijo
+                              width: 500,
                               child: TextFormField(
                                 controller: _passwordController,
                                 decoration: InputDecoration(
@@ -175,9 +183,12 @@ class _LoginPageState extends State<LoginPage> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(18),
                                       borderSide: BorderSide.none),
-                                  fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                                  fillColor:
+                                      const Color.fromRGBO(65, 105, 225, 0.1),
                                   filled: true,
                                   prefixIcon: const Icon(Icons.password),
+                                  errorStyle: const TextStyle(height: 0),
+                                  errorMaxLines: 1,
                                 ),
                                 obscureText: true,
                                 validator: (value) {
@@ -186,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                   contrasenia = value;
 
-                                  if(errorContraseniaMessage == "") {
+                                  if (errorContraseniaMessage == "") {
                                     return null;
                                   } else {
                                     return errorContraseniaMessage;
@@ -199,33 +210,16 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 30),
                       _buttonLogin(context),
-                      /*SizedBox(
-                        width: 500,
-                        height: 55,
-                        child:
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => TicketListPage()),);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
-                          ),
-                          child: const Text(
-                            "Iniciar Sesión",
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
-                        ),
-                      ),*/
                       const SizedBox(height: 30),
                       TextButton(
                           onPressed: () {
-                        // Lógica
+                            // Lógica
                           },
-                          child: const Text('Contactarse con soporte', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),))
+                          child: const Text(
+                            'Contactarse con soporte',
+                            style: TextStyle(
+                                color: Color.fromRGBO(17, 116, 186, 1)),
+                          ))
                     ],
                   ),
                 ),
@@ -236,5 +230,4 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 }
