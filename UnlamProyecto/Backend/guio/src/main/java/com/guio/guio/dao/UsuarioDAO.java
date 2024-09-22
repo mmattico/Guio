@@ -42,6 +42,8 @@ public class UsuarioDAO {
     private boolean accesibilidadDefault;
     @Column(name = "contraseña_reseteada")
     private boolean contraseñaReseteada;
+    @Transient
+    private Integer grafo_Id;
 
     public UsuarioDAO(Long usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
         this.usuarioID = usuarioID;
@@ -57,6 +59,7 @@ public class UsuarioDAO {
         this.contraseña = contraseña;
         this.accesibilidadDefault = accesibilidadDefault;
         this.contraseñaReseteada = contraseñaReseteada;
+        this.grafo_Id = grafo != null ? grafo.getGrafoID() : null;
     }
 
     public UsuarioDAO() {
@@ -164,5 +167,13 @@ public class UsuarioDAO {
 
     public void setUsuarioID(Long usuarioID) {
         this.usuarioID = usuarioID;
+    }
+
+    public Integer getGrafo_Id() {
+        return grafo_Id;
+    }
+
+    public void setGrafo_Id(Integer grafo_Id) {
+        this.grafo_Id = grafo_Id;
     }
 }
