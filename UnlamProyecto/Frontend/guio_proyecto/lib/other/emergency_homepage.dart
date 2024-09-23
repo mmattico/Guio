@@ -15,13 +15,14 @@ class AreaSelectionDialog extends StatefulWidget {
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
   Future<int?> userID = getUserID();
+  Future<int?> graphID = getGraphID();
 
   int alertaId = 0;
 
   List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
 
 
-  Future<void> enviarAlerta(int? userID) async {
+  Future<void> enviarAlerta(int? userID, int? graphID) async {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
@@ -32,6 +33,9 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
+      'grafo': {
+        'grafoID': graphID,
+      },
     };
 
     try {
@@ -63,11 +67,13 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   }
 
   int? _userID;
+  int? _graphID;
 
   @override
   void initState() {
     super.initState();
     _cargarNombreUsuario();
+    _cargarGrafoID();
   }
 
   Future<void> _cargarNombreUsuario() async {
@@ -76,6 +82,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       _userID = userID;
     });
   }
+
+  Future<void> _cargarGrafoID() async {
+    int? graphID = await getGraphID();
+    setState(() {
+      _graphID = graphID;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +146,8 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                           print('Área seleccionada: $areaEmergencia');
                           print('alerta id en codigo $alertaId');
                           print('usuario id: $_userID');
-                          await enviarAlerta(_userID);
+                          print('grafo id: $_graphID');
+                          await enviarAlerta(_userID, _graphID);
                           Navigator.of(context).pop();
                           emergencyPopUp(context, alertaId);
                           print('alerta id en codigo $alertaId');

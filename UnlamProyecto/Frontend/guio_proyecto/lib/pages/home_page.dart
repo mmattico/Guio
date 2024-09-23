@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos(graphCode);
+    futureNodos = fetchNodosExtremos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;

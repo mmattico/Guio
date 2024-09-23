@@ -80,6 +80,16 @@ Future<bool?> getUserAccessibility() async {
   return prefs.getBool('userAccessibility');
 }
 
+Future<void> saveGraphID(int grafoID) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('grafoID', grafoID);
+}
+
+Future<int?> getGraphID() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('grafoID');
+}
+
 Future<void> saveGraphCode(String graphCode) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('graphCode', graphCode);
