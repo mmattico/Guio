@@ -39,14 +39,14 @@ class _LoginPageState extends State<LoginPage> {
       Map<String, dynamic> jsonMap = jsonDecode(response.body);
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
-        saveUserID(jsonMap["usuarioID"]);
-        saveUserFirstName(jsonMap["nombre"]);
-        saveUserLastName(jsonMap["apellido"]);
-        saveUserEmail(jsonMap["email"]);
-        saveUserPhone(jsonMap["telefono"]);
-        saveUserDNI(jsonMap["dni"]);
-        saveUsername(jsonMap["usuario"]);
-        saveUserAccessibility(jsonMap["accesibilidadDefault"]);
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await saveUserAccessibility(jsonMap["accesibilidadDefault"]);
         passwordReset = jsonMap["contraseÃ±aReseteada"];
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
@@ -69,7 +69,15 @@ class _LoginPageState extends State<LoginPage> {
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         passwordReset = jsonMap["contraseÃ±aReseteada"];
-        saveUserID(jsonMap["usuarioID"]);
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await savePassword(jsonMap["contraseÃ±a"]);
+        await saveUserAccessibility(jsonMap["accesibilidadDefault"]);
         errorContraseniaMessage = "";
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";

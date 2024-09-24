@@ -3,7 +3,7 @@ import 'package:guio_proyecto/other/user_session.dart';
 import 'package:guio_proyecto/pages/location_selection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
-
+import '../pages/my_data.dart';
 import '../pages/change_password.dart';
 
 //*********** HEADER ***********
@@ -45,7 +45,7 @@ Widget header(BuildContext context) {
         offset: const Offset(-10, 60),
         onSelected: (String value) {
           if (value == '1') {
-            // Ir a la página de "Mi cuenta"
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MyDataPage()),);
           } else if (value == '2') {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
           } else if (value == '3') {
@@ -89,14 +89,23 @@ Widget header(BuildContext context) {
         image: AssetImage("assets/images/logo_GUIO.png"),
         width: 100,
       ),
-      IconButton(
+
+       IconButton( //Buscar wiget text
+        //text: "hola",
+        icon: const Icon(Icons.logout, color: Colors.blue, size: 30,),
+        onPressed: () {
+          _logout(context);
+        },
+      ),
+            IconButton(
         icon: const Icon(Icons.logout, color: Colors.white, size: 30,),
         onPressed: () {
           _logout(context);
         },
-      )
+      ),
     ],
   );
+
 }
 
 Widget headerTexto() {
