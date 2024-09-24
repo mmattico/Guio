@@ -44,6 +44,26 @@ class User {
   }
 }
 
+/*
+Map<String, dynamic> toJson() {
+    return {
+      // El primer parametro hay que modificarlo en un futuro
+      'grafo': {"grafoID":1},
+      'nombre': nombre,
+      'apellido': apellido,
+      'dni': dni,
+      'email': email,
+      'telefono': telefono,
+      'permisos': permisos,
+      'usuario': usuario,
+      'contraseña': password,
+      'accesibilidadDefault': accesibilidadDefault,
+      'contraseñaReseteada': contraseniaReseteada,
+    };
+  }
+}
+*/
+
 Future<http.Response> createUser(User user) async {
   final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users');
   final headers = {"Content-Type": "application/json"};

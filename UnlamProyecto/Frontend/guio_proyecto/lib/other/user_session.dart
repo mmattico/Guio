@@ -70,6 +70,17 @@ Future<String?> getUsername() async {
   return prefs.getString('username');
 }
 
+Future<void> savePassword(String password) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('password', password);
+}
+
+Future<String?> getPassword() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('password');
+}
+
+
 Future<void> saveUserAccessibility(bool userAccessibility) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setBool('userAccessibility', userAccessibility);
@@ -122,4 +133,5 @@ Future<void> deleteUserSession() async {
   await prefs.remove('userAccessibility');
   await prefs.remove('graphCode');
   await prefs.remove('graphName');
+  await prefs.remove('contraseÃ±a');
 }
