@@ -3,6 +3,8 @@ import 'package:guio_proyecto/other/user_session.dart';
 import 'package:guio_proyecto/pages/home_page.dart';
 import 'package:guio_proyecto/other/get_graphs.dart';
 
+import 'home_page_accesible.dart';
+
 class LocationSelection extends StatefulWidget {
   @override
   _LocationSelectionState createState() => _LocationSelectionState();
@@ -11,6 +13,7 @@ class LocationSelection extends StatefulWidget {
 class _LocationSelectionState extends State<LocationSelection> {
   int? selectedLocation;
   String searchQuery = '';
+  bool isAccesible = true;
 
   late Future<List<Grafo>> futureGrafos;
   List<Grafo> _grafos = [];
@@ -18,6 +21,7 @@ class _LocationSelectionState extends State<LocationSelection> {
   @override
   void initState() {
     super.initState();
+    loadUserAccessibility();
     // Obtener los grafos
     futureGrafos = fetchGrafos();
     futureGrafos.then((grafos) {
@@ -27,6 +31,15 @@ class _LocationSelectionState extends State<LocationSelection> {
     }).catchError((error) {
       print('Error al obtener grafos: $error');
     });
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesible = userAccessibility;
+      });
+    }
   }
 
   @override
@@ -174,12 +187,22 @@ class _LocationSelectionState extends State<LocationSelection> {
                           saveGraphCode(codigoGrafo);
                           saveGraphName(nombreGrafo);
                           saveGraphID(idGrafo);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          );
+                          if(isAccesible){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AccesibleHome(),
+                              ),
+                            );
+                          }else{
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => HomePage(),
+                              ),
+                            );
+                          }
+
                         },
                         child: const Text(
                           'Continuar',
