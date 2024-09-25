@@ -1,6 +1,7 @@
 package com.guio.guio.service;
 
 import com.guio.guio.dao.UsuarioDAO;
+import com.guio.guio.model.Usuario;
 import com.guio.guio.repositorio.UsuarioRepositorio;
 import org.apache.commons.text.RandomStringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,11 +29,17 @@ public class UsuarioService {
     }
 
     public UsuarioDAO findByUsername(String username) {
-        return userRepository.findUsuarioDAOByUsuario(username).get();
+        UsuarioDAO usuario = userRepository.findUsuarioDAOByUsuario(username).get();
+        if(usuario.getGrafo()!= null)
+            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+        return usuario;
     }
 
     public UsuarioDAO findByEmail(String email) {
-        return userRepository.findByEmail(email).get();
+        UsuarioDAO usuario = userRepository.findByEmail(email).get();
+        if(usuario.getGrafo()!= null)
+            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+        return usuario;
     }
 
     public boolean existeNombreUsuario(String nombreUsuario) {
@@ -94,9 +102,9 @@ public class UsuarioService {
         }
     }
 
-    public void resetPassword(String nombreUsuario) {
+    public void resetPassword(String emailUsuario) {
         String contraseña = generatePassword();
-        UsuarioDAO usuario = userRepository.findByUsuario(nombreUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        UsuarioDAO usuario = userRepository.findByEmail(emailUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         usuario.setContraseña(contraseña);
         usuario.setContraseñaReseteada(true);
         userRepository.save(usuario);
@@ -124,4 +132,19 @@ public class UsuarioService {
         return generator.generate(12); // Ajusta la longitud de la contraseña
     }
 
+    public Optional<UsuarioDAO> actualizarUsuario(Long id, Usuario actualizacion) {
+        return userRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setNombre(actualizacion.getNombre());
+                    usuario.setApellido(actualizacion.getApellido());
+                    usuario.setEmail(actualizacion.getEmail());
+                    usuario.setTelefono(actualizacion.getTelefono());
+                    usuario.setDni(actualizacion.getDni());
+                    usuario.setUsuario(actualizacion.getUsuario());
+                    usuario.setContraseña(actualizacion.getContraseña());
+                    usuario.setContraseñaReseteada(false);
+                    usuario.setAccesibilidadDefault(actualizacion.isContraseñaReseteada());
+                    return userRepository.save(usuario);
+                });
+    }
 }

@@ -14,24 +14,28 @@ class AreaSelectionDialog extends StatefulWidget {
 
 class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
   String? areaEmergencia;
-  String? nombreUsuario = UserSession().username;
+  Future<int?> userID = getUserID();
+  Future<int?> graphID = getGraphID();
 
   int alertaId = 0;
 
   List<String> statusAlert = ['pendiente', 'en curso', 'finalizada', 'cancelada'];
 
 
-  Future<void> enviarAlerta() async {
+  Future<void> enviarAlerta(int? userID, int? graphID) async {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
       'usuario':{
-        'usuarioID': '1'//nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
+        'usuarioID': userID, //nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
       },
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': 'PRUEBA',
+      'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
+      'grafo': {
+        'grafoID': graphID,
+      },
     };
 
     try {
@@ -61,6 +65,31 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       print('Error: $e');
     }
   }
+
+  int? _userID;
+  int? _graphID;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarNombreUsuario();
+    _cargarGrafoID();
+  }
+
+  Future<void> _cargarNombreUsuario() async {
+    int? userID = await getUserID();
+    setState(() {
+      _userID = userID;
+    });
+  }
+
+  Future<void> _cargarGrafoID() async {
+    int? graphID = await getGraphID();
+    setState(() {
+      _graphID = graphID;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +145,9 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                         if (areaEmergencia != null) {
                           print('Área seleccionada: $areaEmergencia');
                           print('alerta id en codigo $alertaId');
-                          await enviarAlerta();
+                          print('usuario id: $_userID');
+                          print('grafo id: $_graphID');
+                          await enviarAlerta(_userID, _graphID);
                           Navigator.of(context).pop();
                           emergencyPopUp(context, alertaId);
                           print('alerta id en codigo $alertaId');
@@ -194,11 +225,12 @@ class _SearchWidgetState extends State<SearchWidget> {
 
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
+  Future<String?> graphCode = getGraphCode();
 
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos();
+    futureNodos = fetchNodos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;

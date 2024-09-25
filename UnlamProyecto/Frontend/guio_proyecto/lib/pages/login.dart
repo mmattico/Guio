@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/change_password.dart';
+import 'location_selection.dart';
 import 'signup.dart';
 import 'home_page.dart';
 import 'password_recovery.dart';
 import 'home_page_accesible.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-/*const users =  {
-  'admin@gmail.com': '12345',
-  'guioapp@gmail.com': 'guioapp',
-};*/
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,12 +22,16 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+
   bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Iniciar Sesión"
   bool _accesibilidadDefault = false;
+  bool _isValidatingInfo = false;
+
   String usuarioOEmail = '';
   String contrasenia = '';
   String errorUsuarioOEmailMessage = "";
   String errorContraseniaMessage = "";
+  bool passwordReset = false;
 
   Future<void> _getUserByEmail(String email) async{
     var url;
@@ -41,6 +44,15 @@ class _LoginPageState extends State<LoginPage> {
       _accesibilidadDefault = jsonMap["accesibilidadDefault"] ?? false;
       if(jsonMap["contraseÃ±a"] == contrasenia) {
         errorContraseniaMessage = "";
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await saveUserAccessibility(jsonMap["accesibilidadDefault"]);
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
       }
@@ -62,6 +74,16 @@ class _LoginPageState extends State<LoginPage> {
       print("JsonMap: $jsonMap");
       print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
       if(jsonMap["contraseÃ±a"] == contrasenia) {
+        passwordReset = jsonMap["contraseÃ±aReseteada"];
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await savePassword(jsonMap["contraseÃ±a"]);
+        await saveUserAccessibility(jsonMap["accesibilidadDefault"]);
         errorContraseniaMessage = "";
       } else {
         errorContraseniaMessage = "La contraseña ingresada es incorrecta";
@@ -208,11 +230,19 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (_formKey.currentState!.validate()) {
+
         if(_accesibilidadDefault){
           Navigator.push(context, MaterialPageRoute(builder: (context) => AccesibleHome()),);
         }else{
           Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
         }
+
+          if(passwordReset){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+          } else {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
+          }
+
         }
       },
       style: ElevatedButton.styleFrom(

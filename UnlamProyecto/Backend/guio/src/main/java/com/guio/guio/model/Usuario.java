@@ -1,54 +1,34 @@
-package com.guio.guio.dao;
+package com.guio.guio.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.guio.guio.dao.AlertaDAO;
+import com.guio.guio.dao.GrafoDAO;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "BSUsuario")
-public class UsuarioDAO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "UsuarioID")
+public class Usuario {
+
     private Long usuarioID;
-    @ManyToOne
-    @JoinColumn(name = "GrafoID") // Definir la columna que actúa como clave foránea
-    @JsonBackReference
-    private GrafoDAO grafo;
-    @OneToMany(mappedBy = "usuario")
-    @JsonManagedReference
-    private Set<AlertaDAO> alertas = new HashSet<>();
-    @Column(name = "Nombre")
     private String nombre;
-    @Column(name = "Apellido")
     private String apellido;
-    @Column(name = "Email")
     private String email;
-    @Column(name = "Telefono")
     private String telefono;
-    @Column(name = "Dni")
     private String dni;
-    @Column(name = "Permisos")
     private String permisos;
-    @Column(name = "Usuario")
     private String usuario;
-    @Column(name = "Contraseña")
     private String contraseña;
-    @Column(name = "accesibilidad_default")
     private boolean accesibilidadDefault;
-    @Column(name = "contraseña_reseteada")
     private boolean contraseñaReseteada;
-    @Transient
-    private Integer grafo_Id;
 
-    public UsuarioDAO(Long usuarioID, GrafoDAO grafo, Set<AlertaDAO> alertas, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
+    public Usuario() {
+    }
+
+    public Usuario(Long usuarioID, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
         this.usuarioID = usuarioID;
-        this.grafo = grafo;
-        this.alertas = alertas;
         this.nombre = nombre;
         this.apellido = apellido;
         this.email = email;
@@ -59,18 +39,14 @@ public class UsuarioDAO {
         this.contraseña = contraseña;
         this.accesibilidadDefault = accesibilidadDefault;
         this.contraseñaReseteada = contraseñaReseteada;
-        this.grafo_Id = grafo != null ? grafo.getGrafoID() : null;
     }
 
-    public UsuarioDAO() {
+    public Long getUsuarioID() {
+        return usuarioID;
     }
 
-    public GrafoDAO getGrafo() {
-        return grafo;
-    }
-
-    public void setGrafo(GrafoDAO grafo) {
-        this.grafo = grafo;
+    public void setUsuarioID(Long usuarioID) {
+        this.usuarioID = usuarioID;
     }
 
     public String getNombre() {
@@ -137,14 +113,6 @@ public class UsuarioDAO {
         this.contraseña = contraseña;
     }
 
-    public Set<AlertaDAO> getAlertas() {
-        return alertas;
-    }
-
-    public void setAlertas(Set<AlertaDAO> alertas) {
-        this.alertas = alertas;
-    }
-
     public boolean isAccesibilidadDefault() {
         return accesibilidadDefault;
     }
@@ -159,21 +127,5 @@ public class UsuarioDAO {
 
     public void setContraseñaReseteada(boolean contraseñaReseteada) {
         this.contraseñaReseteada = contraseñaReseteada;
-    }
-
-    public Long getUsuarioID() {
-        return usuarioID;
-    }
-
-    public void setUsuarioID(Long usuarioID) {
-        this.usuarioID = usuarioID;
-    }
-
-    public Integer getGrafo_Id() {
-        return grafo_Id;
-    }
-
-    public void setGrafo_Id(Integer grafo_Id) {
-        this.grafo_Id = grafo_Id;
     }
 }
