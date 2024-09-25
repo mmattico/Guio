@@ -20,14 +20,8 @@ public class Usuario {
     private String dni;
     private String permisos;
     private String usuario;
-    private String contraseña;
-    private boolean accesibilidadDefault;
-    private boolean contraseñaReseteada;
 
-    public Usuario() {
-    }
-
-    public Usuario(Long usuarioID, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String contraseña, boolean accesibilidadDefault, boolean contraseñaReseteada) {
+    public Usuario(Long usuarioID, String nombre, String apellido, String email, String telefono, String dni, String permisos, String usuario, String password, boolean accesibilidadDefault, boolean contraseñaReseteada) {
         this.usuarioID = usuarioID;
         this.nombre = nombre;
         this.apellido = apellido;
@@ -36,10 +30,18 @@ public class Usuario {
         this.dni = dni;
         this.permisos = permisos;
         this.usuario = usuario;
-        this.contraseña = contraseña;
+        this.password = password;
         this.accesibilidadDefault = accesibilidadDefault;
         this.contraseñaReseteada = contraseñaReseteada;
     }
+
+    private String password;
+    private boolean accesibilidadDefault;
+    private boolean contraseñaReseteada;
+
+    public Usuario() {
+    }
+
 
     public Long getUsuarioID() {
         return usuarioID;
@@ -105,13 +107,6 @@ public class Usuario {
         this.usuario = usuario;
     }
 
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
 
     public boolean isAccesibilidadDefault() {
         return accesibilidadDefault;
@@ -127,5 +122,13 @@ public class Usuario {
 
     public void setContraseñaReseteada(boolean contraseñaReseteada) {
         this.contraseñaReseteada = contraseñaReseteada;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
