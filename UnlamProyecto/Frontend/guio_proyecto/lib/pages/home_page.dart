@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import '../other/navigation_confirmation.dart';
 import 'package:flutter/services.dart';
 import '../other/search_homepage.dart';
@@ -8,7 +9,6 @@ import '../other/emergency_homepage.dart';
 import '../other/get_nodos.dart';
 
 class HomePage extends StatefulWidget {
-
   const HomePage({super.key});
 
   @override
@@ -122,10 +122,12 @@ class _HomePageState extends State<HomePage> {
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
 
+  Future<String?> graphCode = getGraphCode();
+
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos();
+    futureNodos = fetchNodosExtremos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
@@ -198,9 +200,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             const SizedBox(height: 15),
                             _services(context),
-                            const SizedBox(height: 18),
+                            const SizedBox(height: 4),
                             _accesibilidad(context),
-                            const SizedBox(height: 25),
+                            const SizedBox(height: 8),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
