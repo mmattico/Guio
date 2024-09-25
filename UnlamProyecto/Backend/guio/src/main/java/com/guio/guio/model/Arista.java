@@ -5,17 +5,15 @@ public class Arista {
     private String sentidoOrigen = "";
     private String sentidoDestino = "";
     private boolean existePuerta = false;
-    private boolean existeEscalon = false;
 
     public Arista() {
     }
 
-    public Arista(Integer distancia, String sentidoOrigen, String sentidoDestino, boolean existePuerta, boolean existeEscalon) {
+    public Arista(Integer distancia, String sentidoOrigen, String sentidoDestino, boolean existePuerta) {
         this.distancia = distancia;
         this.sentidoOrigen = sentidoOrigen;
         this.sentidoDestino = sentidoDestino;
         this.existePuerta = existePuerta;
-        this.existeEscalon = existeEscalon;
     }
 
     public Integer getDistancia() {
@@ -48,13 +46,5 @@ public class Arista {
 
     public void setExistePuerta(boolean existePuerta) {
         this.existePuerta = existePuerta;
-    }
-
-    public boolean isExisteEscalon() {
-        return existeEscalon;
-    }
-
-    public void setExisteEscalon(boolean existeEscalon) {
-        this.existeEscalon = existeEscalon;
     }
 }

@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/UsuarioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/UsuarioController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/UsuarioService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/UsuarioService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,14 +41,6 @@
             <RecentBranchesForRepo>
               <option name="branches">
                 <list>
-                  <RecentBranch>
-                    <option name="branchName" value="develop2" />
-                    <option name="lastUsedInstant" value="1726337153" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="CorreccionesMartin4" />
-                    <option name="lastUsedInstant" value="1726336483" />
-                  </RecentBranch>
                   <RecentBranch>
                     <option name="branchName" value="MartinMatticoliAlertas" />
                     <option name="lastUsedInstant" value="1722662085" />
@@ -145,26 +139,6 @@
           <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
           <line>86</line>
           <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/UsuarioController.java</url>
-          <line>20</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/NodoController.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="22" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/DijkstraController.java</url>
-          <line>49</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/service/DijkstraService.java</url>
-          <line>385</line>
-          <option name="timeStamp" value="25" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

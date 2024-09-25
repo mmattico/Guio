@@ -22,8 +22,7 @@ class AreaDialog extends StatefulWidget {
 
 class _AreaDialogState extends State<AreaDialog> {
   String? areaEmergencia;
-  Future<int?> userID = getUserID();
-  Future<int?> graphID = getGraphID();
+  String? nombreUsuario = UserSession().username;
 
   int alertaId = 0;
 
@@ -33,24 +32,19 @@ class _AreaDialogState extends State<AreaDialog> {
   void initState() {
     super.initState();
     areaEmergencia = widget.areaActual;
-    _cargarNombreUsuario();
-    _cargarGrafoID();
   }
 
-  Future<void> enviarAlerta(userID, graphID) async {
+  Future<void> enviarAlerta() async {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
       'usuario': {
-        'usuarioID': userID, // nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
+        'usuarioID': '1' // nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
       },
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': '',
+      'comentario': 'PRUEBA',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
-      'grafo': {
-        'grafoID': graphID,
-      },
     };
 
     try {
@@ -79,23 +73,6 @@ class _AreaDialogState extends State<AreaDialog> {
       // Handle any errors that occur during the request
       print('Error: $e');
     }
-  }
-
-  int? _userID;
-  int? _graphID;
-
-  Future<void> _cargarNombreUsuario() async {
-    int? userID = await getUserID();
-    setState(() {
-      _userID = userID;
-    });
-  }
-
-  Future<void> _cargarGrafoID() async {
-    int? graphID = await getGraphID();
-    setState(() {
-      _graphID = graphID;
-    });
   }
 
   @override
@@ -144,9 +121,7 @@ class _AreaDialogState extends State<AreaDialog> {
                       onPressed: widget.areaActual == null ? null : () async {
                         if (widget.areaActual != null) {
                           print('Usted se encuentra en: ${widget.areaActual}');
-                          print('usuario id: $_userID');
-                          print('grafo id: $_graphID');
-                          await enviarAlerta(_userID, _graphID);
+                          await enviarAlerta();
                           Navigator.of(context).pop();
                           emergencyPopUpNavigation(context, alertaId, widget.updateCancelarRecorrido);
                         }

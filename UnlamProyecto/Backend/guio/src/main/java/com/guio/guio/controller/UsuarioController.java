@@ -1,14 +1,12 @@
 package com.guio.guio.controller;
 
 import com.guio.guio.dao.UsuarioDAO;
-import com.guio.guio.model.Usuario;
 import com.guio.guio.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -21,13 +19,6 @@ public class UsuarioController {
     @PostMapping
     public UsuarioDAO createUser(@RequestBody UsuarioDAO user) {
         return userService.save(user);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDAO> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-        Optional<UsuarioDAO> usuarioActualizado = userService.actualizarUsuario(id, usuario);
-        return usuarioActualizado.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/get-username/{username}")
@@ -52,8 +43,8 @@ public class UsuarioController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam(name = "EMAIL") String emailUsuario) {
-        userService.resetPassword(emailUsuario);
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "USERNAME") String nombreUsuario) {
+        userService.resetPassword(nombreUsuario);
         return ResponseEntity.ok("Password successfully reset");
     }
 
