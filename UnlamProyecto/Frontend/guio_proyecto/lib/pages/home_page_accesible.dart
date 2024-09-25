@@ -16,7 +16,6 @@ class _AccesibleHome extends State<AccesibleHome> {
   String _destino = '';
   String _servicio = '';
   String _preferencia = '';
-  bool _isDialogShowing = false;
   Timer? _timer;
   bool _isButtonEnabled = false;
 
@@ -39,11 +38,12 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _listen(int textFieldIndex, String label) async {
+    print("INDEX: " + textFieldIndex.toString() + "    " + label);
     speak("Usted seleccionó " + label);
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
-          if (status == 'nosListening') {
+          if (status == 'notListening') {
             _stopListening();
             Future.delayed(Duration(milliseconds: 500), () {
               _validarExistenciaSegunCampo(textFieldIndex);
@@ -57,6 +57,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         setState(() {
           _isListening = true;
         });
+        print("no se porque no paso");
         _speech.listen(onResult: (result) {
           setState(() {
             switch (textFieldIndex) {
@@ -120,9 +121,10 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
-    if (!listaChequeo.contains(escucha) && !_isDialogShowing) {
-      print(escucha + " " + campo + " " + textFieldIndex.toString());
+    print(escucha + " " + campo + " " + textFieldIndex.toString());
+    if (!listaChequeo.contains(escucha)) {
       speak("Disculpe, no he entendido. Vuelva a intentarlo.");
+      speak("Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
         switch (textFieldIndex) {
           case 1:
@@ -139,11 +141,11 @@ class _AccesibleHome extends State<AccesibleHome> {
             break;
         }
       });
-      _mostrarAlerta(campo);
     } else {
-      speak("Fin del reconocimiento, $campo cargado");
+      speak("Fin del reconocimiento, dato cargado");
     }
   }
+
 
   void _updateButtonState() {
     setState(() {
@@ -152,41 +154,6 @@ class _AccesibleHome extends State<AccesibleHome> {
     });
   }
 
-  void _mostrarAlerta(String campo) {
-    setState(() {
-      _isDialogShowing = true;
-    });
-
-    if (mounted) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          _timer?.cancel();
-          _timer = Timer(Duration(seconds: 5), () {
-            if (mounted && Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          });
-
-          return GestureDetector(
-            onTap: () {
-              if (mounted && Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: AlertDialog(
-              title: Text('Elemento no válido'),
-              content: Text('El área ingresada en $campo no existe.'),
-            ),
-          );
-        },
-      ).then((_) {
-        setState(() {
-          _isDialogShowing = false;
-        });
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
