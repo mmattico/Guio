@@ -141,7 +141,7 @@ public class UsuarioService {
                     usuario.setTelefono(actualizacion.getTelefono());
                     usuario.setDni(actualizacion.getDni());
                     usuario.setUsuario(actualizacion.getUsuario());
-                    usuario.setContraseña(actualizacion.getContraseña());
+                    usuario.setContraseña(actualizacion.getPassword());
                     usuario.setContraseñaReseteada(false);
                     usuario.setAccesibilidadDefault(actualizacion.isContraseñaReseteada());
                     return userRepository.save(usuario);

@@ -70,6 +70,17 @@ Future<String?> getUsername() async {
   return prefs.getString('username');
 }
 
+Future<void> savePassword(String password) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('password', password);
+}
+
+Future<String?> getPassword() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('password');
+}
+
+
 Future<void> saveUserAccessibility(bool userAccessibility) async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setBool('userAccessibility', userAccessibility);
@@ -78,6 +89,16 @@ Future<void> saveUserAccessibility(bool userAccessibility) async {
 Future<bool?> getUserAccessibility() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getBool('userAccessibility');
+}
+
+Future<void> saveGraphID(int grafoID) async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setInt('grafoID', grafoID);
+}
+
+Future<int?> getGraphID() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getInt('grafoID');
 }
 
 Future<void> saveGraphCode(String graphCode) async {
@@ -112,4 +133,5 @@ Future<void> deleteUserSession() async {
   await prefs.remove('userAccessibility');
   await prefs.remove('graphCode');
   await prefs.remove('graphName');
+  await prefs.remove('contraseÃ±a');
 }

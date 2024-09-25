@@ -33,6 +33,35 @@ Future<List<Nodo>> fetchNodos(Future<String?> graphCodeFuture) async {
 }
 
 
+Future<List<Nodo>> fetchNodosExtremos(Future<String?> graphCodeFuture) async {
+  final graphCode = await graphCodeFuture;
+  if (graphCode == null) {
+    throw Exception('Graph code no proporcionado.');
+  }
+
+  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/extremos/$graphCode'));
+
+  if (response.statusCode == 200) {
+    final utf8DecodedBody = utf8.decode(response.bodyBytes);
+    final List<dynamic> body = jsonDecode(utf8DecodedBody);
+
+    print('JSON recibido: $body');
+
+    if (body == null) {
+      return [];
+    }
+
+    List<Nodo> nodos = body.map((dynamic item) => Nodo.fromJson(item)).toList();
+
+    return nodos;
+  } else {
+    print('Error al obtener nodos: ${response.statusCode}');
+    print('Cuerpo de la respuesta: ${response.body}');
+    throw Exception('Error al obtener nodos');
+  }
+}
+
+
 class Grafo {
   final List<Nodo> nodos;
 
