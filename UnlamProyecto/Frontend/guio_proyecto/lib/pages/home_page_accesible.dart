@@ -1,7 +1,10 @@
-//import 'package:flutter/material.dart';
-//import 'package:speech_to_text/speech_to_text.dart' as stt;
-//import 'package:text_to_speech/text_to_speech.dart';
-/*
+import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'dart:async';
+import '../other/get_nodos.dart';
+import '../other/text_to_voice.dart';
+import '../other/navigation_confirmation.dart';
+
 class AccesibleHome extends StatefulWidget {
   @override
   _AccesibleHome createState() => _AccesibleHome();
@@ -9,59 +12,67 @@ class AccesibleHome extends StatefulWidget {
 
 class _AccesibleHome extends State<AccesibleHome> {
   late stt.SpeechToText _speech;
-  //late TextToSpeech _textToSpeech;
   bool _isListening = false;
-  String _text = " ";
+  String _origen = '';
+  String _destino = '';
+  String _servicio = '';
+  String _preferencia = '';
+  bool _isDialogShowing = false;
+  Timer? _timer;
+  bool _isButtonEnabled = false;
 
-  int _questionIndex = 0;
-  final List<String> _responses = [];
-
-  final List<String> _questions = [
-    'Ingrese su origen',
-    'Ingrese su destino',
-    '¿Desea agregar otra parada?',
-    '¿Prefiere ir por escalera o ascensor?',
-  ];
+  final List<String> areasPermitidas = ['Cardiología', 'Clínica Médica', 'Dermatologia']; //Agregar la lista de nombres de nodos activos
+  final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
+  final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
 
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    _textToSpeech = TextToSpeech();
-    _speakQuestion();
+    speak("Bienvenido a Guio, por favor complete los campos para poder ayudarlo");
   }
 
-  void _speakQuestion() {
-    if (_questionIndex < _questions.length) {
-      _textToSpeech.speak(_questions[_questionIndex]);
-    }
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
-  void _listen() async {
+  void _listen(int textFieldIndex, String label) async {
+    speak("usted selecciono " + label);
     if (!_isListening) {
-      bool available = await _speech.initialize();
+      bool available = await _speech.initialize(
+        onStatus: (status) {
+          if (status == 'done') {
+            Future.delayed(Duration(milliseconds: 500), () {
+              _validarExistenciaSegunCampo(textFieldIndex);
+            });
+          }
+        },
+        onError: (error) => print('onError: $error'),
+      );
       if (available) {
         setState(() {
           _isListening = true;
         });
         _speech.listen(onResult: (result) {
           setState(() {
-            _text = result.recognizedWords;
+            switch (textFieldIndex) {
+              case 1:
+                _origen = colocarMayusculas(result.recognizedWords);
+                break;
+              case 2:
+                _destino = colocarMayusculas(result.recognizedWords);
+                break;
+              case 3:
+                _servicio = colocarMayusculas(result.recognizedWords);
+                break;
+              case 4:
+                _preferencia = colocarMayusculas(result.recognizedWords);
+                break;
+            }
+            _updateButtonState();
           });
-        });
-
-        // Detener el reconocimiento automáticamente después de 5 segundos
-        Future.delayed(Duration(seconds: 5), () {
-          if (_isListening) {
-            _speech.stop();
-            setState(() {
-              _isListening = false;
-              if (_text.isNotEmpty) {
-                _handleResponse(_text);
-                _text = "";  // Limpiar el texto reconocido
-              }
-            });
-          }
         });
       }
     } else {
@@ -69,83 +80,188 @@ class _AccesibleHome extends State<AccesibleHome> {
         _isListening = false;
       });
       _speech.stop();
+      speak("Fin del reconocimiento, Prosiga");
     }
   }
 
-  void _handleResponse(String response) {
+
+  String colocarMayusculas(String text) {
+    if (text.isEmpty) return text;
+    return text.split(' ').map((word) {
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
+
+  void _validarExistenciaSegunCampo(int textFieldIndex) {
+    switch (textFieldIndex) {
+      case 1:
+        _validarExistencia(_origen, 'ORIGEN', areasPermitidas,1);
+        break;
+      case 2:
+        print("paso por aca??");
+        _validarExistencia(_destino, 'DESTINO', areasPermitidas,2);
+        break;
+      case 3:
+        _validarExistencia(_servicio, 'SERVICIO', serviciosPermitidos,3);
+        break;
+      case 4:
+        _validarExistencia(_preferencia, 'PREFERENCIA', preferenciasPermitidas,4);
+        break;
+    }
+  }
+
+  void _validarExistencia(String escucha, String campo, List<String> listaChequeo,int textFieldIndex) {
+
+    if (!listaChequeo.contains(escucha) && !_isDialogShowing) {
+      print(escucha + " " + campo + " " +textFieldIndex.toString());
+      setState(() {
+        switch (textFieldIndex) {
+          case 1:
+            _origen = '';
+            break;
+          case 2:
+            _destino = '';
+            break;
+          case 3:
+            _servicio = '';
+            break;
+          case 4:
+            _preferencia = '';
+            break;
+        }
+      });
+      _mostrarAlerta(campo);
+    }
+
+  }
+
+  void _updateButtonState() {
     setState(() {
-      _responses.add(response);
-      _questionIndex++;
-      if (_questionIndex < _questions.length) {
-        _speakQuestion();  // Leer la siguiente pregunta en voz alta
-      }
+      _isButtonEnabled = _origen.isNotEmpty && _destino.isNotEmpty && _preferencia.isNotEmpty;
+    });
+  }
+
+  void _mostrarAlerta(String campo) {
+    setState(() {
+      _isDialogShowing = true;
+    });
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        speak("Disculpe no he entendido, intente nuevamente");
+        _timer?.cancel();
+        _timer = Timer(Duration(seconds: 5), () {
+          if (mounted && Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+        });
+
+        return GestureDetector(
+          onTap: () {
+            if (mounted && Navigator.of(context).canPop()) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: AlertDialog(
+            title: Text('Elemento no valido'),
+            content: Text('El área ingresada en $campo no existe.'),
+          ),
+        );
+      },
+    ).then((_) {
+      setState(() {
+        _isDialogShowing = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (_questionIndex < _questions.length) ...[
-                Text(
-                  _questions[_questionIndex],
-                  style: TextStyle(fontSize: 24),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _listen,
-                  child: Text(_isListening ? 'Detener reconocimiento' : 'Habla ahora'),
-                ),
-              ] else ...[
-                Text(
-                  'Resumen de tus respuestas:',
-                  style: TextStyle(fontSize: 24),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
-                ..._questions.asMap().entries.map((entry) {
-                  int index = entry.key;
-                  String question = entry.value;
-                  String response = _responses[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text(
-                      '$question $response',
-                      style: TextStyle(fontSize: 18),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }).toList(),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    // Puedes hacer algo con las respuestas aquí si es necesario
-                  },
-                  child: Text('Aceptar'),
-                ),
-              ],
-              if (_text.isNotEmpty && _isListening)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  child: Text(
-                    'Respuesta: $_text',
-                    style: TextStyle(fontSize: 18),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-            ],
-          ),
+      appBar: AppBar(
+        title: Text('Ingresar datos por voz'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLabelAndField('ORIGEN', 1, _origen),
+            SizedBox(height: 20),
+            _buildLabelAndField('DESTINO', 2, _destino),
+            SizedBox(height: 20),
+            _buildLabelAndField('SERVICIO', 3, _servicio),
+            SizedBox(height: 20),
+            _buildLabelAndField('PREFERENCIA', 4, _preferencia),
+            SizedBox(height: 40),
+            _buildButtons(),
+          ],
         ),
       ),
     );
   }
+
+  Widget _buildLabelAndField(String label, int index, String text) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+        SizedBox(width: 10),
+        Expanded(
+          flex: 3,
+          child: GestureDetector(
+            onTap: () => _listen(index,label),
+            child: AbsorbPointer(
+              child: TextField(
+                controller: TextEditingController(text: text),
+                readOnly: true, // Solo de lectura
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton(
+          onPressed: _isButtonEnabled
+              ? () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => NavigationConfirmation(
+                  selectedOrigin: _origen,
+                  selectedArea: _destino,
+                  selectedService: _servicio,
+                  selectedPreference: _preferencia,
+                ),
+              ),
+            );
+          }
+              : null,
+          style: ElevatedButton.styleFrom(
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(80),
+          ),
+          child: Text(
+            'ACEPTAR',
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
+      ],
+    );
+  }
 }
-*/
