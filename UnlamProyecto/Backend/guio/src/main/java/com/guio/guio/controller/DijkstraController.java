@@ -37,7 +37,6 @@ public class DijkstraController {
 		Grafo grafo = service.obtenerGrafo(ubicacion, preferencia);
 		grafo = service.calcularCaminoMasCortoDesdeFuente(grafo, nodoNombreOrigen);
 		Camino camino = service.convertirGrafoACaminoPorTipo(grafo, tipoNodoDestino);
-		camino.setNorteGrado(grafo.getNorteGrado());
 		return new ResponseEntity<>(camino, HttpStatus.OK);
 	}
 

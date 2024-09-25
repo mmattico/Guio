@@ -25,19 +25,14 @@ public class AlertaDAO {
     private String lugarDeAlerta;
     @Column(name = "Estado")
     private String estado;
-    @ManyToOne
-    @JoinColumn(name = "GrafoID") // Definir la columna que actúa como clave foránea
-    @JsonBackReference
-    private GrafoDAO grafo;
 
-    public AlertaDAO(Long alertaID, UsuarioDAO usuario, LocalDateTime fecha, String comentario, String lugarDeAlerta, String estado, GrafoDAO grafo) {
+    public AlertaDAO(Long alertaID, UsuarioDAO usuario, LocalDateTime fecha, String comentario, String lugarDeAlerta, String estado) {
         this.alertaID = alertaID;
         this.usuario = usuario;
         this.fecha = fecha;
         this.comentario = comentario;
         this.lugarDeAlerta = lugarDeAlerta;
         this.estado = estado;
-        this.grafo = grafo;
     }
 
     public AlertaDAO() {
@@ -89,13 +84,5 @@ public class AlertaDAO {
 
     public void setEstado(String estado) {
         this.estado = estado;
-    }
-
-    public GrafoDAO getGrafo() {
-        return grafo;
-    }
-
-    public void setGrafo(GrafoDAO grafo) {
-        this.grafo = grafo;
     }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/password_recovery_confirmation.dart';
 import '/pages/login.dart';
-import 'package:http/http.dart' as http;
 
 class PasswordRecovery extends StatelessWidget {
   final _emailController = TextEditingController();
@@ -99,7 +98,7 @@ class PasswordRecovery extends StatelessWidget {
         child: ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          // await _enviarMailRecovery();
+          //Enviar mail de recovery
           Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordRecoveryConfirmation(email: email)),);
         }
       },
@@ -129,24 +128,6 @@ class PasswordRecovery extends StatelessWidget {
           style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 16),
         ),
     );
-  }
-
-  Future<void> _enviarMailRecovery() async {
-    var url;
-    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/reset-password', {'EMAIL': email});
-
-    try {
-      final response = await http.post(url);
-
-      if (response.statusCode == 200) {
-        print("Se ha reseteado la contraseña con exito");
-      } else {
-        print("Error al resetear contraseña");
-        print('Respuesta: ${response.body}');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
   }
 
 }

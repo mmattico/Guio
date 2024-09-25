@@ -117,7 +117,7 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                       // Si el usuario eligió sí, cierra el popup original y actualiza la alerta
                       if (result == true) {
                         //actualizar estado de alerta a "finalizada"
-                        updateTicketStatus(alertaID, 'finalizada', 'Finalizada por el usuario');
+                        updateTicketStatus(alertaID, 'finalizada');
                         //agregar también update de comentario
                         Navigator.of(context).pop();
                       }
@@ -170,7 +170,7 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                     // Si el usuario eligió sí, cierra el popup original
                     if (result == true) {
                       //cambia estado de alerta a cancelada
-                      updateTicketStatus(alertaID, 'cancelada', 'Cancelada por el usuario');
+                      updateTicketStatus(alertaID, 'cancelada');
                       //agregar también update de comentario
                       Navigator.of(context).pop();
                     }
@@ -281,7 +281,7 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                       // Si el usuario eligió sí, cierra el popup original y actualiza la alerta
                       if (result == true) {
                         //actualizar estado de alerta a "finalizada"
-                        updateTicketStatus(alertaID, 'finalizada', 'Finalizado por el usuario');
+                        updateTicketStatus(alertaID, 'finalizada');
                         updateCancelarRecorrido(false);
                         //agregar también update de comentario
                         Navigator.of(context).pop();
@@ -335,7 +335,7 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                     // Si el usuario eligió sí, cierra el popup original
                     if (result == true) {
                       //cambia estado de alerta a cancelada
-                      updateTicketStatus(alertaID, 'cancelada', 'Cancelada por el usuario');
+                      updateTicketStatus(alertaID, 'cancelada');
                       updateCancelarRecorrido(false);
                       //agregar también update de comentario
                       Navigator.of(context).pop();
@@ -358,9 +358,8 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
 
 // CAMBIAR ESTADO DE LA ALERTA
 
-Future<void> updateTicketStatus(int ticketId, String newStatus, String comentario) async {
-  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado')
-      .replace(queryParameters: {'COMENTARIO': comentario});
+Future<void> updateTicketStatus(int ticketId, String newStatus) async {
+  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado');
 
   print('URL: $url');
   print('New Status: $newStatus');

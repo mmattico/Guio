@@ -80,7 +80,7 @@ public class DijkstraService {
 
     public static Camino convertirGrafoACamino(Grafo grafo, String nodoDestinoNombre) {
         Nodo nodoDestino = getNodoFromGrafo(grafo, nodoDestinoNombre);
-        Camino camino = new Camino();
+        Camino camino;
         if(nodoDestino.getCaminoCorto().isEmpty()){
             camino = obtenerInstruccionCaminoNoExiste();
         }else {
@@ -121,7 +121,6 @@ public class DijkstraService {
         Instruccion instruccion;
         instruccion = new Instruccion();
         instruccion.setExistePuerta(nodo.getArista().isExistePuerta());
-        instruccion.setExisteEscalon(nodo.getArista().isExisteEscalon());
         instruccion.setSiguienteNodo(nodo.getNombre());
         instruccion.setDistancia(nodo.getArista().getDistancia());
         instruccion.setSentidoDestino(nodo.getArista().getSentidoDestino());
@@ -170,7 +169,7 @@ public class DijkstraService {
 
             resultSet = statement.executeQuery(queryNorteGrado);
             if(resultSet.next()) {
-                planificacion.setNorteGrado(resultSet.getInt("norte_grado"));
+                planificacion.setNorteGrado(resultSet.getInt(0));
             }
 
             String query = "SELECT BSNodo.* " +
@@ -203,8 +202,7 @@ public class DijkstraService {
                     "BSArista.SentidoOrigen as SentidoOrigen, " +
                     "BSArista.SentidoDestino as SentidoDestino, " +
                     "BSArista.Distancia as Distancia, " +
-                    "BSArista.ExistePuerta as ExistePuerta, " +
-                    "BSArista.ExisteEscalon as ExisteEscalon " +
+                    "BSArista.ExistePuerta as ExistePuerta " +
                     "FROM BSArista " +
                     "INNER JOIN BSNodo NodoOrigen on NodoOrigen.NodoID = BSArista.NodoOrigenID " +
                     "INNER JOIN BSNodo NodoDestino on NodoDestino.NodoID = BSArista.NodoDestinoID " +
@@ -221,11 +219,10 @@ public class DijkstraService {
                 String sentidoDestino = resultSet.getString("SentidoDestino");
                 Integer distancia = resultSet.getInt("Distancia");
                 boolean existePuerta = resultSet.getBoolean("ExistePuerta");
-                boolean existeEscalon = resultSet.getBoolean("ExisteEscalon");
                 nodoOrigenParte1.addDestination(nodoDestinoParte1,
-                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta,existeEscalon));
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
                 nodoOrigenParte2.addDestination(nodoDestinoParte2,
-                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta,existeEscalon));
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
             }
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -297,8 +294,7 @@ public class DijkstraService {
                                     "BSArista.SentidoOrigen as SentidoOrigen, " +
                                     "BSArista.SentidoDestino as SentidoDestino, " +
                                     "BSArista.Distancia as Distancia, " +
-                                    "BSArista.ExistePuerta as ExistePuerta, " +
-                                    "BSArista.ExisteEscalon as ExisteEscalon " +
+                                    "BSArista.ExistePuerta as ExistePuerta " +
                             "FROM BSArista " +
                             "INNER JOIN BSNodo NodoOrigen on NodoOrigen.NodoID = BSArista.NodoOrigenID " +
                             "INNER JOIN BSNodo NodoDestino on NodoDestino.NodoID = BSArista.NodoDestinoID " +
@@ -313,9 +309,8 @@ public class DijkstraService {
                 String sentidoDestino = resultSet.getString("SentidoDestino");
                 Integer distancia = resultSet.getInt("Distancia");
                 boolean existePuerta = resultSet.getBoolean("ExistePuerta");
-                boolean existeEscalon = resultSet.getBoolean("ExisteEscalon");
                 nodoOrigen.addDestination(nodoDestino,
-                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta, existeEscalon));
+                        new Arista(distancia, sentidoOrigen, sentidoDestino, existePuerta));
             }
 
         } catch (ClassNotFoundException | SQLException e) {
@@ -381,9 +376,7 @@ public class DijkstraService {
         instruccionFin.setPausa(true);
         caminoADestino.addInstruccion(instruccionFin);
 
-        Camino caminoFinal = new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
-        caminoFinal.setNorteGrado(planificacion.getNorteGrado());
-        return caminoFinal;
+        return new Camino(caminoAIntermedio.mergeCaminos(caminoADestino));
     }
 
     private static Nodo getNodoIntermedioFromGrafo(Grafo grafo, String tipoNodoDestino) {
