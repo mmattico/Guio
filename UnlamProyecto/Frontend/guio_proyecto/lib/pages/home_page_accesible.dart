@@ -10,7 +10,6 @@ class AccesibleHome extends StatefulWidget {
   @override
   _AccesibleHome createState() => _AccesibleHome();
 }
-
 class _AccesibleHome extends State<AccesibleHome> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -29,6 +28,8 @@ class _AccesibleHome extends State<AccesibleHome> {
   List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
   final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
   final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
+
+  int _selectedTextFieldIndex = 0;
 
   @override
   void initState() {
@@ -65,17 +66,16 @@ class _AccesibleHome extends State<AccesibleHome> {
   void _listen(int textFieldIndex, String label) async {
     print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
 
-
+    _selectedTextFieldIndex = textFieldIndex;
 
     speak("Usted seleccionó " + label);
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
-          //aca se freeza la variable textfieldindex
           if (status == 'notListening') {
             _stopListening();
             Future.delayed(Duration(milliseconds: 500), () {
-              _validarExistenciaSegunCampo(textFieldIndex);
+              _validarExistenciaSegunCampo(_selectedTextFieldIndex);
             });
           }
         },
@@ -88,7 +88,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         });
         _speech.listen(onResult: (result) {
           setState(() {
-            switch (textFieldIndex) {
+            switch (_selectedTextFieldIndex) {
               case 1:
                 _origen = colocarMayusculas(result.recognizedWords);
                 break;
@@ -104,13 +104,11 @@ class _AccesibleHome extends State<AccesibleHome> {
             }
             _updateButtonState();
           });
-        },listenFor: const Duration(seconds: 5));
+        }, listenFor: const Duration(seconds: 5));
       }
     } else {
       _stopListening();
-
     }
-
   }
 
   void _stopListening() {
@@ -175,14 +173,12 @@ class _AccesibleHome extends State<AccesibleHome> {
     }
   }
 
-
   void _updateButtonState() {
     setState(() {
       _isButtonEnabled = (_origen.isNotEmpty && _destino.isNotEmpty && _preferencia.isNotEmpty) ||
           (_origen.isNotEmpty && _servicio.isNotEmpty && _preferencia.isNotEmpty);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -273,3 +269,4 @@ class _AccesibleHome extends State<AccesibleHome> {
     );
   }
 }
+
