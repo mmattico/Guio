@@ -42,7 +42,24 @@ class User {
       'contraseñaReseteada': contraseniaReseteada,
     };
   }
+
+  Map<String, dynamic> toJsonMyData() {
+    return {
+      'nombre': nombre,
+      'apellido': apellido,
+      'dni': dni,
+      'email': email,
+      'telefono': telefono,
+      'usuario': usuario,
+      'contraseña': password,
+      'accesibilidadDefault': accesibilidadDefault
+    };
+  }
 }
+
+
+
+
 
 /*
 Map<String, dynamic> toJson() {
@@ -72,3 +89,14 @@ Future<http.Response> createUser(User user) async {
 
   return await http.post(url, headers: headers, body: body);
 }
+
+Future<http.Response> updateUser(int id,User user) async {
+  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/$id');
+  final headers = {"Content-Type": "application/json"};
+  print("Url: $url");
+  print("Json final: ${user.toJsonMyData()}");
+  final body = jsonEncode(user.toJsonMyData());
+
+  return await http.put(url, headers: headers, body: body);
+}
+
