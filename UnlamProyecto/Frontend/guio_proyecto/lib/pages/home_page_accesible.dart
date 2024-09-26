@@ -64,11 +64,10 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _listen(int textFieldIndex, String label) async {
+    speak("Seleccionó  $label");
     print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
-
     _selectedTextFieldIndex = textFieldIndex;
 
-    speak("Usted seleccionó " + label);
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
@@ -86,6 +85,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         setState(() {
           _isListening = true;
         });
+        detenerReproduccion();
         _speech.listen(onResult: (result) {
           setState(() {
             switch (_selectedTextFieldIndex) {
@@ -150,8 +150,7 @@ class _AccesibleHome extends State<AccesibleHome> {
   void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
     print(escucha + " " + campo + " " + textFieldIndex.toString());
     if (!listaChequeo.contains(escucha)) {
-      speak("Disculpe, no he entendido. Vuelva a intentarlo.");
-      speak("Las opciones válidas son: ${listaChequeo.join(', ')}");
+      speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
         switch (textFieldIndex) {
           case 1:
@@ -169,7 +168,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         }
       });
     } else {
-      speak("Fin del reconocimiento, dato cargado");
+      speak("$campo cargado");
     }
   }
 
