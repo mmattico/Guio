@@ -121,11 +121,12 @@ public class UsuarioService {
 
     public void sendEmail(String to, String subject, String text) throws Exception {
         try {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-        emailSender.send(message);
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom("contacto.guio@gmail.com");
+            message.setTo(to);
+            message.setSubject(subject);
+            message.setText(text);
+            emailSender.send(message);
         }catch (Exception ex){
             throw new Exception(ex);
         }
