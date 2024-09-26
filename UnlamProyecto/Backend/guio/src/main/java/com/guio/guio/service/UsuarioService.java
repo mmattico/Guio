@@ -143,7 +143,7 @@ public class UsuarioService {
                     usuario.setUsuario(actualizacion.getUsuario());
                     usuario.setContraseña(actualizacion.getContraseña());
                     usuario.setContraseñaReseteada(false);
-                    usuario.setAccesibilidadDefault(actualizacion.isContraseñaReseteada());
+                    usuario.setAccesibilidadDefault(actualizacion.isAccesibilidadDefault());
                     return userRepository.save(usuario);
                 });
     }
