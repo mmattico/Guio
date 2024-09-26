@@ -89,14 +89,14 @@ Widget header(BuildContext context) {
         image: AssetImage("assets/images/logo_GUIO.png"),
         width: 100,
       ),
-
+/*
        IconButton( //Buscar wiget text
         //text: "hola",
         icon: const Icon(Icons.logout, color: Colors.blue, size: 30,),
         onPressed: () {
           _logout(context);
         },
-      ),
+      ),*/
             IconButton(
         icon: const Icon(Icons.logout, color: Colors.white, size: 30,),
         onPressed: () {

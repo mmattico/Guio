@@ -1,3 +1,5 @@
+import 'dart:ffi';
+import 'login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:guio_proyecto/other/user_session.dart';
@@ -29,9 +31,16 @@ class _MyDataPageState extends State<MyDataPage> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isChecked = false; // este se envía para lo de accesibilidad :)
+  int _userID = 0;
   String errorUsernameMessage = "";
   String errorDocumentMessage = "";
   String errorEmailMessage = "";
+  String emailInicial = "";
+  String userNameInicial = "";
+
+  bool userNameChange = false;
+  bool emailChange = false;
+  bool passwordChange = false;
 
   bool _isValidatingInfo =
       false; // Variable para controlar el estado del botón "Registrate"
@@ -47,6 +56,12 @@ class _MyDataPageState extends State<MyDataPage> {
   @override
   void initState() {
     super.initState();
+
+    getUserID().then((int? id) {
+      setState(() {
+        _userID = id ?? 0; // Si el id es nulo, asigna 0 u otro valor entero por defecto.
+      });
+    });
     getUserFirstName().then((String? firstName) {
       _firstnameController.text = firstName ?? '';
     });
@@ -54,6 +69,7 @@ class _MyDataPageState extends State<MyDataPage> {
       _lastnameController.text = lastName ?? '';
     });
     getUserEmail().then((String? userEmail) {
+      emailInicial = userEmail!;
       _emailController.text = userEmail ?? '';
     });
     getUserPhone().then((String? firstName) {
@@ -63,6 +79,7 @@ class _MyDataPageState extends State<MyDataPage> {
       _dniController.text = dni ?? '';
     });
     getUsername().then((String? userName) {
+      userNameInicial = userName!;
       _usernameController.text = userName ?? '';
     });
     getPassword().then((String? password) {
@@ -73,6 +90,29 @@ class _MyDataPageState extends State<MyDataPage> {
         _isChecked = accesibility ?? false;
       });
     });
+  }
+
+  Future<void> _getUserByUsername(String username) async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/get-username/$username');
+    print("Url: ${url.toString()}");
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      print("Response.body en _getUserByUsername: ${response.body}");
+      Map<String, dynamic> jsonMap = jsonDecode(response.body);
+      print("JsonMap: $jsonMap");
+      print("JsonMap['contraseña']: ${jsonMap["contraseÃ±a"]}");
+
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await savePassword(jsonMap["contraseÃ±a"]);
+        await saveUserAccessibility(jsonMap["accesibilidadDefault"]);
+    }
   }
 
   Future<void> _validateUsername() async {
@@ -134,6 +174,7 @@ class _MyDataPageState extends State<MyDataPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -146,13 +187,13 @@ class _MyDataPageState extends State<MyDataPage> {
               child: Column(
                 children: [
                   const SizedBox(height: 30),
-                  _headerSignUp(context),
+                  _headerSaveChanges(context),
                   const SizedBox(height: 30),
-                  _inputSignUp(context),
+                  _inputSaveChanges(context),
                   const SizedBox(height: 15),
                   _accesibilityCheck(context),
                   const SizedBox(height: 20),
-                  _buttonSignup(context),
+                  _buttonSaveChanges(context),
                 ],
               ),
             ),
@@ -162,7 +203,8 @@ class _MyDataPageState extends State<MyDataPage> {
     );
   }
 
-  _headerSignUp(context) {
+
+  _headerSaveChanges(context) {
     return const SizedBox(
       width: double
           .infinity, // Asegura que el Container ocupe todo el ancho disponible
@@ -173,19 +215,19 @@ class _MyDataPageState extends State<MyDataPage> {
           Text(
             "Mi cuenta",
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-          ),
+          )/*,
           SizedBox(
               height: 10), // Añade un espacio entre los textos si lo deseas
           Text(
             "Registrate para utilizar la aplicación",
             style: TextStyle(fontSize: 18),
-          ),
+          ),*/
         ],
       ),
     );
   }
 
-  _inputSignUp(context) {
+  _inputSaveChanges(context) {
     return Padding(
         padding: const EdgeInsets.all(1.0),
         child: Form(
@@ -210,6 +252,7 @@ class _MyDataPageState extends State<MyDataPage> {
                     if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
                       return 'Por favor, utilice únicamente caracteres alfabéticos';
                     }
+
                     nombre = value;
                     return null;
                   },
@@ -232,6 +275,8 @@ class _MyDataPageState extends State<MyDataPage> {
                     if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
                       return 'Por favor, utilice únicamente caracteres alfabéticos';
                     }
+
+
                     apellido = value;
                     return null;
                   },
@@ -253,17 +298,18 @@ class _MyDataPageState extends State<MyDataPage> {
                     filled: true,
                     prefixIcon: const Icon(Icons.credit_card),
                   ),
+                  enabled: false, // Deshabilita el campo
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                   /* if (value == null || value.isEmpty) {
                       return 'Por favor, ingrese su DNI';
                     }
                     if (value.length < 7 || value.length > 8) {
                       return 'El DNI debe tener entre 7 y 8 caracteres';
-                    }
+                    }*/
 
                     try {
                       dni =
-                          int.parse(value); // Conversión segura de String a int
+                          int.parse(value!); // Conversión segura de String a int
                     } catch (e) {
                       return 'El DNI debe contener solo números';
                     }
@@ -294,6 +340,10 @@ class _MyDataPageState extends State<MyDataPage> {
                       return 'Formato inválido de correo electrónico';
                     }
                     email = value;
+
+                    if (value != emailInicial) {
+                      emailChange = true;
+                    }
 
                     if (errorEmailMessage == "") {
                       return null;
@@ -353,6 +403,10 @@ class _MyDataPageState extends State<MyDataPage> {
                     }
                     usuario = value;
 
+                    if (value != userNameInicial) {
+                      userNameChange = true;
+                    }
+
                     if (errorUsernameMessage == "") {
                       return null;
                     } else {
@@ -380,6 +434,11 @@ class _MyDataPageState extends State<MyDataPage> {
                     if (value.length < 10) {
                       return 'La contraseña debe tener un mínimo de 10 caracteres';
                     }
+
+                    if (value != _passwordController.text) {
+                      passwordChange = true;
+                    }
+
                     password = value;
                     return null;
                   },
@@ -414,12 +473,13 @@ class _MyDataPageState extends State<MyDataPage> {
     );
   }
 
-  _buttonSignup(BuildContext context) {
+
+  _buttonSaveChanges(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: _isValidatingInfo
+        onPressed: (_isValidatingInfo)
             ? null
             : () async {
                 setState(() {
@@ -429,12 +489,15 @@ class _MyDataPageState extends State<MyDataPage> {
                 _formKey.currentState!.validate();
 
                 try {
-                  await _validateUsername();
-                  await _validateDocument();
-                  await _validateEmail();
+                  if(userNameChange == true){
+                    await _validateUsername();
+                  }
+                  if(emailChange == true){
+                    await _validateEmail();
+                  }
                 } finally {
                   setState(() {
-                    _isValidatingInfo = false; // Habilita el botón de nuevo
+                   _isValidatingInfo = false; // Habilita el botón de nuevo
                   });
                 }
 
@@ -453,7 +516,7 @@ class _MyDataPageState extends State<MyDataPage> {
                     contraseniaReseteada: false,
                   );
 
-                  final response = await createUser(user);// Acá va el método para actualizar
+                  final response = await updateUser(_userID,user);// Acá va el método para actualizar
 
                   if (response.statusCode == 200) {
                     // Usuario creado con éxito
@@ -494,9 +557,11 @@ class _MyDataPageState extends State<MyDataPage> {
                                             builder: (context) =>
                                                 const LoginPage()),
                                       );
-                                      Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()),);
+                                      _getUserByUsername(usuario);
+                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
                                     }
                                   },
+
                                   style: ElevatedButton.styleFrom(
                                     shape: const StadiumBorder(),
                                     padding: const EdgeInsets.symmetric(
@@ -505,7 +570,7 @@ class _MyDataPageState extends State<MyDataPage> {
                                         const Color.fromRGBO(17, 116, 186, 1),
                                   ),
                                   child: const Text(
-                                    "Iniciar Sesión",
+                                    "Continuar",
                                     style: TextStyle(
                                         fontSize: 20, color: Colors.white),
                                   ),
