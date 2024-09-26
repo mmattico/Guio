@@ -3,6 +3,8 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'dart:async';
 import '../other/text_to_voice.dart';
 import '../other/navigation_confirmation.dart';
+import '../other/user_session.dart';
+import '../other/get_nodos.dart';
 
 class AccesibleHome extends StatefulWidget {
   @override
@@ -19,7 +21,12 @@ class _AccesibleHome extends State<AccesibleHome> {
   Timer? _timer;
   bool _isButtonEnabled = false;
 
-  final List<String> areasPermitidas = ['Cardiología', 'Clínica Médica', 'Dermatología'];
+  late Future<List<Nodo>> futureNodos;
+  List<Nodo> _nodos = [];
+
+  Future<String?> graphCode = getGraphCode();
+
+  List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
   final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
   final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
 
@@ -27,6 +34,17 @@ class _AccesibleHome extends State<AccesibleHome> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+    futureNodos = fetchNodosExtremos(graphCode);
+    futureNodos.then((nodos) {
+      setState(() {
+        _nodos = nodos;
+        print(_nodos);
+        areasPermitidas = getNodosActivos(_nodos);
+        print(areasPermitidas);
+      });
+    }).catchError((error) {
+      print('Error al obtener nodos homepage: $error');
+    });
     speak("Bienvenido a Guio, por favor complete los campos para poder ayudarlo");
   }
 
@@ -37,12 +55,23 @@ class _AccesibleHome extends State<AccesibleHome> {
     super.dispose();
   }
 
+  List<String> getNodosActivos(List<Nodo> nodos) {
+    return nodos
+        .where((nodo) => nodo.activo)
+        .map((nodo) => nodo.nombre)
+        .toList();
+  }
+
   void _listen(int textFieldIndex, String label) async {
-    print("INDEX: " + textFieldIndex.toString() + "    " + label);
+    print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
+
+
+
     speak("Usted seleccionó " + label);
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
+          //aca se freeza la variable textfieldindex
           if (status == 'notListening') {
             _stopListening();
             Future.delayed(Duration(milliseconds: 500), () {
@@ -57,7 +86,6 @@ class _AccesibleHome extends State<AccesibleHome> {
         setState(() {
           _isListening = true;
         });
-        print("no se porque no paso");
         _speech.listen(onResult: (result) {
           setState(() {
             switch (textFieldIndex) {
@@ -80,6 +108,7 @@ class _AccesibleHome extends State<AccesibleHome> {
       }
     } else {
       _stopListening();
+
     }
 
   }
