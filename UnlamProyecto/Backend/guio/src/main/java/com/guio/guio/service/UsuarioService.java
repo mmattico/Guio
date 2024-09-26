@@ -102,25 +102,33 @@ public class UsuarioService {
         }
     }
 
-    public void resetPassword(String emailUsuario) {
-        String contraseña = generatePassword();
-        UsuarioDAO usuario = userRepository.findByEmail(emailUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        usuario.setContraseña(contraseña);
-        usuario.setContraseñaReseteada(true);
-        userRepository.save(usuario);
+    public void resetPassword(String emailUsuario) throws Exception {
+        try {
+            String contraseña = generatePassword();
+            UsuarioDAO usuario = userRepository.findByEmail(emailUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            usuario.setContraseña(contraseña);
+            usuario.setContraseñaReseteada(true);
+            userRepository.save(usuario);
 
-        String subject = "Solicitud de reseteo de contraseña";
-        String message = "Su nueva contraseña es: " + contraseña + " por favor acordarse de cambiarla al iniciar sesion";
+            String subject = "Solicitud de reseteo de contraseña";
+            String message = "Su nueva contraseña es: " + contraseña + " por favor acordarse de cambiarla al iniciar sesion";
 
-        sendEmail(usuario.getEmail(), subject, message);
+            sendEmail(usuario.getEmail(), subject, message);
+        }catch (Exception ex){
+            throw new Exception(ex);
+        }
     }
 
-    public void sendEmail(String to, String subject, String text) {
+    public void sendEmail(String to, String subject, String text) throws Exception {
+        try {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
         emailSender.send(message);
+        }catch (Exception ex){
+            throw new Exception(ex);
+        }
     }
 
     private static String generatePassword() {

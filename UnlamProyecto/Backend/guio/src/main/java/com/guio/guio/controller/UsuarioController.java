@@ -52,7 +52,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam(name = "EMAIL") String emailUsuario) {
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "EMAIL") String emailUsuario) throws Exception {
         userService.resetPassword(emailUsuario);
         return ResponseEntity.ok("Password successfully reset");
     }
