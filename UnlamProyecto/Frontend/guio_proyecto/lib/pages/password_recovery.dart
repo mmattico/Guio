@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/password_recovery_confirmation.dart';
 import '/pages/login.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
+
 
 class PasswordRecovery extends StatelessWidget {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String email = '';
+  bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Recovery"
+  String msgError = '';
 
   PasswordRecovery({super.key});
 
@@ -80,8 +84,14 @@ class PasswordRecovery extends StatelessWidget {
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                       return 'Formato inválido de correo electrónico';
                     }
+
                     email = value;
-                    return null;
+
+                    if(msgError != '') {
+                      return msgError;
+                    } else {
+                      return null;
+                    }
                   },
                 ),
                 const SizedBox(height: 10),
@@ -97,11 +107,21 @@ class PasswordRecovery extends StatelessWidget {
       width: double.infinity,
       height: 55,
         child: ElevatedButton(
-      onPressed: () {
+      onPressed: _isValidatingInfo? null : () async {
+        _isValidatingInfo = true; // Deshabilita el botón
+
+        _formKey.currentState!.validate();
+
+        await _validateEmail();
+
         if (_formKey.currentState!.validate()) {
-          // await _enviarMailRecovery();
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PasswordRecoveryConfirmation(email: email)),);
+          if(msgError == '') {
+            await _enviarMailRecovery();
+            Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                PasswordRecoveryConfirmation(email: email)),);
+          }
         }
+        _isValidatingInfo = false; // Habilita el botón
       },
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
@@ -149,6 +169,24 @@ class PasswordRecovery extends StatelessWidget {
     }
   }
 
+  Future<void> _validateEmail() async{
+    var url;
+    url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/users/validar-correo',
+        {'EMAIL': email});
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      var responseData = json.decode(response.body);
+      print("Retorno del email $email: $responseData");
+      if(!responseData) {
+        msgError = "El correo ingresado no esta registrado";
+      } else {
+        msgError = "";
+      }
+    } else {
+      msgError = "Error al validar correo, intente de nuevo";
+    }
+  }
 }
 
 
