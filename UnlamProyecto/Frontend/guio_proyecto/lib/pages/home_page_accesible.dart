@@ -68,6 +68,7 @@ class _AccesibleHome extends State<AccesibleHome> {
     print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
     _selectedTextFieldIndex = textFieldIndex;
 
+
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
@@ -80,6 +81,8 @@ class _AccesibleHome extends State<AccesibleHome> {
         },
         onError: (error) => print('onError: $error'),
       );
+
+      await  Future.delayed(Duration(milliseconds: 1200),(){});//espera para que nombre el campo seleccionado
 
       if (available) {
         setState(() {
@@ -104,7 +107,7 @@ class _AccesibleHome extends State<AccesibleHome> {
             }
             _updateButtonState();
           });
-        }, listenFor: const Duration(seconds: 5));
+        }, listenFor: const Duration(seconds: 3));
       }
     } else {
       _stopListening();
