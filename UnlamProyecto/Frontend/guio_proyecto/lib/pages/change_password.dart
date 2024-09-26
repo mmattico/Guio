@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/pages/home_page.dart';
+import 'package:guio_proyecto/other/user_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'location_selection.dart';
 
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
@@ -145,8 +147,14 @@ class _ChangePasswordState extends State<ChangePassword> {
                             prefs.getInt('usuarioId');
                             actualizarPassword(prefs.getInt('usuarioId'),
                                 password);
-                            Navigator.push(context, MaterialPageRoute(builder: (
-                                context) => const HomePage()),);
+                            String? graphCode = await getGraphCode();
+                            if(graphCode != null) {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => HomePage()),);
+                            } else {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => LocationSelection()),);
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

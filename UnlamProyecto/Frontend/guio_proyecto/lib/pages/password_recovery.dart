@@ -4,15 +4,19 @@ import '/pages/login.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class PasswordRecovery extends StatefulWidget {
+  const PasswordRecovery({super.key});
 
-class PasswordRecovery extends StatelessWidget {
+  @override
+  _PasswordRecoveryState createState() => _PasswordRecoveryState();
+}
+
+class _PasswordRecoveryState extends State<PasswordRecovery> {
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String email = '';
   bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Recovery"
   String msgError = '';
-
-  PasswordRecovery({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -108,11 +112,14 @@ class PasswordRecovery extends StatelessWidget {
       height: 55,
         child: ElevatedButton(
       onPressed: _isValidatingInfo? null : () async {
-        _isValidatingInfo = true; // Deshabilita el botón
+        setState(() {
+          _isValidatingInfo = true; // Deshabilita el botón
+        });
+        msgError = '';
 
-        _formKey.currentState!.validate();
-
-        await _validateEmail();
+        if(_formKey.currentState!.validate()) {
+          await _validateEmail();
+        }
 
         if (_formKey.currentState!.validate()) {
           if(msgError == '') {
@@ -121,14 +128,18 @@ class PasswordRecovery extends StatelessWidget {
                 PasswordRecoveryConfirmation(email: email)),);
           }
         }
-        _isValidatingInfo = false; // Habilita el botón
+        setState(() {
+          _isValidatingInfo = false; // Habilita el botón
+        });
       },
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
         padding: const EdgeInsets.symmetric(vertical: 10),
-        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+        backgroundColor: _isValidatingInfo
+            ? const Color.fromRGBO(17, 116, 186, 0.25) // Cambia el color del botón cuando está deshabilitado
+            : const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(
         "Recuperar Contraseña",
