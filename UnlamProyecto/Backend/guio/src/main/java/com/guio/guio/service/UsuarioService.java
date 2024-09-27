@@ -31,14 +31,14 @@ public class UsuarioService {
     public UsuarioDAO findByUsername(String username) {
         UsuarioDAO usuario = userRepository.findUsuarioDAOByUsuario(username).get();
         if(usuario.getGrafo()!= null)
-            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+            usuario.setGrafoCodigo(usuario.getGrafo().getCodigo());
         return usuario;
     }
 
     public UsuarioDAO findByEmail(String email) {
         UsuarioDAO usuario = userRepository.findByEmail(email).get();
         if(usuario.getGrafo()!= null)
-            usuario.setGrafo_Id(usuario.getGrafo().getGrafoID());
+            usuario.setGrafoCodigo(usuario.getGrafo().getCodigo());
         return usuario;
     }
 
