@@ -10,7 +10,6 @@ class AccesibleHome extends StatefulWidget {
   @override
   _AccesibleHome createState() => _AccesibleHome();
 }
-
 class _AccesibleHome extends State<AccesibleHome> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -29,6 +28,8 @@ class _AccesibleHome extends State<AccesibleHome> {
   List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
   final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
   final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
+
+  int _selectedTextFieldIndex = 0;
 
   @override
   void initState() {
@@ -63,32 +64,34 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _listen(int textFieldIndex, String label) async {
+    speak("Seleccionó  $label");
     print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
+    _selectedTextFieldIndex = textFieldIndex;
 
 
-
-    speak("Usted seleccionó " + label);
     if (!_isListening) {
       bool available = await _speech.initialize(
         onStatus: (status) {
-          //aca se freeza la variable textfieldindex
           if (status == 'notListening') {
             _stopListening();
             Future.delayed(Duration(milliseconds: 500), () {
-              _validarExistenciaSegunCampo(textFieldIndex);
+              _validarExistenciaSegunCampo(_selectedTextFieldIndex);
             });
           }
         },
         onError: (error) => print('onError: $error'),
       );
 
+      await  Future.delayed(Duration(milliseconds: 1200),(){});//espera para que nombre el campo seleccionado
+
       if (available) {
         setState(() {
           _isListening = true;
         });
+        detenerReproduccion();
         _speech.listen(onResult: (result) {
           setState(() {
-            switch (textFieldIndex) {
+            switch (_selectedTextFieldIndex) {
               case 1:
                 _origen = colocarMayusculas(result.recognizedWords);
                 break;
@@ -104,13 +107,11 @@ class _AccesibleHome extends State<AccesibleHome> {
             }
             _updateButtonState();
           });
-        },listenFor: const Duration(seconds: 5));
+        }, listenFor: const Duration(seconds: 3));
       }
     } else {
       _stopListening();
-
     }
-
   }
 
   void _stopListening() {
@@ -152,8 +153,7 @@ class _AccesibleHome extends State<AccesibleHome> {
   void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
     print(escucha + " " + campo + " " + textFieldIndex.toString());
     if (!listaChequeo.contains(escucha)) {
-      speak("Disculpe, no he entendido. Vuelva a intentarlo.");
-      speak("Las opciones válidas son: ${listaChequeo.join(', ')}");
+      speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
         switch (textFieldIndex) {
           case 1:
@@ -171,10 +171,9 @@ class _AccesibleHome extends State<AccesibleHome> {
         }
       });
     } else {
-      speak("Fin del reconocimiento, dato cargado");
+      speak("$campo cargado");
     }
   }
-
 
   void _updateButtonState() {
     setState(() {
@@ -182,7 +181,6 @@ class _AccesibleHome extends State<AccesibleHome> {
           (_origen.isNotEmpty && _servicio.isNotEmpty && _preferencia.isNotEmpty);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -273,3 +271,4 @@ class _AccesibleHome extends State<AccesibleHome> {
     );
   }
 }
+
