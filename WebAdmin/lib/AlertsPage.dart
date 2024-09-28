@@ -450,8 +450,8 @@ void _sendWhatsAppMessage(Ticket ticket) async {
       "Ubicación: ${ticket.areaEmergencia}\n"
       "Comentarios: ${ticket.comentario}";
 
-  //String phone = "549${ticket.telefono}"; // Cambia esto al número deseado
-  String phone = "5491161884263"; // Cambia esto al número deseado
+  String phone = "549${ticket.telefono}"; // Cambia esto al número deseado
+  //String phone = "5491161884263"; // Cambia esto al número deseado
   //final url = "https://wa.me/?text=${Uri.encodeComponent(message)}";
   final url = "https://api.whatsapp.com/send?phone=$phone&text=${Uri.encodeComponent(message)}";
 
