@@ -5,6 +5,7 @@ import 'package:guio_web_admin/home_page_web.dart';
 import 'package:http/http.dart' as http;
 
 import 'get_tickets.dart';
+import 'other/user_session.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -43,6 +44,14 @@ class _LoginPageState extends State<LoginPage> {
       if (jsonMap["permisos"] != "ADMIN") {
         errorUsuarioMessage = "El usuario no es administrador";
       } else {
+        await saveUserID(jsonMap["usuarioID"]);
+        await saveUserFirstName(jsonMap["nombre"]);
+        await saveUserLastName(jsonMap["apellido"]);
+        await saveUserEmail(jsonMap["email"]);
+        await saveUserPhone(jsonMap["telefono"]);
+        await saveUserDNI(jsonMap["dni"]);
+        await saveUsername(jsonMap["usuario"]);
+        await saveGraphCode(jsonMap["grafoCodigo"]);
         errorUsuarioMessage = "";
       }
     } else {
