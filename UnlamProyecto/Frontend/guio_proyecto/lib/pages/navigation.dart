@@ -320,14 +320,14 @@ class _NavigationState extends State<Navigation> {
             stopListening();
           } else {
             if (_instruccionActual > 0) {
-              if ((_norteGrado + _angle - direccionMagnetometro) % 180 > 22 ||
-                  (_norteGrado + _angle - direccionMagnetometro) % 180 < -22) {
+              if ((_norteGrado + _angle - direccionMagnetometro) % 360 < 22 ||
+                  (_norteGrado + _angle - direccionMagnetometro) % 360 > (360 - 22)) {
+                _girando = false;
+                _instruccion = instrucciones[_instruccionActual].instruccionToString();
+              } else {
                 _girando = true;
                 _instruccion = "Gira hasta que dejes de sentir vibraciones";
                 Vibration.vibrate();
-              } else {
-                _girando = false;
-                _instruccion = instrucciones[_instruccionActual].instruccionToString();
               }
             }
           }
@@ -393,7 +393,7 @@ class _NavigationState extends State<Navigation> {
                 distanciaARecorrer = instrucciones[i - 1].distancia!;
               });
               while (distanciaRecorrida < distanciaARecorrer) {
-                print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 180} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
+                print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 360} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
                 await Future.delayed(Duration(milliseconds: 500));
                 if (_cancelarRecorrido) {
                   break;
