@@ -41,8 +41,8 @@ class _NavigationState extends State<Navigation> {
   int _instruccionActual = 0;
   bool _isLoading = false;
   bool _girando = true;
-  int distanciaARecorrer = 0;
-  int distanciaRecorrida = 0;
+  int pasosARecorrer = 0;
+  int pasosRecorridos = 0;
   String _imagenPath = "";
   double _angle = 0;
   int _norteGrado = 0;
@@ -389,10 +389,10 @@ class _NavigationState extends State<Navigation> {
                 posicionActual=instrucciones[i-2].siguienteNodo.toString();
               }
               setState(() {
-                distanciaRecorrida = 0;
-                distanciaARecorrer = instrucciones[i - 1].distancia!;
+                pasosRecorridos = 0;
+                pasosARecorrer = instrucciones[i - 1].distancia!;
               });
-              while (distanciaRecorrida < distanciaARecorrer) {
+              while (pasosRecorridos < pasosARecorrer) {
                 print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 360} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
                 await Future.delayed(Duration(milliseconds: 500));
                 if (_cancelarRecorrido) {
@@ -454,21 +454,21 @@ class _NavigationState extends State<Navigation> {
           _pasosIniciales = pasosActuales;
           _pasosValue = '0';
           _primeraLectura = false;
-          distanciaRecorrida = 0;
+          pasosRecorridos = 0;
         });
       } else {
         // Calcula pasos despues de la primer lectura cuando no esta girando
         setState(() {
-          if(distanciaRecorrida < distanciaARecorrer) {
+          if(pasosRecorridos < pasosARecorrer) {
             int pasosReales = pasosActuales - _pasosIniciales;
             _pasosValue = pasosReales.toString();
-            distanciaRecorrida = (pasosReales.toDouble() * stepLength).toInt(); // Actualiza distancia recorrida
+            pasosRecorridos = pasosReales; // Actualiza distancia recorrida
           } else {
-            distanciaRecorrida = distanciaARecorrer;
+            pasosRecorridos = pasosARecorrer;
           }
         });
       }
-      print("DistanciaRecorrida $distanciaRecorrida  ---  DistanciaARecorrer: $distanciaARecorrer");
+      print("PasosRecorridos $pasosRecorridos  ---  PasosARecorrer: $pasosARecorrer");
     } else {
       print("El paso no fue contabilizado, apunta hacia la flecha");
     }
