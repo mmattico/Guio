@@ -1,5 +1,6 @@
 package com.guio.guio.controller;
 
+import com.guio.guio.dao.GrafoDAO;
 import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.model.Usuario;
 import com.guio.guio.service.UsuarioService;
@@ -19,8 +20,19 @@ public class UsuarioController {
     private UsuarioService userService;
 
     @PostMapping
-    public UsuarioDAO createUser(@RequestBody UsuarioDAO user) {
-        return userService.save(user);
+    public UsuarioDAO createUser(@RequestBody Usuario user) {
+        UsuarioDAO usuario = new UsuarioDAO();
+        usuario.setNombre(user.getNombre());
+        usuario.setApellido(user.getApellido());
+        usuario.setTelefono(user.getTelefono());
+        usuario.setEmail(user.getEmail());
+        usuario.setDni(user.getDni());
+        usuario.setPermisos(user.getPermisos());
+        usuario.setUsuario(user.getUsuario());
+        usuario.setContraseña(user.getContraseña());
+        usuario.setAccesibilidadDefault(user.isAccesibilidadDefault());
+        usuario.setContraseñaReseteada(user.isContraseñaReseteada());
+        return userService.save(usuario);
     }
 
     @PutMapping("/{id}")
