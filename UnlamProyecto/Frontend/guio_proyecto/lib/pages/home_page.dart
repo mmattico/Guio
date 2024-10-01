@@ -169,8 +169,8 @@ class _HomePageState extends State<HomePage> {
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
                       setState(() {
-                        _customPaintHeight = (380 - scrollInfo.metrics.pixels)
-                            .clamp(0.0, 380.0);
+                        _customPaintHeight = (300 - scrollInfo.metrics.pixels)
+                            .clamp(0.0, 300.0);
                       });
                       return true;
                     },
@@ -180,10 +180,10 @@ class _HomePageState extends State<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            header(context),
-                            const SizedBox(height: 10),
+                            //header(context),
+                            const SizedBox(height: 12),
                             headerTexto(),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 12),
                             _fromTo(context),
                             const SizedBox(height: 4),
                             if ((selectedArea == selectedOrigin) &&
@@ -198,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 8),
                             _services(context),
                             const SizedBox(height: 4),
                             _accesibilidad(context),
@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 12, 18, 12),
+        padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
         child: Column(
           children: [
             Row(
@@ -281,9 +281,9 @@ class _HomePageState extends State<HomePage> {
                 )
               ],
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             const Divider(),
-            const SizedBox(height: 6),
+            const SizedBox(height: 4),
             Row(
               children: [
                 const Icon(
@@ -391,7 +391,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text(
-          'Servicios',
+          ' Servicios',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -400,9 +400,9 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 10),
         GridView.count(
             crossAxisCount: 3,
-            crossAxisSpacing: 10,
+            crossAxisSpacing: 1,
             mainAxisSpacing: 4,
-            childAspectRatio: 1/1.1,
+            childAspectRatio: 1/1.0,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             children: List.generate(serviceTexts.length, (index) {
@@ -445,7 +445,7 @@ class _HomePageState extends State<HomePage> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const Text(
-          'Preferencias',
+          ' Preferencias',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -454,7 +454,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(height: 10),
         GridView.count(
           crossAxisCount: 3,
-          crossAxisSpacing: 10,
+          crossAxisSpacing: 8,
           mainAxisSpacing: 5,
           childAspectRatio: 1/1.1,
           shrinkWrap: true,

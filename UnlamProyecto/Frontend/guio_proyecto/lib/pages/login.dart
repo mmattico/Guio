@@ -225,9 +225,17 @@ class _LoginPageState extends State<LoginPage> {
 
         if (_formKey.currentState!.validate()) {
           if(passwordReset){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const ChangePassword()),
+                  (Route<dynamic> route) => false,
+            );
           } else {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LocationSelection()),
+                  (Route<dynamic> route) => false,
+            );
           }
         }
       },
