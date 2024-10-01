@@ -253,6 +253,7 @@ class _NavigationState extends State<Navigation> {
     _compassSubscription = FlutterCompass.events!.listen((CompassEvent event) {
       setState(() {
         direccionMagnetometro = event.heading ?? 0;
+        direccionMagnetometro = direccionMagnetometro + 180;
       });
     });
   }
