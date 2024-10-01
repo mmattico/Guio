@@ -59,7 +59,6 @@ public class UsuarioDAO {
         this.contraseña = contraseña;
         this.accesibilidadDefault = accesibilidadDefault;
         this.contraseñaReseteada = contraseñaReseteada;
-        this.grafoCodigo = grafo != null ? grafo.getCodigo() : null;
     }
 
     public UsuarioDAO() {
