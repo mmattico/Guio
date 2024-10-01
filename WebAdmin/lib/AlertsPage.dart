@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/other/user_session.dart';
 import 'package:intl/intl.dart';
 import 'get_tickets.dart';
 import 'package:http/http.dart' as http;
 import "string_extension.dart";
+import 'dart:async';
+import 'package:url_launcher/url_launcher.dart';
 
 class Alerts extends StatefulWidget {
   List<Ticket> tickets;
@@ -26,6 +29,8 @@ class _AlertsState extends State<Alerts> {
   late int cantidadAlertasPrev = 0;
   late int cantidadAlertasNuevas = 0;
   bool isLoading = false;
+  Future<String?> graphCode = getGraphCode();
+  Timer? _timer;
 
   @override
   void initState() {
@@ -34,11 +39,20 @@ class _AlertsState extends State<Alerts> {
     _searchController = TextEditingController();
     _searchController.addListener(_filterTickets);
     cantidadAlertasPrev = widget.cantidadAlertas;
+    _startFetchingAlertas();
   }
 
   void dispose() {
     _searchController.dispose();
+    _timer?.cancel(); // Cancela el timer al destruir el widget
     super.dispose();
+  }
+
+  void _startFetchingAlertas() {
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) async {
+      print("llamando");
+      await _refreshAlertas(); // Llama a la función de actualización
+    });
   }
 
   void _filterTickets() {
@@ -71,7 +85,7 @@ class _AlertsState extends State<Alerts> {
     });
 
     try {
-      List<Ticket> nuevasAlertas = await fetchAlertas('PRUEBA');
+      List<Ticket> nuevasAlertas = await fetchAlertas(graphCode);
       setState(() {
         oldTickets = _filteredTickets;
         cantidadAlertasNuevas = nuevasAlertas.length;
@@ -339,10 +353,12 @@ class _AlertsState extends State<Alerts> {
                       DataColumn(label: Text('N° Alerta')),
                       DataColumn(label: Text('Fecha')),
                       DataColumn(label: Text('Hora')),
-                      DataColumn(label: Text('Apellido y Nombre')),
                       DataColumn(label: Text('Ubicacion')),
+                      DataColumn(label: Text('Apellido y Nombre')),
                       DataColumn(label: Text('Estado')),
                       DataColumn(label: Text('Comentarios')),
+                      DataColumn(label: Text('Telefono')),
+                      DataColumn(label: Text('Whatsapp')),
                     ],
                     rows: _filteredTickets
                         .map((ticket) => DataRow(
@@ -407,6 +423,13 @@ class _AlertsState extends State<Alerts> {
                                   ),
                                 ),
                                 DataCell(Text(ticket.comentario)),
+                                DataCell(Text(ticket.telefono)),
+                                DataCell(
+                                  IconButton(
+                                    icon: Icon(Icons.message, color: Colors.green),
+                                    onPressed: () => _sendWhatsAppMessage(ticket),
+                                  ),
+                                ),
                               ],
                             ))
                         .toList(),
@@ -417,6 +440,29 @@ class _AlertsState extends State<Alerts> {
     );
   }
 }
+
+// Función para enviar un mensaje a WhatsApp
+void _sendWhatsAppMessage(Ticket ticket) async {
+  String message = "Detalles del ticket:\n"
+      "N° Alerta: ${ticket.id}\n"
+      "Estado: ${ticket.estado}\n"
+      "Apellido y Nombre: ${ticket.apellido.capitalize()} ${ticket.nombre.capitalize()}\n"
+      "Ubicación: ${ticket.areaEmergencia}\n"
+      "Comentarios: ${ticket.comentario}";
+
+  String phone = "549${ticket.telefono}"; // Cambia esto al número deseado
+  //String phone = "5491161884263"; // Cambia esto al número deseado
+  //final url = "https://wa.me/?text=${Uri.encodeComponent(message)}";
+  final url = "https://api.whatsapp.com/send?phone=$phone&text=${Uri.encodeComponent(message)}";
+
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'No se pudo abrir $url';
+  }
+}
+
+
 
 Future<void> updateTicketStatus(int ticketId, String newStatus) async {
   final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',

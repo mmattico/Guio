@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:guio_web_admin/area_management.dart';
 import 'package:guio_web_admin/login_admin.dart';
 import 'package:guio_web_admin/AlertsPage.dart';
+import 'package:guio_web_admin/other/user_session.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';  // For jsonEncode
 
-Future<List<Ticket>> fetchAlertas(String ubicacionCodigo) async {
-  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ubicacionCodigo'));
+Future<List<Ticket>> fetchAlertas(Future<String?> ubicacionCodigo) async {
+  final graphCode = await ubicacionCodigo;
+  if (graphCode == null) {
+    throw Exception('Graph code no proporcionado.');
+  }
+  print(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$graphCode'));
+  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$graphCode'));
 
   if (response.statusCode == 200) {
     final utf8DecodedBody = utf8.decode(response.bodyBytes);
@@ -82,11 +88,13 @@ class _TicketListPageState extends State<TicketListPage> {
   late Future<List<Ticket>> futureAlertas;
   List<Ticket>? _tickets;
   bool _isKanbanView = false;
+  Future<String?> graphCode =  getGraphCode();
 
   @override
   void initState() {
     super.initState();
-    futureAlertas = fetchAlertas('PRUEBA');
+
+    futureAlertas = fetchAlertas(graphCode);
     futureAlertas.then((tickets) {
       setState(() {
         _tickets = tickets;
