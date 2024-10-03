@@ -41,6 +41,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         _nodos = nodos;
         print(_nodos);
         areasPermitidas = getNodosActivos(_nodos);
+
         print(areasPermitidas);
       });
     }).catchError((error) {
@@ -82,7 +83,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         onError: (error) => print('onError: $error'),
       );
 
-      await  Future.delayed(Duration(milliseconds: 1200),(){});//espera para que nombre el campo seleccionado
+      await  Future.delayed(Duration(milliseconds: 1800),(){});//espera para que nombre el campo seleccionado
 
       if (available) {
         setState(() {
@@ -107,7 +108,7 @@ class _AccesibleHome extends State<AccesibleHome> {
             }
             _updateButtonState();
           });
-        }, listenFor: const Duration(seconds: 3));
+        }, listenFor: const Duration(seconds: 4));
       }
     } else {
       _stopListening();
