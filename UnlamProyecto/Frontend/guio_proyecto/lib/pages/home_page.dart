@@ -169,8 +169,8 @@ class _HomePageState extends State<HomePage> {
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
                       setState(() {
-                        _customPaintHeight = (300 - scrollInfo.metrics.pixels)
-                            .clamp(0.0, 300.0);
+                        _customPaintHeight = (350 - scrollInfo.metrics.pixels)
+                            .clamp(0.0, 350.0);
                       });
                       return true;
                     },

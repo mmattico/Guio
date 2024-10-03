@@ -28,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   String errorUsuarioOEmailMessage = "";
   String errorContraseniaMessage = "";
   bool passwordReset = false;
+  bool _isPasswordVisible = false;
 
   Future<void> _getUserByEmail(String email) async{
     var url;
@@ -177,8 +178,21 @@ class _LoginPageState extends State<LoginPage> {
                 fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
                 filled: true,
                 prefixIcon: const Icon(Icons.password),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey[600],  // Color del ícono
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _isPasswordVisible = !_isPasswordVisible;
+                    });
+                  },
+                  highlightColor: Colors.transparent,  // Sin efecto de highlight
+                  splashColor: Colors.grey[300],  // Un gris claro visible
+                ),
               ),
-              obscureText: true,
+              obscureText: !_isPasswordVisible,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Por favor, ingrese su contraseña';
