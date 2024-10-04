@@ -52,7 +52,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   : (widget.selectedArea != '')
                   ? '${widget.selectedArea}'
                   : 'None',
-              style: const TextStyle(fontSize: 23),
+              style: const TextStyle(fontSize: 23, height: 1.1,),
             ),
             const SizedBox(height: 10),
             const Text(
@@ -67,7 +67,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
               style: const TextStyle(fontSize: 23),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Center(
               child: SizedBox(
                 width: double.infinity,
@@ -88,7 +88,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
@@ -104,16 +104,16 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             Center(
               child: SizedBox(
                 width: double.infinity,
-                height: 35,
+                height: 40,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.all(5.0),
                     backgroundColor: Colors.grey,
                   ),
                   child: const Text(
