@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
+import '../other/button_back.dart';
 import '../other/navigation_confirmation.dart';
 import 'package:flutter/services.dart';
 import '../other/search_homepage.dart';
@@ -140,7 +141,8 @@ class _HomePageState extends State<HomePage> {
   @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return DoubleBackToExit (
+        child: Scaffold(
       backgroundColor: Colors.white,
       body: FutureBuilder<List<Nodo>>(
         future: futureNodos,
@@ -222,7 +224,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
         },
-      ),
+      ),),
     );
   }
 

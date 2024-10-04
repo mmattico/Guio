@@ -4,8 +4,7 @@ import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'get_nodos.dart';  // For jsonEncode
+import 'get_nodos.dart';
 
 class AreaSelectionDialog extends StatefulWidget {
   @override
@@ -27,14 +26,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
 
     final payload = {
       'usuario':{
-        'usuarioID': userID, //nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
+        'usuarioID': userID,
       },
       'fecha': DateTime.now().toIso8601String(),
       'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
       'grafo': {
-        'grafoID': graphID,
+        'grafo': graphID,
       },
     };
 
@@ -42,26 +41,23 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       final response = await http.post(
         url,
         headers: {
-          'Content-Type': 'application/json', // Adjust headers as needed
+          'Content-Type': 'application/json',
         },
-        body: jsonEncode(payload), // Convert your payload to a JSON string
+
+        body: jsonEncode(payload),
       );
 
-      // Check the response status
       if (response.statusCode == 200) {
-        // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
         alertaId = responseData['alertaID'];
         print('alerta id : $alertaId');
       } else {
-        // If the server did not return a 200 OK response,
-        // throw an exception or handle it as needed
         print('Failed to post data: ${response.statusCode}');
+        print('BODY: ${response.body}');
       }
     } catch (e) {
-      // Handle any errors that occur during the request
       print('Error: $e');
     }
   }

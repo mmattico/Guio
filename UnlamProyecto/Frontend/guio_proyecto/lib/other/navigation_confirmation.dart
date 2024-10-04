@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
@@ -20,7 +21,9 @@ class NavigationConfirmation extends StatefulWidget {
 class _NavigationConfirmationState extends State<NavigationConfirmation> {
   @override
   Widget build(BuildContext context) {
-    return  Padding(
+    return  DoubleBackToExit (
+      child:
+        Padding(
       padding: const EdgeInsets.fromLTRB(6, 4, 6, 2),
       child: SingleChildScrollView(
         child: Column(
@@ -74,16 +77,16 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => Navigation(
+                      MaterialPageRoute(builder: (context) => Navigation(
                           selectedOrigin: widget.selectedOrigin,
                           selectedArea: widget.selectedArea,
                           selectedService: widget.selectedService,
                           selectedPreference: widget.selectedPreference
                         ),
                       ),
+                      (Route<dynamic> route) => false,
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -143,7 +146,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 
