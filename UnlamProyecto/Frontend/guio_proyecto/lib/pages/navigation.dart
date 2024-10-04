@@ -694,7 +694,8 @@ Widget header() {
       Text(
         "Dirigiendose a ",
         style: TextStyle(color: Colors.white,
-          fontSize: 28,
+          fontSize: 22,
+          height: 1.0
         ),
       ),
     ],

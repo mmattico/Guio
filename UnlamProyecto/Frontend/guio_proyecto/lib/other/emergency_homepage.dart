@@ -100,7 +100,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 80,
+            size: 95,
             color: Colors.red,
           ),
           SizedBox(height: 10),
@@ -114,7 +114,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           SearchWidget(
             onAreaSelected: (area) {
               setState(() {
@@ -133,12 +133,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 180,
-                    height: 50,
+                    width: 210,
+                    height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.all(8.0),
                         backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: areaEmergencia == null ? null : () async {
@@ -161,7 +163,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
+                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 16),),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -230,7 +232,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos(graphCode);
+    futureNodos = fetchNodosExtremos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;

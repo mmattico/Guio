@@ -535,7 +535,9 @@ class _HomePageState extends State<HomePage> {
             );
           },
           style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             backgroundColor: Color.fromRGBO(17, 116, 186, 1),
           ),
