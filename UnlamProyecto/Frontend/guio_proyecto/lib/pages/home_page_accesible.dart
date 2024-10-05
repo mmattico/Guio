@@ -29,7 +29,7 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
   final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
-  final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
+  final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Seguridad'];
 
   int _selectedTextFieldIndex = 0;
 

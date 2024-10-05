@@ -104,18 +104,18 @@ class _HomePageState extends State<HomePage> {
     "assets/images/thumbs-up-bw.png"
   ];
 
-  List<String> serviceTexts = ['Baño', 'Snack', 'Ventanilla'];
+  List<String> serviceTexts = ['Baño', 'Snack', 'Seguridad'];
 
   List<String> seriviceIcons = [
     "assets/images/toilet.png",
     "assets/images/snack.png",
-    "assets/images/receptionist.png"
+    "assets/images/security.png"
   ];
 
   List<String> serviceDisabled = [
     "assets/images/toilet-bw.png",
     "assets/images/snack-bw.png",
-    "assets/images/receptionist-bw.png"
+    "assets/images/security-bw.png"
   ];
 
   double _customPaintHeight = 380;
