@@ -35,21 +35,31 @@ Widget header(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
+      /*const Image(
+        image: AssetImage("assets/images/logo_GUIO_3.png"),
+        width: 40,
+      ),*/
       PopupMenuButton<String>(
         icon: const Icon(
-          Icons.account_circle,
+          Icons.menu_rounded,
           color: Colors.white,
-          size: 35,
+          size: 30,
         ),
         color: Colors.white,
         offset: const Offset(-10, 60),
         onSelected: (String value) {
           if (value == '1') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => MyDataPage()),);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const MyDataPage()),);
           } else if (value == '2') {
             Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
           } else if (value == '3') {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LocationSelection()),
+                  (Route<dynamic> route) => false,
+            );
+          } else if (value == '4') {
+            _logout(context);
           }
         },
         itemBuilder: (BuildContext context) => [
@@ -83,26 +93,28 @@ Widget header(BuildContext context) {
                 ],
               )
           ),
+          const PopupMenuItem<String>(
+              value: '4',
+              child: Row(
+                children: [
+                  Icon(Icons.logout, color: Colors.black,),
+                  SizedBox(width: 20,),
+                  Text('Cerrar Sesión'),
+                ],
+              )
+          ),
         ],
       ),
-      const Image(
-        image: AssetImage("assets/images/logo_GUIO.png"),
-        width: 100,
-      ),
-/*
-       IconButton( //Buscar wiget text
-        //text: "hola",
-        icon: const Icon(Icons.logout, color: Colors.blue, size: 30,),
+      /*const Image(
+        image: AssetImage("assets/images/logo_GUIO_3.png"),
+        width: 75,
+      ),*/
+            /*IconButton(
+        icon: const Icon(Icons.logout, color: Colors.white, size: 20,),
         onPressed: () {
           _logout(context);
         },
       ),*/
-            IconButton(
-        icon: const Icon(Icons.logout, color: Colors.white, size: 30,),
-        onPressed: () {
-          _logout(context);
-        },
-      ),
     ],
   );
 
@@ -126,34 +138,125 @@ Widget headerTexto() {
           ),
         );
       } else {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Bienvenido',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 45,
-                fontWeight: FontWeight.bold,
-                height: 1.3,
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Bienvenido, \nusted se encuentra en',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      //fontWeight: FontWeight.bold,
+                      //height: 1.1,
+                    ),
+                  ),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.topCenter, // Alinea el ícono en la parte superior
+                    child: PopupMenuButton<String>(
+                      icon: const Icon(
+                        Icons.menu_rounded,
+                        color: Colors.white,
+                        size: 35,
+                      ),
+                      color: Colors.white,
+                      offset: const Offset(-10, 60),
+                      onSelected: (String value) {
+                        if (value == '1') {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MyDataPage()),
+                                (Route<dynamic> route) => false,
+                          );
+                        } else if (value == '2') {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ChangePassword()),
+                                (Route<dynamic> route) => false,
+                          );
+                        } else if (value == '3') {
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => LocationSelection()),
+                                (Route<dynamic> route) => false,
+                          );
+                        } else if (value == '4') {
+                          _logout(context);
+                        }
+                      },
+                      itemBuilder: (BuildContext context) => [
+                        const PopupMenuItem<String>(
+                            value: '1',
+                            child: Row(
+                              children: [
+                                Icon(Icons.person, color: Colors.black,),
+                                SizedBox(width: 20,),
+                                Text('Mi cuenta'),
+                              ],
+                            )
+                        ),
+                        const PopupMenuItem<String>(
+                            value: '2',
+                            child: Row(
+                              children: [
+                                Icon(Icons.password, color: Colors.black,),
+                                SizedBox(width: 20,),
+                                Text('Cambiar Contraseña'),
+                              ],
+                            )
+                        ),
+                        const PopupMenuItem<String>(
+                            value: '3',
+                            child: Row(
+                              children: [
+                                Icon(Icons.change_circle_outlined, color: Colors.black,),
+                                SizedBox(width: 20,),
+                                Text('Cambiar de Ubicación'),
+                              ],
+                            )
+                        ),
+                        const PopupMenuItem<String>(
+                            value: '4',
+                            child: Row(
+                              children: [
+                                Icon(Icons.logout, color: Colors.black,),
+                                SizedBox(width: 20,),
+                                Text('Cerrar Sesión'),
+                              ],
+                            )
+                        ),
+                      ],
+                    ), // Tamaño del ícono
+                    ),
+
+                ],
+             ),
+
+              Row(
+                children: [
+                  Expanded(child:
+                    Text(
+                      snapshot.data ?? '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                        height: 1.2,
+                      ),
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            Text(
-              snapshot.data ?? '',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text(
-              'Seleccione origen y destino para comenzar',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
-          ],
+            ],
+          ),
         );
       }
     },
@@ -166,7 +269,10 @@ Future<void> _logout(context) async {
   await deleteUserSession();
   await prefs.remove('isLoggedIn');
 
-  Navigator.of(context).pushReplacement(
+  Navigator.pushAndRemoveUntil(
+    context,
     MaterialPageRoute(builder: (context) => const StartPage()),
+        (Route<dynamic> route) => false,
   );
+
 }

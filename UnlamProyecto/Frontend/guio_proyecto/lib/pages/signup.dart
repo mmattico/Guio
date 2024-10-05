@@ -32,6 +32,7 @@ class _SignupPageState extends State<SignupPage>{
   String errorUsernameMessage = "";
   String errorDocumentMessage = "";
   String errorEmailMessage = "";
+  bool _isPasswordVisible = false;
 
   bool _isValidatingInfo = false; // Variable para controlar el estado del botón "Registrate"
 
@@ -344,8 +345,21 @@ class _SignupPageState extends State<SignupPage>{
                     fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
                     filled: true,
                     prefixIcon: const Icon(Icons.password),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.grey[600],  // Color del ícono
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
+                      highlightColor: Colors.transparent,  // Sin efecto de highlight
+                      splashColor: Colors.grey[300],  // Un gris claro visible
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, ingrese una contraseña';
@@ -398,15 +412,9 @@ class _SignupPageState extends State<SignupPage>{
 
           _formKey.currentState!.validate();
 
-          try {
-            await _validateUsername();
-            await _validateDocument();
-            await _validateEmail();
-          } finally {
-            setState(() {
-              _isValidatingInfo = false; // Habilita el botón de nuevo
-            });
-          }
+          await _validateUsername();
+          await _validateDocument();
+          await _validateEmail();
 
           if (_formKey.currentState!.validate()) {
             //Acá se envian los datos a la BD de usuario
@@ -481,6 +489,9 @@ class _SignupPageState extends State<SignupPage>{
               );
             }
           }
+          setState(() {
+            _isValidatingInfo = false; // Habilita el botón de nuevo
+          });
         },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(

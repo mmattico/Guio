@@ -4,8 +4,7 @@ import '../other/search_homepage.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'get_nodos.dart';  // For jsonEncode
+import 'get_nodos.dart';
 
 class AreaSelectionDialog extends StatefulWidget {
   @override
@@ -27,14 +26,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
 
     final payload = {
       'usuario':{
-        'usuarioID': userID, //nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
+        'usuarioID': userID,
       },
       'fecha': DateTime.now().toIso8601String(),
       'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
       'grafo': {
-        'grafoID': graphID,
+        'grafo': graphID,
       },
     };
 
@@ -42,26 +41,23 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
       final response = await http.post(
         url,
         headers: {
-          'Content-Type': 'application/json', // Adjust headers as needed
+          'Content-Type': 'application/json',
         },
-        body: jsonEncode(payload), // Convert your payload to a JSON string
+
+        body: jsonEncode(payload),
       );
 
-      // Check the response status
       if (response.statusCode == 200) {
-        // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
         alertaId = responseData['alertaID'];
         print('alerta id : $alertaId');
       } else {
-        // If the server did not return a 200 OK response,
-        // throw an exception or handle it as needed
         print('Failed to post data: ${response.statusCode}');
+        print('BODY: ${response.body}');
       }
     } catch (e) {
-      // Handle any errors that occur during the request
       print('Error: $e');
     }
   }
@@ -100,7 +96,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 80,
+            size: 95,
             color: Colors.red,
           ),
           SizedBox(height: 10),
@@ -114,7 +110,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text("¿En qué área se encuentra?", style: TextStyle(fontSize: 18),),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           SearchWidget(
             onAreaSelected: (area) {
               setState(() {
@@ -133,12 +129,14 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 180,
-                    height: 50,
+                    width: 210,
+                    height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.all(8.0),
                         backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: areaEmergencia == null ? null : () async {
@@ -161,7 +159,7 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
+                    child: const Text('Cancelar', style: TextStyle(color:Color.fromRGBO(17, 116, 186, 1), fontSize: 16),),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -230,7 +228,7 @@ class _SearchWidgetState extends State<SearchWidget> {
   @override
   void initState() {
     super.initState();
-    futureNodos = fetchNodos(graphCode);
+    futureNodos = fetchNodosExtremos(graphCode);
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
@@ -20,7 +21,9 @@ class NavigationConfirmation extends StatefulWidget {
 class _NavigationConfirmationState extends State<NavigationConfirmation> {
   @override
   Widget build(BuildContext context) {
-    return  Padding(
+    return  DoubleBackToExit (
+      child:
+        Padding(
       padding: const EdgeInsets.fromLTRB(6, 4, 6, 2),
       child: SingleChildScrollView(
         child: Column(
@@ -52,7 +55,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                   : (widget.selectedArea != '')
                   ? '${widget.selectedArea}'
                   : 'None',
-              style: const TextStyle(fontSize: 23),
+              style: const TextStyle(fontSize: 23, height: 1.1,),
             ),
             const SizedBox(height: 10),
             const Text(
@@ -67,28 +70,28 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
               style: const TextStyle(fontSize: 23),
             ),
 
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Center(
               child: SizedBox(
                 width: double.infinity,
                 height: 55,
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => Navigation(
+                      MaterialPageRoute(builder: (context) => Navigation(
                           selectedOrigin: widget.selectedOrigin,
                           selectedArea: widget.selectedArea,
                           selectedService: widget.selectedService,
                           selectedPreference: widget.selectedPreference
                         ),
                       ),
+                      (Route<dynamic> route) => false,
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
@@ -104,16 +107,16 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             Center(
               child: SizedBox(
                 width: double.infinity,
-                height: 35,
+                height: 40,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(16),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 5),
+                    padding: const EdgeInsets.all(5.0),
                     backgroundColor: Colors.grey,
                   ),
                   child: const Text(
@@ -143,7 +146,7 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
             ),
           ],
         ),
-      ),
+      ),),
     );
   }
 

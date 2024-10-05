@@ -107,7 +107,7 @@ class _AreaDialogState extends State<AreaDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 80,
+            size: 95,
             color: Colors.red,
           ),
           SizedBox(height: 10),
@@ -121,7 +121,7 @@ class _AreaDialogState extends State<AreaDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text("Área seleccionada: ${widget.areaActual}", style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
         ],
       ),
       actions: <Widget>[
@@ -133,13 +133,15 @@ class _AreaDialogState extends State<AreaDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 180,
-                    height: 50,
+                    width: 210,
+                    height: 60,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: const StadiumBorder(),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: widget.areaActual == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.all(8.0),
+                        backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: widget.areaActual == null ? null : () async {
                         if (widget.areaActual != null) {
@@ -159,7 +161,7 @@ class _AreaDialogState extends State<AreaDialog> {
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
+                    child: const Text('Cancelar', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 16),),
                     onPressed: () {
                       widget.onCancel();
                       Navigator.of(context).pop();

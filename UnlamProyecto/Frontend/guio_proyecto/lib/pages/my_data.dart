@@ -1,4 +1,6 @@
 import 'dart:ffi';
+import 'package:guio_proyecto/other/button_back.dart';
+
 import 'login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -175,31 +177,50 @@ class _MyDataPageState extends State<MyDataPage> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
+    return DoubleBackToExit(
+        child: MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+
         backgroundColor: Colors.white,
         body: SafeArea(
           child: Container(
             color: Colors.white,
-            margin: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+            margin: const EdgeInsets.fromLTRB(24, 0, 24, 10),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  const SizedBox(height: 30),
-                  _headerSaveChanges(context),
-                  const SizedBox(height: 30),
-                  _inputSaveChanges(context),
-                  const SizedBox(height: 15),
-                  _accesibilityCheck(context),
                   const SizedBox(height: 20),
+                  _headerSaveChanges(context),
+                  const SizedBox(height: 10),
+                  _inputSaveChanges(context),
+                  const SizedBox(height: 10),
+                  _accesibilityCheck(context),
+                  const SizedBox(height: 10),
                   _buttonSaveChanges(context),
+                  const SizedBox(height: 2),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomePage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                    child: const Text(
+                      "Cancelar",
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Color.fromRGBO(17, 116, 186, 1)
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         ),
-      ),
+      ),),
     );
   }
 
@@ -214,7 +235,7 @@ class _MyDataPageState extends State<MyDataPage> {
         children: [
           Text(
             "Mi cuenta",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           )/*,
           SizedBox(
               height: 10), // Añade un espacio entre los textos si lo deseas
@@ -488,17 +509,11 @@ class _MyDataPageState extends State<MyDataPage> {
 
                 _formKey.currentState!.validate();
 
-                try {
-                  if(userNameChange == true){
-                    await _validateUsername();
-                  }
-                  if(emailChange == true){
-                    await _validateEmail();
-                  }
-                } finally {
-                  setState(() {
-                   _isValidatingInfo = false; // Habilita el botón de nuevo
-                  });
+                if(userNameChange == true){
+                  await _validateUsername();
+                }
+                if(emailChange == true){
+                  await _validateEmail();
                 }
 
                 if (_formKey.currentState!.validate()) {
@@ -583,6 +598,9 @@ class _MyDataPageState extends State<MyDataPage> {
                     );
                   }
                 }
+                setState(() {
+                  _isValidatingInfo = false; // Habilita el botón de nuevo
+                });
               },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
