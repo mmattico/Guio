@@ -207,6 +207,8 @@ class _NavigationState extends State<Navigation> {
     );
 
     if (respuesta == true) {
+      bool wasVoiceAssistanceEnabled = selectedVoiceAssistance;
+
       setState(() {
         _cancelarRecorrido = true;
         if (selectedVoiceAssistance) {
@@ -214,17 +216,21 @@ class _NavigationState extends State<Navigation> {
         }
         _botonCancelarRecorrido = !_botonCancelarRecorrido;
       });
+
       detenerReproduccion();
       Vibration.cancel();
-
-      await speak(_recorridoFinalizado);
+      
+      if (wasVoiceAssistanceEnabled) {
+        await speak(_recorridoFinalizado);
+      }
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-        (Route<dynamic> route) => false,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+            (Route<dynamic> route) => false,
       );
     }
+
   }
 
   Future<void> requestPermisos() async {
@@ -330,7 +336,7 @@ class _NavigationState extends State<Navigation> {
       _norteGrado = responseData.norteGrado;
 
       subscriptionInstruccion =
-          Stream.periodic(Duration(seconds: 1)).listen((_) async {
+          Stream.periodic(const Duration(seconds: 1)).listen((_) async {
         while (_primerDestino) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
@@ -363,7 +369,7 @@ class _NavigationState extends State<Navigation> {
         });
       });
 
-      subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) async {
+      subscriptionTts = Stream.periodic(const Duration(seconds: 6)).listen((_) async {
         while (_primerDestino) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
@@ -427,7 +433,7 @@ class _NavigationState extends State<Navigation> {
               while (pasosRecorridos < pasosARecorrer) {
                 print(
                     "Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 360} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
-                await Future.delayed(Duration(milliseconds: 500));
+                await Future.delayed(const Duration(milliseconds: 500));
                 if (_cancelarRecorrido) {
                   break;
                 }
@@ -550,7 +556,7 @@ class _NavigationState extends State<Navigation> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 10),
+                              //const SizedBox(height: 10),
                               header(),
                               const SizedBox(height: 9),
                               Text(
@@ -564,22 +570,22 @@ class _NavigationState extends State<Navigation> {
                                             : 'None',
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontSize: 50,
+                                  fontSize: 45,
                                   fontWeight: FontWeight.bold,
                                   height: 1.1,
                                 ),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 10),
                               Card(
                                 color: Colors.white,
                                 margin:
-                                    const EdgeInsets.fromLTRB(15, 10, 15, 2),
+                                    const EdgeInsets.fromLTRB(8, 8, 8, 0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16.0),
                                 ),
                                 child: Padding(
                                   padding:
-                                      const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                                      const EdgeInsets.all(8.0),
                                   child: Column(
                                     children: [
                                       SwitchListTile(
@@ -603,9 +609,6 @@ class _NavigationState extends State<Navigation> {
                                   child: _instruccion == _llegadaDestino
                                       ? Column(
                                           children: [
-                                            const SizedBox(
-                                              height: 25,
-                                            ),
                                             Image.asset(
                                               _imagenPath,
                                               width: 230.0,
@@ -632,30 +635,33 @@ class _NavigationState extends State<Navigation> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    SizedBox(
-                                        width: 300,
-                                        height: 120,
-                                        child: Center(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(4, 2, 4, 12),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              _instruccion,
+                                              _instruccion.startsWith("Tiene que avanzar")
+                                                  ? _instruccion.contains(".")
+                                                  ? _instruccion.substring(0, _instruccion.indexOf("."))
+                                                  : _instruccion
+                                                  : _instruccion,
                                               style: const TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.bold),
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                               textAlign: TextAlign.center,
                                             ),
                                           ],
-                                        )))
+                                        ),
+                                      ),
+                                    )
+
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 8),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
