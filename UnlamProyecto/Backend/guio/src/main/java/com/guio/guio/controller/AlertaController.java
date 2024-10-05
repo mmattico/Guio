@@ -1,8 +1,11 @@
 package com.guio.guio.controller;
 
 import com.guio.guio.dao.AlertaDAO;
+import com.guio.guio.dao.GrafoDAO;
 import com.guio.guio.dao.UsuarioDAO;
+import com.guio.guio.model.Alerta;
 import com.guio.guio.service.AlertaService;
+import com.guio.guio.service.GrafoService;
 import com.guio.guio.service.UsuarioService;
 import com.guio.guio.summary.AlertaSummary;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +24,19 @@ public class AlertaController {
     private AlertaService alertaService;
 
     @PostMapping
-    public AlertaDAO createAlerta(@RequestBody AlertaDAO user) {
-        return alertaService.save(user);
+    public AlertaDAO createAlerta(@RequestBody Alerta alerta) {
+        AlertaDAO alert = new AlertaDAO();
+        alert.setComentario(alerta.getComentario());
+        alert.setLugarDeAlerta(alerta.getLugarDeAlerta());
+        alert.setFecha(alerta.getFecha());
+        GrafoDAO grafo = new GrafoDAO();
+        grafo.setGrafoID(alerta.getGrafoID());
+        alert.setGrafo(grafo);
+        UsuarioDAO user = new UsuarioDAO();
+        user.setUsuarioID(alerta.getUsuarioID());
+        alert.setUsuario(user);
+        alert.setEstado(alerta.getEstado());
+        return alertaService.save(alert);
     }
 
     @GetMapping("/{ubicacionCodigo}")
