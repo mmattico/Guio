@@ -36,16 +36,12 @@ class _AreaDialogState extends State<AreaDialog> {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
-      'usuario': {
-        'usuarioID': userID,
-      },
+      'usuarioID': userID,
       'fecha': DateTime.now().toIso8601String(),
       'comentario': '',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
-      'grafo': {
-        'grafoID': graphID,
-      },
+      'grafoID': graphID,
     };
 
     try {
@@ -61,6 +57,8 @@ class _AreaDialogState extends State<AreaDialog> {
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
+        print("aca viene el payload");
+        print(payload);
         alertaId = responseData['alertaID'];
         print('alerta id : $alertaId');
       } else {
