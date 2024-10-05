@@ -398,15 +398,9 @@ class _SignupPageState extends State<SignupPage>{
 
           _formKey.currentState!.validate();
 
-          try {
-            await _validateUsername();
-            await _validateDocument();
-            await _validateEmail();
-          } finally {
-            setState(() {
-              _isValidatingInfo = false; // Habilita el botón de nuevo
-            });
-          }
+          await _validateUsername();
+          await _validateDocument();
+          await _validateEmail();
 
           if (_formKey.currentState!.validate()) {
             //Acá se envian los datos a la BD de usuario
@@ -481,6 +475,9 @@ class _SignupPageState extends State<SignupPage>{
               );
             }
           }
+          setState(() {
+            _isValidatingInfo = false; // Habilita el botón de nuevo
+          });
         },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
