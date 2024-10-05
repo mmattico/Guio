@@ -37,4 +37,8 @@ public class NodoService {
     public List<NodoDAO> getAllNodesTipo(String ubicacion, String tipo) {
         return nodoRepositorio.findNodosByGrafoUbicacionAndTipo(ubicacion, tipo);
     }
+
+    public List<NodoDAO> getAllNodesExtremosYOtros(String ubicacion) {
+        return nodoRepositorio.findNodosAllTiposByGrafoUbicacion(ubicacion);
+    }
 }
