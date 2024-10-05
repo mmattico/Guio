@@ -1,19 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
-import 'package:vibration/vibration.dart';
 import 'emergency.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AreaDialog extends StatefulWidget {
   final String areaActual;
-  final VoidCallback onCancel; // Agrega esta propiedad
-  final Function updateCancelarRecorrido; // Nueva propiedad para updateCancelarRecorrido
 
   AreaDialog({
     required this.areaActual,
-    required this.onCancel,
-    required this.updateCancelarRecorrido, // Asegúrate de que esta función sea requerida
   });
 
   @override
@@ -43,36 +38,33 @@ class _AreaDialogState extends State<AreaDialog> {
     final payload = {
       'usuarioID': userID,
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': ' ',
+      'comentario': '',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
-      'grafoID': graphID
+      'grafoID': graphID,
     };
 
     try {
       final response = await http.post(
         url,
         headers: {
-          'Content-Type': 'application/json', // Adjust headers as needed
+          'Content-Type': 'application/json',
         },
-        body: jsonEncode(payload), // Convert your payload to a JSON string
+        body: jsonEncode(payload),
       );
 
-      // Check the response status
       if (response.statusCode == 200) {
-        // If the server returns an OK response, parse the JSON
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
+        print("aca viene el payload");
+        print(payload);
         alertaId = responseData['alertaID'];
         print('alerta id : $alertaId');
       } else {
-        // If the server did not return a 200 OK response,
-        // throw an exception or handle it as needed
         print('Failed to post data: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle any errors that occur during the request
       print('Error: $e');
     }
   }
@@ -103,7 +95,7 @@ class _AreaDialogState extends State<AreaDialog> {
         children: <Widget>[
           Icon(
             Icons.warning_rounded,
-            size: 95,
+            size: 80,
             color: Colors.red,
           ),
           SizedBox(height: 10),
@@ -117,7 +109,7 @@ class _AreaDialogState extends State<AreaDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text("Área seleccionada: ${widget.areaActual}", style: TextStyle(fontSize: 18)),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
         ],
       ),
       actions: <Widget>[
@@ -129,15 +121,13 @@ class _AreaDialogState extends State<AreaDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SizedBox(
-                    width: 210,
-                    height: 60,
+                    width: 180,
+                    height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        padding: const EdgeInsets.all(8.0),
-                        backgroundColor: areaEmergencia == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
+                        shape: const StadiumBorder(),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: widget.areaActual == null ? Colors.grey : const Color.fromRGBO(17, 116, 186, 1),
                       ),
                       onPressed: widget.areaActual == null ? null : () async {
                         if (widget.areaActual != null) {
@@ -146,7 +136,7 @@ class _AreaDialogState extends State<AreaDialog> {
                           print('grafo id: $_graphID');
                           await enviarAlerta(_userID, _graphID);
                           Navigator.of(context).pop();
-                          emergencyPopUpNavigation(context, alertaId, widget.updateCancelarRecorrido);
+                          emergencyPopUp(context, alertaId);
                         }
                       },
                       child: const Text('Enviar alerta', style: TextStyle(
@@ -157,10 +147,9 @@ class _AreaDialogState extends State<AreaDialog> {
                   ),
                   const SizedBox(height: 10,),
                   TextButton(
-                    child: const Text('Cancelar', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 16),),
+                    child: const Text('Cancelar', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 15),),
                     onPressed: () {
-                      widget.onCancel();
-                      Navigator.of(context).pop();
+                     Navigator.of(context).pop();
                     },
                   ),
                 ],
@@ -173,17 +162,13 @@ class _AreaDialogState extends State<AreaDialog> {
   }
 }
 
-Future<void> confirmacionAreaActual(BuildContext context, String areaActual, Function updateCancelarRecorrido) {
+Future<void> confirmacionAreaAccesible(BuildContext context, String areaActual) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
       return AreaDialog(
         areaActual: areaActual,
-        onCancel: () {
-          updateCancelarRecorrido(false);
-        },
-        updateCancelarRecorrido: updateCancelarRecorrido,
       );
     },
   );

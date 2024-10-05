@@ -236,13 +236,7 @@ class _MyDataPageState extends State<MyDataPage> {
           Text(
             "Mi cuenta",
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-          )/*,
-          SizedBox(
-              height: 10), // Añade un espacio entre los textos si lo deseas
-          Text(
-            "Registrate para utilizar la aplicación",
-            style: TextStyle(fontSize: 18),
-          ),*/
+          )
         ],
       ),
     );

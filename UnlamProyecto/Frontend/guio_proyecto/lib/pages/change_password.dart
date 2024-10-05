@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/pages/home_page.dart';
 import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/start_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'location_selection.dart';
@@ -142,21 +143,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                       width: double.infinity,
                       height: 55,
                       child: ElevatedButton(
-                        onPressed: () async{
+                        onPressed: () async {
                           if (_formKey.currentState!.validate()) {
-                            SharedPreferences prefs = await SharedPreferences
-                                .getInstance();
-                            prefs.getInt('usuarioId');
-                            actualizarPassword(prefs.getInt('usuarioId'),
-                                password);
-                            String? graphCode = await getGraphCode();
-                            if(graphCode != null) {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => HomePage()),);
-                            } else {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => LocationSelection()),);
-                            }
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                            int? usuarioId = prefs.getInt('usuarioId');
+                            actualizarPassword(usuarioId, password, context);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -169,20 +160,27 @@ class _ChangePasswordState extends State<ChangePassword> {
                         child: const Text(
                           "Cambiar contraseña",
                           style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),),
+                        ),
+                      ),
                     ),
                     SizedBox(height: 20,),
                     Center(
                       child: TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
+                        onPressed: () async {
+                          String? graphCode = await getGraphCode();
+                          if(graphCode != null) {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => HomePage()),);
+                          } else {
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => StartPage()),);
+                          }
                         },
                         child: const Text(
                           "Cancelar",
                           style: TextStyle(
                             fontSize: 18,
                             color: Color.fromRGBO(17, 116, 186, 1),
-                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ),
@@ -194,7 +192,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     );
   }
 
-  Future<void> actualizarPassword(int? idUsuario, String nuevaContrasenia) async {
+  Future<void> actualizarPassword(int? idUsuario, String nuevaContrasenia, BuildContext context) async {
     print("idUsuario");
     print(idUsuario);
 
@@ -215,6 +213,65 @@ class _ChangePasswordState extends State<ChangePassword> {
 
       if (response.statusCode == 200) {
         print("Se ha actualizado la contraseña con exito");
+        // Password cambiada con exito
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              content: const Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(Icons.check_circle, color: Colors.green, size: 100,),
+                  SizedBox(height: 10),
+                  Text(
+                    '¡Tu password ha sido actualizada!',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    ' ',
+                    style: TextStyle(fontSize: 15),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                Center(
+                  child: SizedBox(
+                    width: 250,
+                    height: 60,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        String? graphCode = await getGraphCode();
+                        if(graphCode != null) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => HomePage()),);
+                        } else {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => LocationSelection()),);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                      ),
+                      child: const Text(
+                        "IR AL INICIO",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       } else {
         print("Error al actualizar contraseña");
         print('Respuesta: ${response.body}');

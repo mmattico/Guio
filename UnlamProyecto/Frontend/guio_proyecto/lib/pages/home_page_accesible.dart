@@ -5,6 +5,7 @@ import '../other/text_to_voice.dart';
 import '../other/navigation_confirmation.dart';
 import '../other/user_session.dart';
 import '../other/get_nodos.dart';
+import '../other/emergency_homepageaccesible.dart';
 
 class AccesibleHome extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _AccesibleHome extends State<AccesibleHome> {
   String _destino = '';
   String _servicio = '';
   String _preferencia = '';
+  String _emergencia = '';
   Timer? _timer;
   bool _isButtonEnabled = false;
 
@@ -64,7 +66,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         .toList();
   }
 
-  void _listen(int textFieldIndex, String label) async {
+  Future<void> _listen(int textFieldIndex, String label) async {
     speak("Seleccionó  $label");
     print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
     _selectedTextFieldIndex = textFieldIndex;
@@ -104,6 +106,9 @@ class _AccesibleHome extends State<AccesibleHome> {
                 break;
               case 4:
                 _preferencia = colocarMayusculas(result.recognizedWords);
+                break;
+              case 5:
+                _emergencia = colocarMayusculas(result.recognizedWords);
                 break;
             }
             _updateButtonState();
@@ -148,6 +153,9 @@ class _AccesibleHome extends State<AccesibleHome> {
       case 4:
         _validarExistencia(_preferencia, 'PREFERENCIA', preferenciasPermitidas, 4);
         break;
+      case 5:
+        _validarExistencia(_emergencia, 'EMERGENCIA', areasPermitidas, 5);
+        break;
     }
   }
 
@@ -168,6 +176,9 @@ class _AccesibleHome extends State<AccesibleHome> {
             break;
           case 4:
             _preferencia = '';
+            break;
+          case 5:
+            _emergencia='';
             break;
         }
       });
@@ -261,15 +272,48 @@ class _AccesibleHome extends State<AccesibleHome> {
               : null,
           style: ElevatedButton.styleFrom(
             shape: CircleBorder(),
-            padding: EdgeInsets.all(80),
+            padding: EdgeInsets.all(50),
           ),
           child: Text(
             'ACEPTAR',
             style: TextStyle(fontSize: 20),
           ),
         ),
+        ElevatedButton(
+          onPressed: () {
+            _triggerSOSAction();
+          },
+          style: ElevatedButton.styleFrom(
+            shape: CircleBorder(),
+            padding: EdgeInsets.all(50),
+            backgroundColor: Colors.red, // Cambiar el color a rojo para el botón S.O.S.
+          ),
+          child: Text(
+            'S.O.S.',
+            style: TextStyle(fontSize: 20),
+          ),
+        ),
       ],
     );
   }
+
+  Future<void> _triggerSOSAction() async {
+    detenerReproduccion();
+
+   await _listen(5, "Area de Emergencia");
+   await  Future.delayed(Duration(milliseconds: 5000),(){});
+
+    if(_emergencia.isEmpty){
+      speak("Se cancela el S.O.S.");
+    }else{
+      confirmacionAreaAccesible(context,_emergencia);
+      speak("S.O.S. activado, por favor confirme.");
+    }
+
+  }
+
+
+
+
 }
 

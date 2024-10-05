@@ -25,16 +25,12 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
-      'usuario':{
-        'usuarioID': userID,
-      },
+      'usuarioID': userID,
       'fecha': DateTime.now().toIso8601String(),
       'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
-      'grafo': {
-        'grafo': graphID,
-      },
+      'grafoID': graphID
     };
 
     try {
@@ -43,19 +39,23 @@ class _AreaSelectionDialogState extends State<AreaSelectionDialog> {
         headers: {
           'Content-Type': 'application/json',
         },
-
         body: jsonEncode(payload),
+
       );
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         print('Response data: $responseData');
         print('alerta enviada');
+        print("aca viene el payload");
+        print(payload);
         alertaId = responseData['alertaID'];
         print('alerta id : $alertaId');
       } else {
         print('Failed to post data: ${response.statusCode}');
         print('BODY: ${response.body}');
+
+
       }
     } catch (e) {
       print('Error: $e');

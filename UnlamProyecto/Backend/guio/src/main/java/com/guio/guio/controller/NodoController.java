@@ -43,6 +43,11 @@ public class NodoController {
         return nodoService.getAllNodesTipo(ubicacion, "extremo");
     }
 
+    @GetMapping("/extremosyotros/{ubicacion}")
+    public List<NodoDAO> getAllNodesExtremosYOtros(@PathVariable String ubicacion) {
+        return nodoService.getAllNodesExtremosYOtros(ubicacion);
+    }
+
     //http://localhost:8080/api/nodos/desactivar/1/PRUEBA
     @PutMapping("/desactivar/{nombre}/{ubicacion}")
     public ResponseEntity<?> desactivarNodo(@PathVariable String nombre, @PathVariable String ubicacion) {
