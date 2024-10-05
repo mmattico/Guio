@@ -167,27 +167,41 @@ Widget headerTexto() {
                       color: Colors.white,
                       offset: const Offset(-10, 60),
                       onSelected: (String value) {
-                        if (value == '1') {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MyDataPage()),
-                                (Route<dynamic> route) => false,
-                          );
-                        } else if (value == '2') {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => const ChangePassword()),
-                                (Route<dynamic> route) => false,
-                          );
-                        } else if (value == '3') {
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(builder: (context) => LocationSelection()),
-                                (Route<dynamic> route) => false,
-                          );
-                        } else if (value == '4') {
-                          _logout(context);
-                        }
+                        switch (value) {
+                          case '1':
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (
+                                  context) => const MyDataPage()),
+                                  (Route<dynamic> route) => false,
+                            );
+                            break;
+
+                          case '2':
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (
+                                  context) => const ChangePassword()),
+                                  (Route<dynamic> route) => false,
+                            );
+                            break;
+
+                          case '3':
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) =>
+                                  LocationSelection()),
+                                  (Route<dynamic> route) => false,
+                            );
+                            break;
+
+                          case '4':
+                            _logout(context);
+                            break;
+
+                          default:
+                            print('Valor no válido: $value');
+                        };
                       },
                       itemBuilder: (BuildContext context) => [
                         const PopupMenuItem<String>(
@@ -269,10 +283,62 @@ Future<void> _logout(context) async {
   await deleteUserSession();
   await prefs.remove('isLoggedIn');
 
-  Navigator.pushAndRemoveUntil(
-    context,
-    MaterialPageRoute(builder: (context) => const StartPage()),
-        (Route<dynamic> route) => false,
-  );
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context)
+  {
+    return AlertDialog(
+      backgroundColor: Colors.white,
+      content: const Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.logout, color: Colors.grey, size: 80,),
+          SizedBox(height: 10),
+          Text(
+            '¿Cerrar sesión?',
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 10),
 
+        ],
+      ),
+      actions: <Widget>[
+                SizedBox(
+                  width: 95,
+                  height: 55,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const StartPage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                    ),
+                    child: const Text(
+                      "SI",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
+                    ),),
+                ),
+                TextButton(
+                  child: const Text('NO', style: TextStyle(
+                      color: Color.fromRGBO(17, 116, 186, 1), fontSize: 16),),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+    );
+  }
+  );
 }
