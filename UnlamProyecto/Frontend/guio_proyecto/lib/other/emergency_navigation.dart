@@ -41,16 +41,12 @@ class _AreaDialogState extends State<AreaDialog> {
     var url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/');
 
     final payload = {
-      'usuario': {
-        'usuarioID': userID, // nombreUsuario //: esto se puede descomentar una vez que este listo la parte de usuarios
-      },
+      'usuarioID': userID,
       'fecha': DateTime.now().toIso8601String(),
-      'comentario': '',
+      'comentario': ' ',
       'lugarDeAlerta': areaEmergencia,
       'estado': 'pendiente',
-      'grafo': {
-        'grafoID': graphID,
-      },
+      'grafoID': graphID
     };
 
     try {
