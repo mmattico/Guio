@@ -56,11 +56,11 @@ class _LocationSelectionState extends State<LocationSelection> {
         future: futureGrafos,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No hay grafos disponibles'));
+            return const Center(child: Text('No hay grafos disponibles'));
           } else {
             return SafeArea(
               child: Padding(
@@ -198,7 +198,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => HomePage(),
+                                builder: (context) => const HomePage(),
                               ),
                             );
                           }
