@@ -301,6 +301,7 @@ class _AccesibleHome extends State<AccesibleHome> {
     detenerReproduccion();
 
    await _listen(5, "Area de Emergencia");
+   await  Future.delayed(Duration(milliseconds: 5000),(){});
 
     if(_emergencia.isEmpty){
       speak("Se cancela el S.O.S.");
