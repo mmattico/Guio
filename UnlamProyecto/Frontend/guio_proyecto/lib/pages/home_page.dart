@@ -499,7 +499,7 @@ class _HomePageState extends State<HomePage> {
   _button(context){
     return Center(
       child: SizedBox(
-        width: 200,
+        width: 230,
         height: 60,
         child: ElevatedButton(
           onPressed: (selectedOrigin.isEmpty ||

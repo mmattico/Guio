@@ -139,7 +139,7 @@ Widget headerTexto() {
         );
       } else {
         return Padding(
-          padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+          padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -155,22 +155,30 @@ Widget headerTexto() {
                       //height: 1.1,
                     ),
                   ),
-                  SizedBox(width: 65,),
+                  const Spacer(),
                   Align(
                     alignment: Alignment.topCenter, // Alinea el ícono en la parte superior
                     child: PopupMenuButton<String>(
                       icon: const Icon(
                         Icons.menu_rounded,
                         color: Colors.white,
-                        size: 30,
+                        size: 35,
                       ),
                       color: Colors.white,
                       offset: const Offset(-10, 60),
                       onSelected: (String value) {
                         if (value == '1') {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyDataPage()),);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MyDataPage()),
+                                (Route<dynamic> route) => false,
+                          );
                         } else if (value == '2') {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ChangePassword()),);
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) => const ChangePassword()),
+                                (Route<dynamic> route) => false,
+                          );
                         } else if (value == '3') {
                           Navigator.pushAndRemoveUntil(
                             context,
@@ -234,8 +242,7 @@ Widget headerTexto() {
                   Expanded(child:
                     Text(
                       snapshot.data ?? '',
-                      //"HOSPITAL ITALIANO",
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 50,
                         fontWeight: FontWeight.bold,
@@ -246,22 +253,8 @@ Widget headerTexto() {
                       maxLines: 2,
                     ),
                   ),
-                  //SizedBox(width: 10,),
-                  /*IconButton(
-                    icon: const Icon(Icons.change_circle_outlined, color: Colors.white, size: 45,),
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => LocationSelection()),);
-                    },
-                  ),*/
                 ],
               ),
-              /*const Text(
-              'Seleccione origen y destino para comenzar',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),*/
             ],
           ),
         );

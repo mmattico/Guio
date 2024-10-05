@@ -55,7 +55,7 @@ class _NavigationState extends State<Navigation> {
   String posicionActual = "";
 
   bool _primerDestino = false;
-  String _llegadaDestino = 'Ha llegado a Destino';
+  String _llegadaDestino = '¡Ha llegado a Destino!';
 
   String _location = '';
 
@@ -180,9 +180,13 @@ class _NavigationState extends State<Navigation> {
                   Navigator.of(context).pop(true);
                 },
                 style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 8),
+                  backgroundColor:
+                  Color.fromRGBO(17, 116, 186, 1),
                 ),
                 child: const Text(
                   'Sí',
@@ -609,11 +613,13 @@ class _NavigationState extends State<Navigation> {
                                   child: _instruccion == _llegadaDestino
                                       ? Column(
                                           children: [
+                                            SizedBox(height: 35,),
                                             Image.asset(
                                               _imagenPath,
                                               width: 230.0,
                                               height: 230.0,
-                                            )
+                                            ),
+                                            SizedBox(height: 50,),
                                           ],
                                         )
                                       : SizedBox(
@@ -667,7 +673,7 @@ class _NavigationState extends State<Navigation> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                    width: 250,
+                                    width: 230,
                                     height: 60,
                                     child: ElevatedButton(
                                       onPressed: () {
@@ -675,10 +681,11 @@ class _NavigationState extends State<Navigation> {
                                         _cancelarNavegacion(context);
                                       },
                                       style: ElevatedButton.styleFrom(
-                                        shape: const StadiumBorder(),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 16),
-                                        backgroundColor: Colors.grey,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                                       ),
                                       child: const Text(
                                         "Finalizar Recorrido",
