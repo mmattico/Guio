@@ -488,17 +488,11 @@ class _MyDataPageState extends State<MyDataPage> {
 
                 _formKey.currentState!.validate();
 
-                try {
-                  if(userNameChange == true){
-                    await _validateUsername();
-                  }
-                  if(emailChange == true){
-                    await _validateEmail();
-                  }
-                } finally {
-                  setState(() {
-                   _isValidatingInfo = false; // Habilita el botón de nuevo
-                  });
+                if(userNameChange == true){
+                  await _validateUsername();
+                }
+                if(emailChange == true){
+                  await _validateEmail();
                 }
 
                 if (_formKey.currentState!.validate()) {
@@ -583,6 +577,9 @@ class _MyDataPageState extends State<MyDataPage> {
                     );
                   }
                 }
+                setState(() {
+                  _isValidatingInfo = false; // Habilita el botón de nuevo
+                });
               },
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
