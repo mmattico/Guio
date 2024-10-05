@@ -4,30 +4,6 @@ import 'dart:convert';
 
 //*************** BOTÓN DE EMERGENCIA ***************
 
-/*Widget emergencyButton(BuildContext context) {
-  return Column(
-    children: [
-      SizedBox(
-        width: 60,
-        height: 60,
-        child: IconButton(onPressed: () {
-          emergencyPopUp(context);
-        },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              //padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.red,
-            ),
-            icon: const Icon(Icons.sos,
-              color: Colors.white,
-              size: 40,
-            )
-        ),
-      ),
-    ],
-  );
-}*/
-
 Future<void> emergencyPopUp(BuildContext context, int alertaID) {
   return showDialog<void>(
     context: context,
@@ -53,15 +29,18 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              width: 265,
-              height: 55,
+              width: double.infinity,
+              height: 65,
               child: Text(
                 '¡Por favor, quédate en la\n'
-                    'misma ubicación hasta recibir asistencia!\n',
+                'misma ubicación hasta recibir asistencia!\n',
                 textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 15),
               ),
             ),
-            SizedBox(height: 15,)
+            SizedBox(
+              height: 15,
+            )
           ],
         ),
         actions: <Widget>[
@@ -74,9 +53,11 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                   height: 70,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                      backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                     ),
                     onPressed: () async {
                       final result = await showDialog<bool>(
@@ -86,28 +67,42 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                           return AlertDialog(
                             backgroundColor: Colors.white,
                             title: const Text('Confirmación'),
-                            content: const Text('¿Confirma que la emergencia fue solucionada?'),
+                            content: const Text(
+                                '¿Confirma que la emergencia fue solucionada?', style: TextStyle(fontSize: 16),),
                             actions: <Widget>[
                               SizedBox(
                                 width: 95,
-                                height: 60,
+                                height: 55,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    shape: const StadiumBorder(),
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    backgroundColor:
+                                        Color.fromRGBO(17, 116, 186, 1),
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pop(true);
                                   },
-                                  child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
+                                  child: const Text(
+                                    'Sí',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop(false);
                                 },
-                                child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
+                                child: const Text(
+                                  'No',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(17, 116, 186, 1),
+                                      fontSize: 18),
+                                ),
                               ),
                             ],
                           );
@@ -117,15 +112,21 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                       // Si el usuario eligió sí, cierra el popup original y actualiza la alerta
                       if (result == true) {
                         //actualizar estado de alerta a "finalizada"
-                        updateTicketStatus(alertaID, 'finalizada', 'Finalizada por el usuario');
+                        updateTicketStatus(alertaID, 'finalizada',
+                            'Finalizada por el usuario');
                         //agregar también update de comentario
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Emergencia\nSolucionada', style: TextStyle(color: Colors.white, fontSize: 18),),
+                    child: const Text(
+                      'Emergencia\nSolucionada',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 8,
+                ),
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -139,28 +140,42 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                         return AlertDialog(
                           backgroundColor: Colors.white,
                           title: const Text('Confirmación'),
-                          content: const Text('¿Está seguro que desea cancelar?'),
+                          content:
+                              const Text('¿Está seguro que desea cancelar?', style: TextStyle(fontSize: 16),),
                           actions: <Widget>[
                             SizedBox(
                               width: 95,
-                              height: 60,
+                              height: 55,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  shape: const StadiumBorder(),
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  backgroundColor:
+                                      Color.fromRGBO(17, 116, 186, 1),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop(true);
                                 },
-                                child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
+                                child: const Text(
+                                  'Sí',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
                               ),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
+                              child: const Text(
+                                'No',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(17, 116, 186, 1),
+                                    fontSize: 18),
+                              ),
                             ),
                           ],
                         );
@@ -170,7 +185,8 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                     // Si el usuario eligió sí, cierra el popup original
                     if (result == true) {
                       //cambia estado de alerta a cancelada
-                      updateTicketStatus(alertaID, 'cancelada', 'Cancelada por el usuario');
+                      updateTicketStatus(
+                          alertaID, 'cancelada', 'Cancelada por el usuario');
                       //agregar también update de comentario
                       Navigator.of(context).pop();
                     }
@@ -180,7 +196,6 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
                     style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),
                   ),
                 )
-
               ],
             ),
           ),
@@ -192,7 +207,8 @@ Future<void> emergencyPopUp(BuildContext context, int alertaID) {
 
 //
 
-Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Function updateCancelarRecorrido) {
+Future<void> emergencyPopUpNavigation(
+    BuildContext context, int alertaID, Function updateCancelarRecorrido) {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -217,15 +233,18 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              width: 265,
-              height: 55,
+              width: double.infinity,
+              height: 65,
               child: Text(
                 '¡Por favor, quédate en la\n'
-                    'misma ubicación hasta recibir asistencia!\n',
+                'misma ubicación hasta recibir asistencia!\n',
                 textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 15),
               ),
             ),
-            SizedBox(height: 15,)
+            SizedBox(
+              height: 15,
+            )
           ],
         ),
         actions: <Widget>[
@@ -238,9 +257,11 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                   height: 70,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                      backgroundColor: Color.fromRGBO(17, 116, 186, 1),
                     ),
                     onPressed: () async {
                       final result = await showDialog<bool>(
@@ -250,28 +271,42 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                           return AlertDialog(
                             backgroundColor: Colors.white,
                             title: const Text('Confirmación'),
-                            content: const Text('¿Confirma que la emergencia fue solucionada?'),
+                            content: const Text(
+                                '¿Confirma que la emergencia fue solucionada?', style: TextStyle(fontSize: 16),),
                             actions: <Widget>[
                               SizedBox(
                                 width: 95,
-                                height: 60,
+                                height: 55,
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    shape: const StadiumBorder(),
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                    backgroundColor:
+                                    Color.fromRGBO(17, 116, 186, 1),
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pop(true);
                                   },
-                                  child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
+                                  child: const Text(
+                                    'Sí',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 20),
+                                  ),
                                 ),
                               ),
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(context).pop(false);
                                 },
-                                child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
+                                child: const Text(
+                                  'No',
+                                  style: TextStyle(
+                                      color: Color.fromRGBO(17, 116, 186, 1),
+                                      fontSize: 18),
+                                ),
                               ),
                             ],
                           );
@@ -281,16 +316,22 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                       // Si el usuario eligió sí, cierra el popup original y actualiza la alerta
                       if (result == true) {
                         //actualizar estado de alerta a "finalizada"
-                        updateTicketStatus(alertaID, 'finalizada', 'Finalizado por el usuario');
+                        updateTicketStatus(alertaID, 'finalizada',
+                            'Finalizado por el usuario');
                         updateCancelarRecorrido(false);
                         //agregar también update de comentario
                         Navigator.of(context).pop();
                       }
                     },
-                    child: const Text('Emergencia\nSolucionada', style: TextStyle(color: Colors.white, fontSize: 18),),
+                    child: const Text(
+                      'Emergencia\nSolucionada',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10,),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextButton(
                   style: TextButton.styleFrom(
                     textStyle: Theme.of(context).textTheme.labelLarge,
@@ -304,28 +345,42 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                         return AlertDialog(
                           backgroundColor: Colors.white,
                           title: const Text('Confirmación'),
-                          content: const Text('¿Está seguro que desea cancelar?'),
+                          content:
+                              const Text('¿Está seguro que desea cancelar?', style: TextStyle(fontSize: 16),),
                           actions: <Widget>[
                             SizedBox(
                               width: 95,
-                              height: 60,
+                              height: 55,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  shape: const StadiumBorder(),
-                                  padding: const EdgeInsets.symmetric(vertical: 16),
-                                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding:
+                                  const EdgeInsets.symmetric(vertical: 8),
+                                  backgroundColor:
+                                  Color.fromRGBO(17, 116, 186, 1),
                                 ),
                                 onPressed: () {
                                   Navigator.of(context).pop(true);
                                 },
-                                child: const Text('Sí', style: TextStyle(color: Colors.white, fontSize: 20),),
+                                child: const Text(
+                                  'Sí',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 20),
+                                ),
                               ),
                             ),
                             TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              child: const Text('No', style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),),
+                              child: const Text(
+                                'No',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(17, 116, 186, 1),
+                                    fontSize: 18),
+                              ),
                             ),
                           ],
                         );
@@ -335,7 +390,8 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                     // Si el usuario eligió sí, cierra el popup original
                     if (result == true) {
                       //cambia estado de alerta a cancelada
-                      updateTicketStatus(alertaID, 'cancelada', 'Cancelada por el usuario');
+                      updateTicketStatus(
+                          alertaID, 'cancelada', 'Cancelada por el usuario');
                       updateCancelarRecorrido(false);
                       //agregar también update de comentario
                       Navigator.of(context).pop();
@@ -346,7 +402,6 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
                     style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1)),
                   ),
                 )
-
               ],
             ),
           ),
@@ -358,8 +413,10 @@ Future<void> emergencyPopUpNavigation(BuildContext context, int alertaID, Functi
 
 // CAMBIAR ESTADO DE LA ALERTA
 
-Future<void> updateTicketStatus(int ticketId, String newStatus, String comentario) async {
-  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$ticketId/estado')
+Future<void> updateTicketStatus(
+    int ticketId, String newStatus, String comentario) async {
+  final url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+          '/api/alerta/$ticketId/estado')
       .replace(queryParameters: {'COMENTARIO': comentario});
 
   print('URL: $url');

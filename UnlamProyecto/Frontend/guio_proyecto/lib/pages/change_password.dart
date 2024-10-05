@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/pages/home_page.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +28,8 @@ class _ChangePasswordState extends State<ChangePassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return DoubleBackToExit(
+        child: Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.fromLTRB(22,70,22,50),
@@ -188,7 +190,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   ],
           ),),
         )
-      ),
+      ),),
     );
   }
 

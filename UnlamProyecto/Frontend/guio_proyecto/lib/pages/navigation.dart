@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/model/instruccion_node.dart';
+import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/other/emergency_navigation.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import '../other/header_homepage.dart';
@@ -29,7 +30,6 @@ class Navigation extends StatefulWidget {
       required this.selectedService,
       required this.selectedPreference});
 
-
   @override
   _NavigationState createState() => _NavigationState();
 }
@@ -55,14 +55,15 @@ class _NavigationState extends State<Navigation> {
   String posicionActual = "";
 
   bool _primerDestino = false;
-  String _llegadaDestino = 'Ha llegado a Destino';
+  String _llegadaDestino = '¡Ha llegado a Destino!';
 
   String _location = '';
 
   // Podometro
   String _pasosValue = '0';
   int _pasosIniciales = 0;
-  bool _primeraLectura = true; // Chequeo primera lectura de paso sino da el total del podometro
+  bool _primeraLectura =
+      true; // Chequeo primera lectura de paso sino da el total del podometro
   final double stepLength = 0.762; // Valor de paso promedio
   Stream<StepCount>? _stepCountStream;
   StreamSubscription<StepCount>? _stepCountSubscription;
@@ -106,7 +107,13 @@ class _NavigationState extends State<Navigation> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: const Text('¡Ha llegado a su primer destino!', style: TextStyle(fontSize: 25,),textAlign: TextAlign.center,),
+          title: const Text(
+            '¡Ha llegado a su primer destino!',
+            style: TextStyle(
+              fontSize: 25,
+            ),
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             Align(
               alignment: Alignment.center,
@@ -119,7 +126,10 @@ class _NavigationState extends State<Navigation> {
                     width: 150,
                     height: 60,
                     child: ElevatedButton(
-                      child: const Text('Continuar', style: TextStyle(fontSize: 20, color: Colors.white),),
+                      child: const Text(
+                        'Continuar',
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
                       style: ElevatedButton.styleFrom(
                         shape: const StadiumBorder(),
                         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -170,9 +180,13 @@ class _NavigationState extends State<Navigation> {
                   Navigator.of(context).pop(true);
                 },
                 style: ElevatedButton.styleFrom(
-                  shape: const StadiumBorder(),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 8),
+                  backgroundColor:
+                  Color.fromRGBO(17, 116, 186, 1),
                 ),
                 child: const Text(
                   'Sí',
@@ -187,7 +201,8 @@ class _NavigationState extends State<Navigation> {
               },
               child: const Text(
                 'No',
-                style: TextStyle(color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),
+                style: TextStyle(
+                    color: Color.fromRGBO(17, 116, 186, 1), fontSize: 18),
               ),
             ),
           ],
@@ -196,23 +211,30 @@ class _NavigationState extends State<Navigation> {
     );
 
     if (respuesta == true) {
+      bool wasVoiceAssistanceEnabled = selectedVoiceAssistance;
+
       setState(() {
         _cancelarRecorrido = true;
         if (selectedVoiceAssistance) {
           selectedVoiceAssistance = !selectedVoiceAssistance;
         }
-        _botonCancelarRecorrido = ! _botonCancelarRecorrido;
+        _botonCancelarRecorrido = !_botonCancelarRecorrido;
       });
+
       detenerReproduccion();
       Vibration.cancel();
+      
+      if (wasVoiceAssistanceEnabled) {
+        await speak(_recorridoFinalizado);
+      }
 
-      await speak(_recorridoFinalizado);
-
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
+            (Route<dynamic> route) => false,
       );
     }
+
   }
 
   Future<void> requestPermisos() async {
@@ -232,20 +254,24 @@ class _NavigationState extends State<Navigation> {
       _stepCountSubscription!.cancel();
     }
     _stepCountStream = Pedometer.stepCountStream;
-    _stepCountSubscription = _stepCountStream!.listen(onStepCount, onError: onStepCountError, cancelOnError: false);
+    _stepCountSubscription = _stepCountStream!
+        .listen(onStepCount, onError: onStepCountError, cancelOnError: false);
   }
+
   void resetStepCount() {
     setState(() {
-      _primeraLectura=true;
+      _primeraLectura = true;
       _pasosIniciales = int.tryParse(_pasosValue) ?? 0;
       _pasosValue = '0';
     });
   }
+
   @override
   void dispose() {
     _stepCountSubscription?.cancel();
     super.dispose();
   }
+
   // Fin podometro
 
   // Inicio magnetometro
@@ -262,6 +288,7 @@ class _NavigationState extends State<Navigation> {
   void stopListening() {
     _compassSubscription?.cancel();
   }
+
   // Fin magnetometro
 
   Future<void> obtenerInstruccionesCamino() async {
@@ -269,28 +296,34 @@ class _NavigationState extends State<Navigation> {
     //var url = Uri.http('192.168.0.11:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     //var url = Uri.http('10.0.2.2:8080', '/api/dijktra/mascorto', {'ORIGEN': '1', 'DESTINO': '11'});
     var url;
-    if(widget.selectedService!.isEmpty){
+    if (widget.selectedService!.isEmpty) {
       print("LOCATION ISSSS: " + _location);
-      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascorto',
-          {'ORIGEN': widget.selectedOrigin,
-            'DESTINO': widget.selectedArea,
-            'PREFERENCIA': widget.selectedPreference,
-            'UBICACION': _location});
-    }else if(widget.selectedArea!.isEmpty) {
-      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/portipo',
-          { 'ORIGEN': widget.selectedOrigin,
-            'SERVICIO': widget.selectedService,
-            'PREFERENCIA': widget.selectedPreference,
-            'UBICACION': _location});
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+          '/api/dijktra/mascorto', {
+        'ORIGEN': widget.selectedOrigin,
+        'DESTINO': widget.selectedArea,
+        'PREFERENCIA': widget.selectedPreference,
+        'UBICACION': _location
+      });
+    } else if (widget.selectedArea!.isEmpty) {
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+          '/api/dijktra/portipo', {
+        'ORIGEN': widget.selectedOrigin,
+        'SERVICIO': widget.selectedService,
+        'PREFERENCIA': widget.selectedPreference,
+        'UBICACION': _location
+      });
     } else {
-      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/dijktra/mascortoconnodointermedio',
-          {'ORIGEN': widget.selectedOrigin,
-            'DESTINO': widget.selectedArea,
-            'SERVICIO': widget.selectedService,
-            'PREFERENCIA': widget.selectedPreference,
-            'UBICACION': _location});
+      url = Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+          '/api/dijktra/mascortoconnodointermedio', {
+        'ORIGEN': widget.selectedOrigin,
+        'DESTINO': widget.selectedArea,
+        'SERVICIO': widget.selectedService,
+        'PREFERENCIA': widget.selectedPreference,
+        'UBICACION': _location
+      });
     }
-    posicionActual=widget.selectedOrigin.toString();
+    posicionActual = widget.selectedOrigin.toString();
     print(url);
     print(widget.selectedOrigin);
     print(widget.selectedArea);
@@ -298,18 +331,21 @@ class _NavigationState extends State<Navigation> {
     if (response.statusCode == 200) {
       _isLoading = false;
       print(json.decode(response.body));
-      var responseData = Autogenerated.fromJson(json.decode(response.body) as Map<String, dynamic>);
+      var responseData = Autogenerated.fromJson(
+          json.decode(response.body) as Map<String, dynamic>);
       late StreamSubscription? subscriptionInstruccion;
       late StreamSubscription? subscriptionTts;
 
       instrucciones = responseData.instrucciones.toList();
       _norteGrado = responseData.norteGrado;
 
-      subscriptionInstruccion = Stream.periodic(Duration(seconds: 1)).listen((_) async {
+      subscriptionInstruccion =
+          Stream.periodic(const Duration(seconds: 1)).listen((_) async {
         while (_primerDestino) {
           await Future.delayed(const Duration(milliseconds: 100));
-        };
-        while(_botonCancelarRecorrido){
+        }
+        ;
+        while (_botonCancelarRecorrido) {
           await Future.delayed(const Duration(milliseconds: 100));
         }
         setState(() {
@@ -322,9 +358,11 @@ class _NavigationState extends State<Navigation> {
           } else {
             if (_instruccionActual > 0) {
               if ((_norteGrado + _angle - direccionMagnetometro) % 360 < 22 ||
-                  (_norteGrado + _angle - direccionMagnetometro) % 360 > (360 - 22)) {
+                  (_norteGrado + _angle - direccionMagnetometro) % 360 >
+                      (360 - 22)) {
                 _girando = false;
-                _instruccion = instrucciones[_instruccionActual].instruccionToString();
+                _instruccion =
+                    instrucciones[_instruccionActual].instruccionToString();
               } else {
                 _girando = true;
                 _instruccion = "Gira hasta que dejes de sentir vibraciones";
@@ -335,27 +373,29 @@ class _NavigationState extends State<Navigation> {
         });
       });
 
-      subscriptionTts = Stream.periodic(Duration(seconds: 6)).listen((_) async {
-          while (_primerDestino) {
-            await Future.delayed(const Duration(milliseconds: 100));
-          };
-          while(_botonCancelarRecorrido){
-            await Future.delayed(const Duration(milliseconds: 100));
-          }
-          if (_cancelarRecorrido) {
-            detenerReproduccion();
-          } else if (selectedVoiceAssistance) {
-            detenerReproduccion();
-            speak(_instruccion);
-          }
+      subscriptionTts = Stream.periodic(const Duration(seconds: 6)).listen((_) async {
+        while (_primerDestino) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+        ;
+        while (_botonCancelarRecorrido) {
+          await Future.delayed(const Duration(milliseconds: 100));
+        }
+        if (_cancelarRecorrido) {
+          detenerReproduccion();
+        } else if (selectedVoiceAssistance) {
+          detenerReproduccion();
+          speak(_instruccion);
+        }
       });
 
       _imagenPath = 'assets/images/narrow-top.png';
       resetStepCount();
-      for(int i=0; i<instrucciones.length; i++){
-        if(i == 0){
+      for (int i = 0; i < instrucciones.length; i++) {
+        if (i == 0) {
           Vibration.vibrate(duration: 1500);
-          speak('Se ha iniciado el recorrido. El asistente de voz está activo.');
+          speak(
+              'Se ha iniciado el recorrido. El asistente de voz está activo.');
         }
 
         while (_botonCancelarRecorrido) {
@@ -367,35 +407,37 @@ class _NavigationState extends State<Navigation> {
           break;
         }
 
-        if(_instruccion != "" && selectedVoiceAssistance) {
+        if (_instruccion != "" && selectedVoiceAssistance) {
           detenerReproduccion();
           speak(_instruccion);
         }
 
         print("________Ciclo: $i");
 
-        if(instrucciones[i].commando == 'Fin parte 1 del recorrido'){
+        if (instrucciones[i].commando == 'Fin parte 1 del recorrido') {
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
           _primerDestino = true;
-          if(_instruccion != "" && selectedVoiceAssistance) {
+          if (_instruccion != "" && selectedVoiceAssistance) {
             detenerReproduccion();
-            _instruccion = "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
+            _instruccion =
+                "Ha llegado a su primer destino. Presione el boton continuar para avanzar hacia su siguiente destino.";
             speak(_instruccion);
           }
           await _popupPrimerDestino(context);
         } else {
-          if(i > 0){
-            if(instrucciones[i-1].distancia! > 0){
-              if(i>2){
-                posicionActual=instrucciones[i-2].siguienteNodo.toString();
+          if (i > 0) {
+            if (instrucciones[i - 1].distancia! > 0) {
+              if (i > 2) {
+                posicionActual = instrucciones[i - 2].siguienteNodo.toString();
               }
               setState(() {
                 pasosRecorridos = 0;
                 pasosARecorrer = instrucciones[i - 1].distancia!;
               });
               while (pasosRecorridos < pasosARecorrer) {
-                print("Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 360} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
-                await Future.delayed(Duration(milliseconds: 500));
+                print(
+                    "Angulo final: ${(_norteGrado + _angle - direccionMagnetometro) % 360} --- NorteGrado: $_norteGrado --- DM: $direccionMagnetometro --- Angle: $_angle");
+                await Future.delayed(const Duration(milliseconds: 500));
                 if (_cancelarRecorrido) {
                   break;
                 }
@@ -404,17 +446,19 @@ class _NavigationState extends State<Navigation> {
             }
           }
           setState(() {
-            if(i > 0) {
+            if (i > 0) {
               _instruccionActual = i;
               if (instrucciones[i].sentidoDestino != '') {
-                _angle = _mapSentidoConSentidoDestinoAImagen(instrucciones[i].sentidoOrigen ?? '');
+                _angle = _mapSentidoConSentidoDestinoAImagen(
+                    instrucciones[i].sentidoOrigen ?? '');
               }
             }
           });
-          print("Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+          print(
+              "Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
         }
 
-        if(_instruccion != "" && selectedVoiceAssistance) {
+        if (_instruccion != "" && selectedVoiceAssistance) {
           detenerReproduccion();
           speak(_instruccion);
         }
@@ -435,9 +479,6 @@ class _NavigationState extends State<Navigation> {
         speak(_instruccion);
         Vibration.vibrate(pattern: [50, 500, 50, 500, 50, 500, 50, 1000]);
       }
-
-
-
     } else {
       setState(() {
         _isLoading = false;
@@ -448,9 +489,10 @@ class _NavigationState extends State<Navigation> {
   }
 
   void onStepCount(StepCount event) {
-    if(!_girando) {
+    if (!_girando) {
       int pasosActuales = event.steps;
-      if (_primeraLectura) { //seteo de primer lectura
+      if (_primeraLectura) {
+        //seteo de primer lectura
         setState(() {
           _pasosIniciales = pasosActuales;
           _pasosValue = '0';
@@ -460,7 +502,7 @@ class _NavigationState extends State<Navigation> {
       } else {
         // Calcula pasos despues de la primer lectura cuando no esta girando
         setState(() {
-          if(pasosRecorridos < pasosARecorrer) {
+          if (pasosRecorridos < pasosARecorrer) {
             int pasosReales = pasosActuales - _pasosIniciales;
             _pasosValue = pasosReales.toString();
             pasosRecorridos = pasosReales; // Actualiza distancia recorrida
@@ -469,7 +511,8 @@ class _NavigationState extends State<Navigation> {
           }
         });
       }
-      print("PasosRecorridos $pasosRecorridos  ---  PasosARecorrer: $pasosARecorrer");
+      print(
+          "PasosRecorridos $pasosRecorridos  ---  PasosARecorrer: $pasosARecorrer");
     } else {
       print("El paso no fue contabilizado, apunta hacia la flecha");
     }
@@ -484,181 +527,212 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: _isLoading && _instruccion == ""
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-            children: [
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: CustomPaint(
-                  painter: BluePainter(),
-                  child: Container(
-                    height: _customPaintHeight,
-                  ),
-                ),
-              ),
-          SafeArea(
-            child: NotificationListener<ScrollNotification>(
-              onNotification: (scrollInfo) {
-                setState(() {
-                  _customPaintHeight = (380 - scrollInfo.metrics.pixels).clamp(0.0, 380.0);
-                });
-                return true;
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(25, 25, 16, 12),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 10),
-                      header(),
-                      const SizedBox(height: 9),
-                      Text(
-                        (widget.selectedArea != '' && widget.selectedService != '')
-                            ? '${widget.selectedArea} y ${widget.selectedService}'
-                            : (widget.selectedService != '')
-                                ? '${widget.selectedService}'
-                                : (widget.selectedArea != '')
-                                    ? '${widget.selectedArea}'
-                                    : 'None',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                          height: 1.1,
-                        ),
+    return DisableBackButton(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: _isLoading && _instruccion == ""
+            ? const Center(child: CircularProgressIndicator())
+            : Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    child: CustomPaint(
+                      painter: BluePainter(),
+                      child: Container(
+                        height: _customPaintHeight,
                       ),
-                      const SizedBox(height: 15),
-                      Card(
-                        color: Colors.white,
-                        margin: const EdgeInsets.fromLTRB(15, 10, 15, 2),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 6, 10, 6),
+                    ),
+                  ),
+                  SafeArea(
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (scrollInfo) {
+                        setState(() {
+                          _customPaintHeight = (380 - scrollInfo.metrics.pixels)
+                              .clamp(0.0, 380.0);
+                        });
+                        return true;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(25, 25, 16, 12),
+                        child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SwitchListTile(
-                                title: const Text('Asistencia por voz'),
-                                value: selectedVoiceAssistance,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    selectedVoiceAssistance = value;
-                                  });
-                                  print('$selectedVoiceAssistance');
-                                },
-                                secondary: const Icon(Icons.volume_up),
-                                activeColor: const Color.fromRGBO(17, 116, 186, 1),
+                              //const SizedBox(height: 10),
+                              header(),
+                              const SizedBox(height: 9),
+                              Text(
+                                (widget.selectedArea != '' &&
+                                        widget.selectedService != '')
+                                    ? '${widget.selectedArea} y ${widget.selectedService}'
+                                    : (widget.selectedService != '')
+                                        ? '${widget.selectedService}'
+                                        : (widget.selectedArea != '')
+                                            ? '${widget.selectedArea}'
+                                            : 'None',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 45,
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.1,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Card(
+                                color: Colors.white,
+                                margin:
+                                    const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      SwitchListTile(
+                                        title: const Text('Asistencia por voz'),
+                                        value: selectedVoiceAssistance,
+                                        onChanged: (bool value) {
+                                          setState(() {
+                                            selectedVoiceAssistance = value;
+                                          });
+                                          print('$selectedVoiceAssistance');
+                                        },
+                                        secondary: const Icon(Icons.volume_up),
+                                        activeColor: const Color.fromRGBO(
+                                            17, 116, 186, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                  child: _instruccion == _llegadaDestino
+                                      ? Column(
+                                          children: [
+                                            SizedBox(height: 35,),
+                                            Image.asset(
+                                              _imagenPath,
+                                              width: 230.0,
+                                              height: 230.0,
+                                            ),
+                                            SizedBox(height: 50,),
+                                          ],
+                                        )
+                                      : SizedBox(
+                                          width: 300.0,
+                                          height: 300.0,
+                                          child: Transform.rotate(
+                                            angle: (_norteGrado +
+                                                    _angle -
+                                                    direccionMagnetometro) *
+                                                math.pi /
+                                                180,
+                                            // Rotar 45 grados
+                                            child: Image.asset(
+                                              _imagenPath,
+                                              height: 280,
+                                            ),
+                                          ))),
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      padding: const EdgeInsets.fromLTRB(4, 2, 4, 12),
+                                      child: Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              _instruccion.startsWith("Tiene que avanzar")
+                                                  ? _instruccion.contains(".")
+                                                  ? _instruccion.substring(0, _instruccion.indexOf("."))
+                                                  : _instruccion
+                                                  : _instruccion,
+                                              style: const TextStyle(
+                                                fontSize: 24,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 230,
+                                    height: 60,
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        _botonCancelarRecorrido = true;
+                                        _cancelarNavegacion(context);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                                      ),
+                                      child: const Text(
+                                        "Finalizar Recorrido",
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  SizedBox(
+                                    width: 60,
+                                    height: 60,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _cancelarRecorrido = true;
+                                        print(posicionActual);
+                                        confirmacionAreaActual(
+                                            context,
+                                            posicionActual,
+                                            _updateCancelarRecorrido);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        shape: const StadiumBorder(),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      icon: const Icon(
+                                        Icons.sos,
+                                        color: Colors.white,
+                                        size: 40,
+                                      ),
+                                    ),
+                                  ),
+                                  //queda comentado hasta que se haga el boton de alerta desde navegacion
+                                ],
                               ),
                             ],
                           ),
                         ),
                       ),
-                      Center(
-                        child: _instruccion == _llegadaDestino ? Column(
-                          children: [
-                            const SizedBox(height: 25,),
-                            Image.asset(
-                              _imagenPath,
-                              width: 230.0,
-                              height: 230.0,
-                            )
-                          ],
-                        ): SizedBox(
-                                  width: 300.0,
-                                  height: 300.0,
-                                  child: Transform.rotate(
-                                    angle: (_norteGrado + _angle - direccionMagnetometro) * math.pi / 180, // Rotar 45 grados
-                                    child: Image.asset(_imagenPath,
-                                      height: 280,),
-                              )
-                        )
-                      ),
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            const SizedBox(height: 10,),
-                            SizedBox(
-                              width: 300,
-                              height: 120,
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _instruccion,
-                                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                  )
-                              )
-                            )
-
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 15),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 250,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                _botonCancelarRecorrido = true;
-                                _cancelarNavegacion(context);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                backgroundColor: Colors.grey,
-                              ),
-                              child: const Text(
-                                "Finalizar Recorrido",
-                                style: TextStyle(fontSize: 20, color: Colors.white),
-                              ),
-                            ),),
-                          const SizedBox(width: 10,),
-                          SizedBox(
-                            width: 60,
-                            height: 60,
-                            child: IconButton(
-                              onPressed: () {
-                                _cancelarRecorrido = true;
-                                print(posicionActual);
-                                confirmacionAreaActual(context, posicionActual,_updateCancelarRecorrido);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                backgroundColor: Colors.red,
-                              ),
-                              icon: const Icon(
-                                Icons.sos,
-                                color: Colors.white,
-                                size: 40,
-                              ),
-                            ),
-                          ), //queda comentado hasta que se haga el boton de alerta desde navegacion
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),),
-      ],),
-        );
+      ),
+    );
   }
 }
 
@@ -684,8 +758,7 @@ Widget header() {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image(
-            image:
-            AssetImage("assets/images/logo_GUIO.png"),
+            image: AssetImage("assets/images/logo_GUIO.png"),
             width: 100,
           ),
         ],
@@ -693,10 +766,7 @@ Widget header() {
       SizedBox(height: 20),
       Text(
         "Dirigiendose a ",
-        style: TextStyle(color: Colors.white,
-          fontSize: 22,
-          height: 1.0
-        ),
+        style: TextStyle(color: Colors.white, fontSize: 22, height: 1.0),
       ),
     ],
   );
