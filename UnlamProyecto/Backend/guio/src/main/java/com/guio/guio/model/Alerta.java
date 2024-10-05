@@ -15,6 +15,7 @@ public class Alerta {
     private String comentario;
     private String lugarDeAlerta;
     private String estado;
+    private Integer grafoID;
 
     public Alerta(Long alertaID, Long usuarioID, LocalDateTime fecha, String comentario, String lugarDeAlerta, String estado, Integer grafoID) {
         this.alertaID = alertaID;
@@ -25,8 +26,6 @@ public class Alerta {
         this.estado = estado;
         this.grafoID = grafoID;
     }
-
-    private Integer grafoID;
 
     public Long getAlertaID() {
         return alertaID;
