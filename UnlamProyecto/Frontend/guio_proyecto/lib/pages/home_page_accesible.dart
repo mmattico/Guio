@@ -11,6 +11,7 @@ class AccesibleHome extends StatefulWidget {
   @override
   _AccesibleHome createState() => _AccesibleHome();
 }
+
 class _AccesibleHome extends State<AccesibleHome> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -49,7 +50,7 @@ class _AccesibleHome extends State<AccesibleHome> {
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido a Guio, por favor complete los campos para poder ayudarlo");
+    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opcion por boton de enviar una alerta si lo necesita");
   }
 
   @override
@@ -198,7 +199,7 @@ class _AccesibleHome extends State<AccesibleHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Ingresar datos por voz'),
+        title: Text('Ingresar datos por voz unicamente'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -221,6 +222,7 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   Widget _buildLabelAndField(String label, int index, String text) {
+    String ayudita = colocarMayusculas(("cargué " + label));
     return Row(
       children: [
         Expanded(
@@ -240,6 +242,7 @@ class _AccesibleHome extends State<AccesibleHome> {
                 controller: TextEditingController(text: text),
                 readOnly: true,
                 decoration: InputDecoration(
+                  hintText: ayudita,
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -286,7 +289,7 @@ class _AccesibleHome extends State<AccesibleHome> {
           style: ElevatedButton.styleFrom(
             shape: CircleBorder(),
             padding: EdgeInsets.all(50),
-            backgroundColor: Colors.red, // Cambiar el color a rojo para el botón S.O.S.
+            backgroundColor: Colors.red,
           ),
           child: Text(
             'S.O.S.',
@@ -299,7 +302,6 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
-
    await _listen(5, "Area de Emergencia");
    await  Future.delayed(Duration(milliseconds: 5000),(){});
 
@@ -311,9 +313,6 @@ class _AccesibleHome extends State<AccesibleHome> {
     }
 
   }
-
-
-
 
 }
 
