@@ -133,22 +133,28 @@ class _SignupPageState extends State<SignupPage>{
   }
 
   _headerSignUp(context) {
-    return const SizedBox(
-      width: double.infinity, // Asegura que el Container ocupe todo el ancho disponible
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "¡Bienvenido a \nGUIO App!",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10), // Añade un espacio entre los textos si lo deseas
-          Text(
-            "Registrate para utilizar la aplicación.",
-            style: TextStyle(fontSize: 18),
-          ),
-        ],
+    return SizedBox(
+      width: double.infinity,
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: "¡Bienvenido a \nGUIO App!\n", // Primer texto con salto de línea
+              style: TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.black, // Siempre especifica el color en TextSpan
+              ),
+            ),
+            TextSpan(
+              text: "Regístrate para utilizar la aplicación", // Segundo texto
+              style: TextStyle(
+                fontSize: 18,
+                color: Colors.black, // El color también debe ser especificado
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
