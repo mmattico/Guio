@@ -47,19 +47,35 @@ class _PasswordRecoveryState extends State<PasswordRecovery> {
     );
   }
 
-    _header(context) {
-      return const Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "Recuperá tu contraseña",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold,),
+  _header(context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "Recuperá tu contraseña\n", // Primer texto con salto de línea
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Especifica el color
+                ),
+              ),
+              TextSpan(
+                text: "Te enviaremos una nueva contraseña a tu casilla de correo electrónico", // Segundo texto
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black, // Especifica el color
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 10),
-          Text("Te enviaremos una nueva contraseña a tu casilla de correo electrónico", style: TextStyle(fontSize: 14),)
-        ],
-      );
-    }
+        ),
+        SizedBox(height: 10), // Mantén el espacio entre widgets si es necesario
+      ],
+    );
+  }
 
   _inputField(context) {
     return Padding(

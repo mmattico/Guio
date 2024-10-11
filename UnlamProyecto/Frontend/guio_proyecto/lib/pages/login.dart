@@ -120,17 +120,32 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _header(context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "¡Bienvenido Nuevamente!",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+      children: [
+        RichText(
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "¡Bienvenido Nuevamente!\n", // Primer texto con salto de línea
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Siempre especifica el color
+                ),
+              ),
+              TextSpan(
+                text: "Inicia sesión en tu cuenta", // Segundo texto
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black, // Especifica el color
+                ),
+              ),
+            ],
           ),
-          Text("Inicia sesión en tu cuenta",
-          style: TextStyle(fontSize: 18),),
-        ],
+        ),
+      ],
     );
   }
 
