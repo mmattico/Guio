@@ -10,6 +10,7 @@ import '../model/user.dart';
 import 'login.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'home_page_accesible.dart';
 
 /*const users =  {
   'admin@gmail.com': '12345',
@@ -567,7 +568,11 @@ class _MyDataPageState extends State<MyDataPage> {
                                                 const LoginPage()),
                                       );
                                       _getUserByUsername(usuario);
-                                      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+                                      if (_isChecked) {
+                                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => AccesibleHome()), (Route<dynamic> route) => false,);
+                                      } else {
+                                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+                                      }
                                     }
                                   },
 
