@@ -56,10 +56,10 @@ class _SignupPageState extends State<SignupPage>{
       if(!responseData) {
         errorUsernameMessage = "";
       } else {
-        errorUsernameMessage = "El nombre de usuario ingresado ya esta en uso";
+        errorUsernameMessage = "El nombre de usuario ingresado ya esta en uso.";
       }
     } else {
-      errorUsernameMessage = "Error al validar usuario, intente de nuevo";
+      errorUsernameMessage = "Error al validar usuario, intente de nuevo.";
     }
   }
 
@@ -75,10 +75,10 @@ class _SignupPageState extends State<SignupPage>{
       if(!responseData) {
         errorDocumentMessage = "";
       } else {
-        errorDocumentMessage = "El dni ingresado ya esta en uso";
+        errorDocumentMessage = "El dni ingresado ya esta en uso.";
       }
     } else {
-      errorDocumentMessage = "Error al validar dni, intente de nuevo";
+      errorDocumentMessage = "Error al validar dni, intente de nuevo.";
     }
   }
 
@@ -94,10 +94,10 @@ class _SignupPageState extends State<SignupPage>{
       if(!responseData) {
         errorEmailMessage = "";
       } else {
-        errorEmailMessage = "El correo ingresado ya esta en uso";
+        errorEmailMessage = "El correo ingresado ya esta en uso.";
       }
     } else {
-      errorEmailMessage = "Error al validar correo, intente de nuevo";
+      errorEmailMessage = "Error al validar correo, intente de nuevo.";
     }
   }
 
@@ -145,7 +145,7 @@ class _SignupPageState extends State<SignupPage>{
           ),
           SizedBox(height: 10), // Añade un espacio entre los textos si lo deseas
           Text(
-            "Registrate para utilizar la aplicación",
+            "Registrate para utilizar la aplicación.",
             style: TextStyle(fontSize: 18),
           ),
         ],
@@ -175,10 +175,10 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese su Nombre';
+                      return 'Por favor, ingrese su Nombre.';
                     }
                     if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
-                      return 'Por favor, utilice únicamente caracteres alfabéticos';
+                      return 'Por favor, utilice únicamente caracteres alfabéticos.';
                     }
                     nombre = value;
                     return null;
@@ -199,10 +199,10 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese su Apellido';
+                      return 'Por favor, ingrese su Apellido.';
                     }
                     if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(value)) {
-                      return 'Por favor, utilice únicamente caracteres alfabéticos';
+                      return 'Por favor, utilice únicamente caracteres alfabéticos.';
                     }
                     apellido = value;
                     return null;
@@ -216,7 +216,7 @@ class _SignupPageState extends State<SignupPage>{
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
-                    hintText: "DNI",
+                    hintText: "D.N.I",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
                       borderSide: BorderSide.none,
@@ -227,16 +227,16 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese su DNI';
+                      return 'Por favor, ingrese su D.N.I.';
                     }
                     if (value.length < 7 || value.length > 8) {
-                      return 'El DNI debe tener entre 7 y 8 caracteres';
+                      return 'El D.N.I debe tener entre 7 y 8 caracteres.';
                     }
 
                     try {
                       dni = int.parse(value); // Conversión segura de String a int
                     } catch (e) {
-                      return 'El DNI debe contener solo números';
+                      return 'El DNI debe contener solo números.';
                     }
 
                     if(errorDocumentMessage == "") {
@@ -261,10 +261,10 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese su correo electrónico';
+                      return 'Por favor, ingrese su correo electrónico.';
                     }
                     if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                      return 'Formato inválido de correo electrónico';
+                      return 'Formato inválido de correo electrónico.';
                     }
                     email = value;
 
@@ -294,15 +294,15 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingrese su número telefónico';
+                        return 'Por favor, ingrese su número telefónico.';
                       }
                       if (value.length != 10) {
-                        return 'El número telefónico debe tener 10 dígitos';
+                        return 'El número telefónico debe tener 10 dígitos.';
                       }
                       try {
                         telefono = int.parse(value); // Conversión segura de String a int
                       } catch (e) {
-                        return 'El número telefónico debe contener solo números';
+                        return 'El número telefónico debe contener solo números.';
                       }
 
                       return null;
@@ -323,7 +323,7 @@ class _SignupPageState extends State<SignupPage>{
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese un nombre de usuario';
+                      return 'Por favor, ingrese un nombre de usuario.';
                     }
                     usuario = value;
 
@@ -362,10 +362,10 @@ class _SignupPageState extends State<SignupPage>{
                   obscureText: !_isPasswordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Por favor, ingrese una contraseña';
+                      return 'Por favor, ingrese una contraseña.';
                     }
                     if (value.length <10) {
-                      return 'La contraseña debe tener un mínimo de 10 caracteres';
+                      return 'La contraseña debe tener un mínimo de 10 caracteres.';
                     }
                     password = value;
                     return null;
