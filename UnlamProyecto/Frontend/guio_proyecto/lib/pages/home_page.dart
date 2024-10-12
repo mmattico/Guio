@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
     "assets/images/receptionist-bw.png"
   ];
 
-  double _customPaintHeight = 380;
+  double _customPaintHeight = 360;
 
   late Future<List<Nodo>> futureNodos;
   List<Nodo> _nodos = [];
@@ -158,8 +158,8 @@ class _HomePageState extends State<HomePage> {
                     child: NotificationListener<ScrollNotification>(
                       onNotification: (scrollInfo) {
                         setState(() {
-                          _customPaintHeight = (350 - scrollInfo.metrics.pixels)
-                              .clamp(0.0, 350.0);
+                          _customPaintHeight = (360 - scrollInfo.metrics.pixels)
+                              .clamp(0.0, 360.0);
                         });
                         return true;
                       },
@@ -170,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: 12),
-                              headerTexto(),
+                              HeaderTexto(),
                               const SizedBox(height: 12),
                               _fromTo(context),
                               const SizedBox(height: 4),
