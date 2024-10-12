@@ -6,6 +6,7 @@ import '../other/navigation_confirmation.dart';
 import '../other/user_session.dart';
 import '../other/get_nodos.dart';
 import '../other/emergency_homepageaccesible.dart';
+import '../other/header_homepage.dart';  // Asegúrate de importar el header
 
 class AccesibleHome extends StatefulWidget {
   @override
@@ -42,15 +43,12 @@ class _AccesibleHome extends State<AccesibleHome> {
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
-        print(_nodos);
         areasPermitidas = getNodosActivos(_nodos);
-
-        print(areasPermitidas);
       });
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opcion por boton de enviar una alerta si lo necesita");
+    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
   }
 
   @override
@@ -69,9 +67,7 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   Future<void> _listen(int textFieldIndex, String label) async {
     speak("Seleccionó  $label");
-    print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
     _selectedTextFieldIndex = textFieldIndex;
-
 
     if (!_isListening) {
       bool available = await _speech.initialize(
@@ -86,7 +82,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         onError: (error) => print('onError: $error'),
       );
 
-      await  Future.delayed(Duration(milliseconds: 1800),(){});//espera para que nombre el campo seleccionado
+      await Future.delayed(Duration(milliseconds: 1800), () {});
 
       if (available) {
         setState(() {
@@ -126,11 +122,6 @@ class _AccesibleHome extends State<AccesibleHome> {
       _isListening = false;
     });
     _speech.stop();
-    print("DATO ORIGEN: $_origen");
-    print("DATO DESTINO: $_destino");
-    print("DATO SERVICIO: $_servicio");
-    print("DATO PREFERENCIA: $_preferencia");
-    print("-------------------------------------");
   }
 
   String colocarMayusculas(String text) {
@@ -161,7 +152,6 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
-    print(escucha + " " + campo + " " + textFieldIndex.toString());
     if (!listaChequeo.contains(escucha)) {
       speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
@@ -179,7 +169,7 @@ class _AccesibleHome extends State<AccesibleHome> {
             _preferencia = '';
             break;
           case 5:
-            _emergencia='';
+            _emergencia = '';
             break;
         }
       });
@@ -198,25 +188,42 @@ class _AccesibleHome extends State<AccesibleHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Ingresar datos por voz unicamente'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLabelAndField('ORIGEN', 1, _origen),
-            SizedBox(height: 20),
-            _buildLabelAndField('DESTINO', 2, _destino),
-            SizedBox(height: 20),
-            _buildLabelAndField('SERVICIO', 3, _servicio),
-            SizedBox(height: 20),
-            _buildLabelAndField('PREFERENCIA', 4, _preferencia),
-            SizedBox(height: 40),
-            _buildButtons(),
-          ],
-        ),
+      body: Stack(
+        children: [
+          CustomPaint(
+            size: Size(MediaQuery.of(context).size.width, 300),
+            painter: BluePainter(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 50.0, left: 16.0, right: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //header(context),  // Llamamos al header que importamos
+                SizedBox(height: 20),
+                headerTexto(),
+                //qSizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _buildLabelAndField('ORIGEN', 1, _origen),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('DESTINO', 2, _destino),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('SERVICIO', 3, _servicio),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('PREFERENCIA', 4, _preferencia),
+                      SizedBox(height: 40),
+                      _buildButtons(),
+                      //SizedBox(height: 20),
+                      //_buildRecordButton(), // Botón de grabación
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -225,25 +232,31 @@ class _AccesibleHome extends State<AccesibleHome> {
     String ayudita = colocarMayusculas(("cargué " + label));
     return Row(
       children: [
-        Expanded(
+        /*Expanded(
           flex: 2,
           child: Text(
             label,
             style: TextStyle(fontSize: 20),
           ),
-        ),
+        ),*/
         SizedBox(width: 10),
         Expanded(
           flex: 3,
           child: GestureDetector(
             onTap: () => _listen(index, label),
             child: AbsorbPointer(
-              child: TextField(
-                controller: TextEditingController(text: text),
+              child: TextFormField(
+                key: ValueKey(text),
+                initialValue: text,
                 readOnly: true,
                 decoration: InputDecoration(
                   hintText: ayudita,
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none
+                  ),
+                  fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                  filled: true,
                 ),
               ),
             ),
@@ -252,6 +265,7 @@ class _AccesibleHome extends State<AccesibleHome> {
       ],
     );
   }
+
 
   Widget _buildButtons() {
     return Row(
@@ -274,12 +288,15 @@ class _AccesibleHome extends State<AccesibleHome> {
           }
               : null,
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
+            backgroundColor: Colors.blue, // Color de fondo
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            ),
           ),
           child: Text(
             'ACEPTAR',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
         ElevatedButton(
@@ -287,32 +304,61 @@ class _AccesibleHome extends State<AccesibleHome> {
             _triggerSOSAction();
           },
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(50),
-            backgroundColor: Colors.red,
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
+            backgroundColor: Colors.red, // Color de fondo
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            ),
           ),
           child: Text(
             'S.O.S.',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
         ),
       ],
     );
   }
-
+ /*
+  Widget _buildRecordButton() {
+    return ElevatedButton(
+      onPressed: _isListening
+          ? _stopListening
+          : () => _listen(_selectedTextFieldIndex, 'Campo seleccionado'),
+      child: Text(_isListening ? 'Detener Grabación' : 'Iniciar Grabación'),
+    );
+  }
+*/
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
-   await _listen(5, "Area de Emergencia");
-   await  Future.delayed(Duration(milliseconds: 5000),(){});
+    await _listen(5, "Area de Emergencia");
+    await Future.delayed(Duration(milliseconds: 5000), () {});
 
-    if(_emergencia.isEmpty){
+    if (_emergencia.isEmpty) {
       speak("Se cancela el S.O.S.");
-    }else{
-      confirmacionAreaAccesible(context,_emergencia);
+    } else {
+      confirmacionAreaAccesible(context, _emergencia);
       speak("S.O.S. activado, por favor confirme.");
     }
+  }
+}
 
+class CurvedClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0.0, size.height - 100);
+    var controlPoint = Offset(size.width / 2, size.height);
+    var endPoint = Offset(size.width, size.height - 100);
+    path.quadraticBezierTo(
+        controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
+    path.lineTo(size.width, 0.0);
+    path.close();
+    return path;
   }
 
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
 }
 
