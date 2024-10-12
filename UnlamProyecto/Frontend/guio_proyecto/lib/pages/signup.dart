@@ -13,7 +13,11 @@ import 'package:http/http.dart' as http;
 
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  final String selectedUsuario;
+  final String selectedEmail;
+
+  const SignupPage({super.key, String? selectedUsuario, String? selectedEmail}): selectedUsuario = selectedUsuario ?? '', selectedEmail = selectedEmail ?? '';
+  //const SignupPage({super.key}, optional usuario,telefono,email);
 
   @override
   _SignupPageState createState() => _SignupPageState();
@@ -43,6 +47,13 @@ class _SignupPageState extends State<SignupPage>{
   int dni = 0;
   String usuario = '';
   String password = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.text = widget.selectedEmail;
+    _usernameController.text = widget.selectedUsuario;
+  }
 
   Future<void> _validateUsername() async{
     var url;
