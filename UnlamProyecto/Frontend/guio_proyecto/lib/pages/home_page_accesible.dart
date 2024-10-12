@@ -215,6 +215,8 @@ class _AccesibleHome extends State<AccesibleHome> {
                       _buildLabelAndField('PREFERENCIA', 4, _preferencia),
                       SizedBox(height: 40),
                       _buildButtons(),
+                      //SizedBox(height: 20),
+                      //_buildRecordButton(), // Botón de grabación
                     ],
                   ),
                 ),
@@ -230,13 +232,13 @@ class _AccesibleHome extends State<AccesibleHome> {
     String ayudita = colocarMayusculas(("cargué " + label));
     return Row(
       children: [
-        Expanded(
+        /*Expanded(
           flex: 2,
           child: Text(
             label,
             style: TextStyle(fontSize: 20),
           ),
-        ),
+        ),*/
         SizedBox(width: 10),
         Expanded(
           flex: 3,
@@ -248,7 +250,12 @@ class _AccesibleHome extends State<AccesibleHome> {
                 readOnly: true,
                 decoration: InputDecoration(
                   hintText: ayudita,
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(18),
+                      borderSide: BorderSide.none
+                  ),
+                  fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                  filled: true,
                 ),
               ),
             ),
@@ -279,12 +286,15 @@ class _AccesibleHome extends State<AccesibleHome> {
           }
               : null,
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(50),
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
+            backgroundColor: Colors.blue, // Color de fondo
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            ),
           ),
           child: Text(
             'ACEPTAR',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
         ElevatedButton(
@@ -292,19 +302,30 @@ class _AccesibleHome extends State<AccesibleHome> {
             _triggerSOSAction();
           },
           style: ElevatedButton.styleFrom(
-            shape: CircleBorder(),
-            padding: EdgeInsets.all(50),
-            backgroundColor: Colors.red,
+            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
+            backgroundColor: Colors.red, // Color de fondo
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            ),
           ),
           child: Text(
             'S.O.S.',
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 20, color: Colors.black),
           ),
         ),
       ],
     );
   }
-
+ /*
+  Widget _buildRecordButton() {
+    return ElevatedButton(
+      onPressed: _isListening
+          ? _stopListening
+          : () => _listen(_selectedTextFieldIndex, 'Campo seleccionado'),
+      child: Text(_isListening ? 'Detener Grabación' : 'Iniciar Grabación'),
+    );
+  }
+*/
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
     await _listen(5, "Area de Emergencia");
@@ -338,3 +359,4 @@ class CurvedClipper extends CustomClipper<Path> {
     return false;
   }
 }
+
