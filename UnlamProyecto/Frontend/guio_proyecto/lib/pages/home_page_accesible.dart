@@ -246,6 +246,7 @@ class _AccesibleHome extends State<AccesibleHome> {
             onTap: () => _listen(index, label),
             child: AbsorbPointer(
               child: TextFormField(
+                key: ValueKey(text),
                 initialValue: text,
                 readOnly: true,
                 decoration: InputDecoration(
@@ -264,6 +265,7 @@ class _AccesibleHome extends State<AccesibleHome> {
       ],
     );
   }
+
 
   Widget _buildButtons() {
     return Row(
