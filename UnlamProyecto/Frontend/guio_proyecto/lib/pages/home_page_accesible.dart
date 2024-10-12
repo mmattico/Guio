@@ -6,6 +6,7 @@ import '../other/navigation_confirmation.dart';
 import '../other/user_session.dart';
 import '../other/get_nodos.dart';
 import '../other/emergency_homepageaccesible.dart';
+import '../other/header_homepage.dart';  // Asegúrate de importar el header
 
 class AccesibleHome extends StatefulWidget {
   @override
@@ -42,15 +43,12 @@ class _AccesibleHome extends State<AccesibleHome> {
     futureNodos.then((nodos) {
       setState(() {
         _nodos = nodos;
-        print(_nodos);
         areasPermitidas = getNodosActivos(_nodos);
-
-        print(areasPermitidas);
       });
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opcion por boton de enviar una alerta si lo necesita");
+    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
   }
 
   @override
@@ -69,9 +67,7 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   Future<void> _listen(int textFieldIndex, String label) async {
     speak("Seleccionó  $label");
-    print("ESTE ES EL VALOR ORIGINAL: $textFieldIndex");
     _selectedTextFieldIndex = textFieldIndex;
-
 
     if (!_isListening) {
       bool available = await _speech.initialize(
@@ -86,7 +82,7 @@ class _AccesibleHome extends State<AccesibleHome> {
         onError: (error) => print('onError: $error'),
       );
 
-      await  Future.delayed(Duration(milliseconds: 1800),(){});//espera para que nombre el campo seleccionado
+      await Future.delayed(Duration(milliseconds: 1800), () {});
 
       if (available) {
         setState(() {
@@ -126,11 +122,6 @@ class _AccesibleHome extends State<AccesibleHome> {
       _isListening = false;
     });
     _speech.stop();
-    print("DATO ORIGEN: $_origen");
-    print("DATO DESTINO: $_destino");
-    print("DATO SERVICIO: $_servicio");
-    print("DATO PREFERENCIA: $_preferencia");
-    print("-------------------------------------");
   }
 
   String colocarMayusculas(String text) {
@@ -161,7 +152,6 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
-    print(escucha + " " + campo + " " + textFieldIndex.toString());
     if (!listaChequeo.contains(escucha)) {
       speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
@@ -179,7 +169,7 @@ class _AccesibleHome extends State<AccesibleHome> {
             _preferencia = '';
             break;
           case 5:
-            _emergencia='';
+            _emergencia = '';
             break;
         }
       });
@@ -198,25 +188,40 @@ class _AccesibleHome extends State<AccesibleHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Ingresar datos por voz unicamente'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildLabelAndField('ORIGEN', 1, _origen),
-            SizedBox(height: 20),
-            _buildLabelAndField('DESTINO', 2, _destino),
-            SizedBox(height: 20),
-            _buildLabelAndField('SERVICIO', 3, _servicio),
-            SizedBox(height: 20),
-            _buildLabelAndField('PREFERENCIA', 4, _preferencia),
-            SizedBox(height: 40),
-            _buildButtons(),
-          ],
-        ),
+      body: Stack(
+        children: [
+          CustomPaint(
+            size: Size(MediaQuery.of(context).size.width, 300),
+            painter: BluePainter(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 50.0, left: 16.0, right: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //header(context),  // Llamamos al header que importamos
+                SizedBox(height: 20),
+                headerTexto(),
+                //qSizedBox(height: 20),
+                Expanded(
+                  child: ListView(
+                    children: [
+                      _buildLabelAndField('ORIGEN', 1, _origen),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('DESTINO', 2, _destino),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('SERVICIO', 3, _servicio),
+                      SizedBox(height: 20),
+                      _buildLabelAndField('PREFERENCIA', 4, _preferencia),
+                      SizedBox(height: 40),
+                      _buildButtons(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -238,8 +243,8 @@ class _AccesibleHome extends State<AccesibleHome> {
           child: GestureDetector(
             onTap: () => _listen(index, label),
             child: AbsorbPointer(
-              child: TextField(
-                controller: TextEditingController(text: text),
+              child: TextFormField(
+                initialValue: text,
                 readOnly: true,
                 decoration: InputDecoration(
                   hintText: ayudita,
@@ -302,17 +307,34 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
-   await _listen(5, "Area de Emergencia");
-   await  Future.delayed(Duration(milliseconds: 5000),(){});
+    await _listen(5, "Area de Emergencia");
+    await Future.delayed(Duration(milliseconds: 5000), () {});
 
-    if(_emergencia.isEmpty){
+    if (_emergencia.isEmpty) {
       speak("Se cancela el S.O.S.");
-    }else{
-      confirmacionAreaAccesible(context,_emergencia);
+    } else {
+      confirmacionAreaAccesible(context, _emergencia);
       speak("S.O.S. activado, por favor confirme.");
     }
-
   }
-
 }
 
+class CurvedClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0.0, size.height - 100);
+    var controlPoint = Offset(size.width / 2, size.height);
+    var endPoint = Offset(size.width, size.height - 100);
+    path.quadraticBezierTo(
+        controlPoint.dx, controlPoint.dy, endPoint.dx, endPoint.dy);
+    path.lineTo(size.width, 0.0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return false;
+  }
+}
