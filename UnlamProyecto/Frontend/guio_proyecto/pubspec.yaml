@@ -79,10 +79,27 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: Oswald
+      fonts:
+        - asset: fonts/Oswald.ttf
+    - family: NotoSans
+      fonts:
+        - asset: fonts/NotoSans.ttf
+    - family: ProtestStrike
+      fonts:
+        - asset: fonts/ProtestStrike.ttf
+    - family: RobotoBlack
+      fonts:
+        - asset: fonts/Roboto-Black.ttf
+
+
+
   # To add assets to your application, add an assets section, like this:
   assets:
     #- assets/icons/
      - assets/images/
+     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -80,7 +80,7 @@ class PasswordRecoveryConfirmation extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14.0,
                     color: Color.fromRGBO(17, 116, 186, 1),
-                    decoration: TextDecoration.underline,
+                    //decoration: TextDecoration.underline,
                   ),
                 ),
               ),

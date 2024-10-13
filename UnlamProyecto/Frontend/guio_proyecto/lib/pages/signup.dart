@@ -5,18 +5,12 @@ import 'login.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-/*const users =  {
-  'admin@gmail.com': '12345',
-  'guioapp@gmail.com': 'guioapp',
-};*/
-
-
-
 class SignupPage extends StatefulWidget {
   final String selectedUsuario;
   final String selectedEmail;
+  final String usuarioOEmail;
 
-  const SignupPage({super.key, String? selectedUsuario, String? selectedEmail}): selectedUsuario = selectedUsuario ?? '', selectedEmail = selectedEmail ?? '';
+  const SignupPage({super.key, String? selectedUsuario, String? selectedEmail, String? usuarioOEmail}): selectedUsuario = selectedUsuario ?? '', selectedEmail = selectedEmail ?? '', usuarioOEmail = usuarioOEmail ?? '';
   //const SignupPage({super.key}, optional usuario,telefono,email);
 
   @override
@@ -53,6 +47,11 @@ class _SignupPageState extends State<SignupPage>{
     super.initState();
     _emailController.text = widget.selectedEmail;
     _usernameController.text = widget.selectedUsuario;
+    if (!RegExp(r'^[a-zA-Z\s]*$').hasMatch(widget.usuarioOEmail)) {
+      _emailController.text = widget.usuarioOEmail;
+    } else {
+      _usernameController.text = widget.usuarioOEmail;
+    }
   }
 
   Future<void> _validateUsername() async{
@@ -150,7 +149,7 @@ class _SignupPageState extends State<SignupPage>{
         text: TextSpan(
           children: [
             TextSpan(
-              text: "¡Bienvenido a \nGUIO App!\n", // Primer texto con salto de línea
+              text: "Registrate en GUIO App\n", // Primer texto con salto de línea
               style: TextStyle(
                 fontSize: 40,
                 fontWeight: FontWeight.bold,
@@ -158,7 +157,7 @@ class _SignupPageState extends State<SignupPage>{
               ),
             ),
             TextSpan(
-              text: "Regístrate para utilizar la aplicación", // Segundo texto
+              text: "Completá los campos y registrate para comenzar a navegar", // Segundo texto
               style: TextStyle(
                 fontSize: 18,
                 color: Colors.black, // El color también debe ser especificado
