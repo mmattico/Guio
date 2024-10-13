@@ -201,7 +201,7 @@ class _AccesibleHome extends State<AccesibleHome> {
               children: [
                 //header(context),  // Llamamos al header que importamos
                 SizedBox(height: 20),
-                headerTexto(),
+                HeaderTexto(),
                 //qSizedBox(height: 20),
                 Expanded(
                   child: ListView(
