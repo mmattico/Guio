@@ -35,7 +35,11 @@ class _AccesibleHome extends State<AccesibleHome> {
   Future<String?> graphCode = getGraphCode();
 
   List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
-  final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
+  final List<String> preferenciasPermitidas = [
+    'Escaleras',
+    'Ascensor',
+    'Indiferente'
+  ];
   final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
 
   int _selectedTextFieldIndex = 0;
@@ -53,7 +57,8 @@ class _AccesibleHome extends State<AccesibleHome> {
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara en el medio de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
+    speak(
+        "Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara en el medio de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
   }
 
   @override
@@ -94,28 +99,30 @@ class _AccesibleHome extends State<AccesibleHome> {
           _isListening = true;
         });
         detenerReproduccion();
-        _speech.listen(onResult: (result) {
-          setState(() {
-            switch (_selectedTextFieldIndex) {
-              case 1:
-                _origen = colocarMayusculas(result.recognizedWords);
-                break;
-              case 2:
-                _destino = colocarMayusculas(result.recognizedWords);
-                break;
-              case 3:
-                _servicio = colocarMayusculas(result.recognizedWords);
-                break;
-              case 4:
-                _preferencia = colocarMayusculas(result.recognizedWords);
-                break;
-              case 5:
-                _emergencia = colocarMayusculas(result.recognizedWords);
-                break;
-            }
-            _updateButtonState();
-          });
-        }, listenFor: const Duration(seconds: 4));
+        _speech.listen(
+            onResult: (result) {
+              setState(() {
+                switch (_selectedTextFieldIndex) {
+                  case 1:
+                    _origen = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 2:
+                    _destino = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 3:
+                    _servicio = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 4:
+                    _preferencia = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 5:
+                    _emergencia = colocarMayusculas(result.recognizedWords);
+                    break;
+                }
+                _updateButtonState();
+              });
+            },
+            listenFor: const Duration(seconds: 4));
       }
     } else {
       _stopListening();
@@ -148,7 +155,8 @@ class _AccesibleHome extends State<AccesibleHome> {
         _validarExistencia(_servicio, 'SERVICIO', serviciosPermitidos, 3);
         break;
       case 4:
-        _validarExistencia(_preferencia, 'PREFERENCIA', preferenciasPermitidas, 4);
+        _validarExistencia(
+            _preferencia, 'PREFERENCIA', preferenciasPermitidas, 4);
         break;
       case 5:
         _validarExistencia(_emergencia, 'EMERGENCIA', areasPermitidas, 5);
@@ -156,9 +164,11 @@ class _AccesibleHome extends State<AccesibleHome> {
     }
   }
 
-  void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
+  void _validarExistencia(String escucha, String campo,
+      List<String> listaChequeo, int textFieldIndex) {
     if (!listaChequeo.contains(escucha)) {
-      speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
+      speak(
+          "Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
         switch (textFieldIndex) {
           case 1:
@@ -185,8 +195,14 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   void _updateButtonState() {
     setState(() {
-      _isButtonEnabled = (_origen.isNotEmpty && _destino.isNotEmpty && _preferencia.isNotEmpty) ||
-          (_origen.isNotEmpty && _servicio.isNotEmpty && _preferencia.isNotEmpty);
+      _isButtonEnabled = (_origen.isNotEmpty &&
+              _destino.isNotEmpty &&
+              _preferencia.isNotEmpty) ||
+          (_origen.isNotEmpty &&
+              _servicio.isNotEmpty &&
+              _preferencia.isNotEmpty) ||
+          !(_origen == _destino) ||
+          (_preferencia.isNotEmpty);
     });
   }
 
@@ -222,7 +238,7 @@ class _AccesibleHome extends State<AccesibleHome> {
                       _buildLabelAndField('PREFERENCIA', 4, _preferencia),
                       SizedBox(height: 40),
                       _buildButtons(),
-                   ],
+                    ],
                   ),
                 ),
               ],
@@ -277,6 +293,38 @@ class _AccesibleHome extends State<AccesibleHome> {
                 child: ElevatedButton(
                   onPressed: _isButtonEnabled
                       ? () {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    //const SizedBox(height: 25),
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 100,
+                                    ),
+                                    //const SizedBox(height: 3),
+                                    NavigationConfirmation(
+                                      selectedOrigin: _origen,
+                                      selectedArea: _destino,
+                                      selectedService: _servicio,
+                                      selectedPreference: _preferencia,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                          /*
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -287,8 +335,8 @@ class _AccesibleHome extends State<AccesibleHome> {
                           selectedPreference: _preferencia,
                         ),
                       ),
-                    );
-                  }
+                    );*/
+                        }
                       : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -372,30 +420,28 @@ Widget _buildIcons(BuildContext context) {
     children: [
       _buildButtonMenu('¿Como usar?', Icons.help, () {
         detenerReproduccion();
-        speak("Complete el campo origen y preferencia, el servicio y/o destino luego presionar aceptar. Posee un botón de S.O.S si lo precisa.");
+        speak(
+            "Complete el campo origen y preferencia, el servicio y/o destino luego presionar aceptar. Posee un botón de S.O.S si lo precisa.");
       }),
       _buildButtonMenu('Cambiar Ubicación', Icons.location_on, () {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => LocationSelection()),
-              (Route<dynamic> route) => false,
+          MaterialPageRoute(builder: (context) => LocationSelection()),
+          (Route<dynamic> route) => false,
         );
       }),
       _buildButtonMenu('Mi Cuenta', Icons.account_circle, () {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => const MyDataPage()),
-              (Route<dynamic> route) => false,
+          MaterialPageRoute(builder: (context) => const MyDataPage()),
+          (Route<dynamic> route) => false,
         );
       }),
       _buildButtonMenu('Cambiar Contraseña', Icons.lock, () {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-              builder: (context) => const ChangePassword()),
-              (Route<dynamic> route) => false,
+          MaterialPageRoute(builder: (context) => const ChangePassword()),
+          (Route<dynamic> route) => false,
         );
       }),
       _buildButtonMenu('Cerrar Sesión', Icons.logout, () {
@@ -404,7 +450,6 @@ Widget _buildIcons(BuildContext context) {
     ],
   );
 }
-
 
 Widget _buildButtonMenu(String label, IconData icon, VoidCallback onPressed) {
   return Expanded(
@@ -472,7 +517,7 @@ Future<void> _logout(context) async {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const StartPage()),
-                        (Route<dynamic> route) => false,
+                    (Route<dynamic> route) => false,
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -502,4 +547,3 @@ Future<void> _logout(context) async {
         );
       });
 }
-
