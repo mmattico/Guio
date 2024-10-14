@@ -48,7 +48,7 @@ class _AccesibleHome extends State<AccesibleHome> {
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
+    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara en el medio de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
   }
 
   @override
@@ -202,6 +202,8 @@ class _AccesibleHome extends State<AccesibleHome> {
                 //header(context),  // Llamamos al header que importamos
                 SizedBox(height: 20),
                 HeaderTexto(),
+                SizedBox(height: 20),
+                _buildIcons(),
                 //qSizedBox(height: 20),
                 Expanded(
                   child: ListView(
@@ -215,9 +217,7 @@ class _AccesibleHome extends State<AccesibleHome> {
                       _buildLabelAndField('PREFERENCIA', 4, _preferencia),
                       SizedBox(height: 40),
                       _buildButtons(),
-                      //SizedBox(height: 20),
-                      //_buildRecordButton(), // Botón de grabación
-                    ],
+                   ],
                   ),
                 ),
               ],
@@ -266,68 +266,73 @@ class _AccesibleHome extends State<AccesibleHome> {
     );
   }
 
-
   Widget _buildButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(
       children: [
-        ElevatedButton(
-          onPressed: _isButtonEnabled
-              ? () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NavigationConfirmation(
-                  selectedOrigin: _origen,
-                  selectedArea: _destino,
-                  selectedService: _servicio,
-                  selectedPreference: _preferencia,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 60, // Establece la altura fija para ambos botones
+                child: ElevatedButton(
+                  onPressed: _isButtonEnabled
+                      ? () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NavigationConfirmation(
+                          selectedOrigin: _origen,
+                          selectedArea: _destino,
+                          selectedService: _servicio,
+                          selectedPreference: _preferencia,
+                        ),
+                      ),
+                    );
+                  }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'ACEPTAR',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    textAlign: TextAlign.center, // Asegura que el texto esté centrado
+                  ),
                 ),
               ),
-            );
-          }
-              : null,
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
-            backgroundColor: Colors.blue, // Color de fondo
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
             ),
-          ),
-          child: Text(
-            'ACEPTAR',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _triggerSOSAction();
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
-            backgroundColor: Colors.red, // Color de fondo
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            SizedBox(width: 16), // Espacio entre los dos botones
+            Expanded(
+              child: SizedBox(
+                height: 60, // Altura fija para ambos botones
+                child: ElevatedButton(
+                  onPressed: () {
+                    _triggerSOSAction();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'S.O.S.',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                    textAlign: TextAlign.center, // Asegura que el texto esté centrado
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Text(
-            'S.O.S.',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
+          ],
         ),
       ],
     );
   }
- /*
-  Widget _buildRecordButton() {
-    return ElevatedButton(
-      onPressed: _isListening
-          ? _stopListening
-          : () => _listen(_selectedTextFieldIndex, 'Campo seleccionado'),
-      child: Text(_isListening ? 'Detener Grabación' : 'Iniciar Grabación'),
-    );
-  }
-*/
+
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
     await _listen(5, "Area de Emergencia");
@@ -362,3 +367,54 @@ class CurvedClipper extends CustomClipper<Path> {
   }
 }
 
+Widget _buildIcons() {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      _buildButtonMenu('¿Como usar?', Icons.help, () {
+        detenerReproduccion();
+        speak("Complete el campo origen y preferencia, el servicio y/o destino luego presionar aceptar. Posee un botón de S.O.S si lo precisa.");
+      }),
+      _buildButtonMenu('Cambiar Ubicación', Icons.location_on, () {
+        // TODO cambiar la ubicacion pagina
+      }),
+      _buildButtonMenu('Mi Cuenta', Icons.account_circle, () {
+        // TODO cambiar a mi cuenta pagina
+      }),
+      _buildButtonMenu('Cambiar Contraseña', Icons.lock, () {
+        // TODO cambiar la contraseña pagina
+      }),
+      _buildButtonMenu('Cerrar Sesión', Icons.logout, () {
+        // TODO cerrar sesion
+      }),
+    ],
+  );
+}
+
+Widget _buildButtonMenu(String label, IconData icon, VoidCallback onPressed) {
+  return Expanded(
+    child: SizedBox(
+      height: 80,
+      child: Semantics(
+        label: label,
+        button: true,
+        child: InkWell(
+          onTap: onPressed,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white, size: 30),
+              SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: Colors.blue),
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
