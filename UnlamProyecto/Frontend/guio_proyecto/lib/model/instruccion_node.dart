@@ -37,6 +37,7 @@ class Instrucciones {
   bool? existePuerta;
   String? sentidoOrigen;
   String? sentidoDestino;
+  bool? existeEscalon;
 
   Instrucciones(
       {this.commando,
@@ -44,7 +45,8 @@ class Instrucciones {
         this.distancia,
         this.existePuerta,
         this.sentidoOrigen,
-        this.sentidoDestino});
+        this.sentidoDestino,
+        this.existeEscalon});
 
   String instruccionToString(){
     String retorna="";
@@ -53,9 +55,12 @@ class Instrucciones {
     }else{
       if(this.distancia! > 0){
         retorna = "Tiene que avanzar " + this.distancia.toString() + " metros.";
-        retorna += " El siguiente nodo es: " + this.siguienteNodo! + ".";
+        //retorna += " El siguiente nodo es: " + this.siguienteNodo! + ".";
         if(this.existePuerta == true){
-          retorna += "Hay una puerta en el camino.";
+          retorna += "\nHay una puerta en el camino.";
+        }
+        if(this.existeEscalon == true){
+          retorna += "\nHay un escalón en el camino.";
         }
       }
     }
@@ -69,6 +74,7 @@ class Instrucciones {
     existePuerta = json['existePuerta'];
     sentidoOrigen = json['sentidoOrigen'];
     sentidoDestino = json['sentidoDestino'];
+    existeEscalon = json['existeEscalon'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,6 +85,7 @@ class Instrucciones {
     data['existePuerta'] = this.existePuerta;
     data['sentidoOrigen'] = this.sentidoOrigen;
     data['sentidoDestino'] = this.sentidoDestino;
+    data['existeEscalon'] = this.existeEscalon;
     return data;
   }
 }
