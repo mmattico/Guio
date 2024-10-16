@@ -28,6 +28,7 @@ class _AlertsState extends State<Alerts> {
   late TextEditingController _searchController;
   late int cantidadAlertasPrev = 0;
   late int cantidadAlertasNuevas = 0;
+  late int cantidadAlertasSinActualizar = 0;
   bool isLoading = false;
   Future<String?> graphCode = getGraphCode();
   Timer? _timer;
@@ -80,10 +81,6 @@ class _AlertsState extends State<Alerts> {
   int qtyAlertasNuevas = 0;
 
   Future<void> _refreshAlertas() async {
-    setState(() {
-      isLoading = true;
-    });
-
     try {
       List<Ticket> nuevasAlertas = await fetchAlertas(graphCode);
       setState(() {
@@ -93,7 +90,9 @@ class _AlertsState extends State<Alerts> {
           _filteredTickets = nuevasAlertas;
           cantidadAlertasPrev = oldTickets.length;
           qtyAlertasNuevas = cantidadAlertasNuevas - cantidadAlertasPrev;
-          isLoading = false;
+          if(qtyAlertasNuevas > 0) {
+            cantidadAlertasSinActualizar += qtyAlertasNuevas;
+          }
         });
       });
     } catch (e) {
@@ -301,14 +300,23 @@ class _AlertsState extends State<Alerts> {
                 color: const Color.fromRGBO(17, 116, 186, 1),
                 tooltip: 'Actualizar listado de alertas',
                 onPressed: () async {
+                  setState(() {
+                    isLoading = true;
+                    cantidadAlertasSinActualizar = 0;
+                  });
+
                   await _refreshAlertas();
+
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
               ),
               const SizedBox(
                 width: 10.0,
               ),
               Container(
-                  child: qtyAlertasNuevas > 0
+                  child: cantidadAlertasSinActualizar > 0
                       ? Row(
                     children: [
                       const Icon(
@@ -316,7 +324,7 @@ class _AlertsState extends State<Alerts> {
                         color: Colors.red,
                         size: 25,
                       ),
-                      Text('Hay alertas nuevas: $qtyAlertasNuevas',
+                      Text('Hay alertas nuevas: $cantidadAlertasSinActualizar',
                           style: const TextStyle(
                               color: Colors.red, fontSize: 16))
                     ],
