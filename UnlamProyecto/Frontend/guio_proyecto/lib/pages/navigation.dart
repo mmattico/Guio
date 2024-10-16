@@ -402,6 +402,7 @@ class _NavigationState extends State<Navigation> {
       _imagenPath = 'assets/images/narrow-top.png';
       resetStepCount();
       for (int i = 0; i < instrucciones.length; i++) {
+
         if (i == 0) {
           Vibration.vibrate(duration: 1500);
           if(selectedVoiceAssistance){
@@ -700,15 +701,7 @@ class _NavigationState extends State<Navigation> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              _instruccion.startsWith(
-                                                      "Tiene que avanzar")
-                                                  ? _instruccion.contains(".")
-                                                      ? _instruccion.substring(
-                                                          0,
-                                                          _instruccion
-                                                              .indexOf("."))
-                                                      : _instruccion
-                                                  : _instruccion,
+                                              _instruccion,
                                               style: const TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
