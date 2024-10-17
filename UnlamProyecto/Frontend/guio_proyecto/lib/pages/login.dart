@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/user_session.dart';
 import 'package:guio_proyecto/pages/change_password.dart';
+import 'package:guio_proyecto/pages/login_password.dart';
 import 'location_selection.dart';
 import 'signup.dart';
 import 'home_page.dart';
@@ -107,11 +108,11 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 50),
               _inputField(context),
               const SizedBox(height: 35),
-              _buttonLogin(context),
-              const SizedBox(height: 20),
+              _buttonSiguiente(context),
+              /*const SizedBox(height: 20),
               _forgotPassword(context),
               const SizedBox(height: 30),
-              _signup(context),
+              _signup(context),*/
             ],
           ),
         ),
@@ -120,17 +121,33 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _header(context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "¡Bienvenido Nuevamente!",
-            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+      children: [
+        RichText(
+          textAlign: TextAlign.left,
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: "¡Bienvenido a GUIO!\n", // Primer texto con salto de línea
+                style: TextStyle(
+                  fontSize: 40,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black, // Siempre especifica el color
+                ),
+              ),
+              TextSpan(
+                text: "Ingrese su correo electrónico o usuario", // Segundo texto
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black, // Especifica el color
+                ),
+              ),
+            ],
           ),
-          Text("Inicia sesión en tu cuenta",
-          style: TextStyle(fontSize: 18),),
-        ],
+        ),
+      ],
     );
   }
 
@@ -167,52 +184,13 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
             ),
-            const SizedBox(height: 15),
-            TextFormField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                hintText: "Contraseña",
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none),
-                fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
-                filled: true,
-                prefixIcon: const Icon(Icons.password),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey[600],  // Color del ícono
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                  highlightColor: Colors.transparent,  // Sin efecto de highlight
-                  splashColor: Colors.grey[300],  // Un gris claro visible
-                ),
-              ),
-              obscureText: !_isPasswordVisible,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Por favor, ingrese su contraseña';
-                }
-                contrasenia = value;
-
-                if(errorContraseniaMessage == "") {
-                  return null;
-                } else {
-                  return errorContraseniaMessage;
-                }
-              },
-            ),
           ],
         )
         )
     );
   }
 
-  _buttonLogin(context) {
+  _buttonSiguiente(context) {
     return SizedBox(
         //width: 250,
         width: double.infinity,
@@ -238,19 +216,16 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (_formKey.currentState!.validate()) {
-          if(passwordReset){
             Navigator.pushAndRemoveUntil(
               context,
-              MaterialPageRoute(builder: (context) => const ChangePassword()),
+              MaterialPageRoute(builder: (context) => LoginPassword(usuarioOEmail: usuarioOEmail,)),
                   (Route<dynamic> route) => false,
             );
-          } else {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => LocationSelection()),
-                  (Route<dynamic> route) => false,
-            );
-          }
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => SignupPage(usuarioOEmail: usuarioOEmail,)),
+          );
         }
       },
       style: ElevatedButton.styleFrom(
@@ -263,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
             : const Color.fromRGBO(17, 116, 186, 1),
       ),
       child: const Text(
-        "Iniciar Sesión",
+        "Siguiente",
         style: TextStyle(fontSize: 20, color: Colors.white),
       ),),
     );

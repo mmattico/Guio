@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/other/user_session.dart';
 import 'package:guio_web_admin/area_management.dart';
 import 'package:guio_web_admin/get_tickets.dart';
 import 'package:guio_web_admin/login_admin.dart';
+import 'dart:async';
 
 class WebHomePage extends StatefulWidget {
   @override
@@ -10,6 +12,86 @@ class WebHomePage extends StatefulWidget {
 
 class _WebHomePageState extends State<WebHomePage> {
   int selectedOption = 0;
+  Timer? _timer;
+  Future<String?> graphCode = getGraphCode();
+  late int cantidadAlertasPrev = 0;
+  late int cantidadAlertasNuevas = 0;
+  int qtyAlertasNuevas = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAlertas();
+    _startFetchingAlertas();
+  }
+
+  Future<void> _fetchAlertas() async {
+    // Realiza la llamada asíncrona aquí
+    List<Ticket> nuevasAlertas = await fetchAlertas(graphCode);
+    setState(() {
+      cantidadAlertasPrev = nuevasAlertas.length;
+    });
+  }
+
+  void _startFetchingAlertas() {
+    _timer = Timer.periodic(Duration(seconds: 10), (timer) async {
+      print("llamando");
+      await _refreshAlertas(); // Llama a la función de actualización
+    });
+  }
+
+  Future<void> _refreshAlertas() async {
+    try {
+      List<Ticket> nuevasAlertas = await fetchAlertas(graphCode);
+      setState(() {
+        cantidadAlertasNuevas = nuevasAlertas.length;
+        setState(() {
+          qtyAlertasNuevas = nuevasAlertas.length - cantidadAlertasPrev;
+          if(qtyAlertasNuevas > 0) {
+            _showNotification(context);
+          }
+          cantidadAlertasPrev = nuevasAlertas.length;
+        });
+      });
+    } catch (e) {
+      print('Error al actualizar alertas: $e');
+    }
+  }
+
+  void _showNotification(BuildContext context) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        bottom: 20.0,
+        right: 20.0,
+        child: Material(
+          color: Colors.transparent,
+          child: IntrinsicWidth(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              decoration: BoxDecoration(
+                color: Color(0xFF1174ba),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Text(
+                '¡HAY UNA NUEVA ALERTA!',
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Muestra la notificación usando el overlay
+    overlay.insert(overlayEntry);
+
+    // Elimina la notificación después de 3 segundos
+    Future.delayed(Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

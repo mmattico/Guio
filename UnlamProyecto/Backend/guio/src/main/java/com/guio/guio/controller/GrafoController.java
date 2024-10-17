@@ -1,10 +1,10 @@
 package com.guio.guio.controller;
 
 import com.guio.guio.dao.GrafoDAO;
-import com.guio.guio.dao.UsuarioDAO;
 import com.guio.guio.service.GrafoService;
-import com.guio.guio.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class GrafoController {
 
     @GetMapping("/{codigo}")
     public GrafoDAO getGrafo(@PathVariable String codigo) {
-        return grafoService.findByUsername(codigo);
+        return grafoService.findByCodigo(codigo);
     }
 
     @DeleteMapping("/{id}")
@@ -35,6 +35,14 @@ public class GrafoController {
     @GetMapping
     public List<GrafoDAO> getAllGrafos() {
         return grafoService.findAll();
+    }
+
+    @PutMapping("/actualizarNorte/{codigo}/{grados}")
+    public ResponseEntity<?> actualizarNorte(@PathVariable String codigo, @PathVariable Integer grados) {
+        GrafoDAO grafo = grafoService.findByCodigo(codigo);
+        grafo.setNorteGrado(grados);
+        grafoService.save(grafo);
+        return new ResponseEntity<>("Se actualizo los grados", HttpStatus.OK);
     }
 
 }
