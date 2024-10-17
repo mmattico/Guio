@@ -42,7 +42,7 @@ public class GrafoController {
         GrafoDAO grafo = grafoService.findByCodigo(codigo);
         grafo.setNorteGrado(grados);
         grafoService.save(grafo);
-        return new ResponseEntity<>("Se desactivo", HttpStatus.OK);
+        return new ResponseEntity<>("Se actualizo los grados", HttpStatus.OK);
     }
 
 }
