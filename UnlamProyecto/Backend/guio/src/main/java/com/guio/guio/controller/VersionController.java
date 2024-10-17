@@ -17,7 +17,7 @@ public class VersionController {
     public ResponseEntity<?> version (){
         Version version = new Version();
         version.setMensaje("OK");
-        version.setVersion("1.0.0.39");
+        version.setVersion("1.0.0.40");
         return new ResponseEntity<>(version, HttpStatus.OK);
     }
 }
