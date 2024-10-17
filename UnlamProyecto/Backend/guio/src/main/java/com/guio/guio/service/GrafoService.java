@@ -19,7 +19,7 @@ public class GrafoService {
         return grafoRepository.save(grafo);
     }
 
-    public GrafoDAO findByUsername(String codigo) {
+    public GrafoDAO findByCodigo(String codigo) {
         return grafoRepository.findByCodigo(codigo);
     }
 
