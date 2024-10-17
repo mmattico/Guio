@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:guio_proyecto/pages/start_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'dart:async';
 import '../other/text_to_voice.dart';
@@ -6,7 +8,10 @@ import '../other/navigation_confirmation.dart';
 import '../other/user_session.dart';
 import '../other/get_nodos.dart';
 import '../other/emergency_homepageaccesible.dart';
-import '../other/header_homepage.dart';  // Asegúrate de importar el header
+import '../other/header_homepageaccesible.dart';
+import 'change_password.dart';
+import 'location_selection.dart';
+import 'my_data.dart';
 
 class AccesibleHome extends StatefulWidget {
   @override
@@ -30,7 +35,11 @@ class _AccesibleHome extends State<AccesibleHome> {
   Future<String?> graphCode = getGraphCode();
 
   List<String> areasPermitidas = ['Cardiología', 'Dermatología', 'Ginecología'];
-  final List<String> preferenciasPermitidas = ['Escaleras', 'Ascensor', 'Indiferente'];
+  final List<String> preferenciasPermitidas = [
+    'Escaleras',
+    'Ascensor',
+    'Indiferente'
+  ];
   final List<String> serviciosPermitidos = ['Baño', 'Snack', 'Ventanilla'];
 
   int _selectedTextFieldIndex = 0;
@@ -48,7 +57,8 @@ class _AccesibleHome extends State<AccesibleHome> {
     }).catchError((error) {
       print('Error al obtener nodos homepage: $error');
     });
-    speak("Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara a la derecha de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
+    speak(
+        "Bienvenido, Los datos a ingresar serán únicamente por voz, por favor complete los campos que encontrara en el medio de la pantalla para poder ayudarlo, luego presione aceptar, posee la opción por botón de enviar una alerta si lo necesita");
   }
 
   @override
@@ -89,28 +99,30 @@ class _AccesibleHome extends State<AccesibleHome> {
           _isListening = true;
         });
         detenerReproduccion();
-        _speech.listen(onResult: (result) {
-          setState(() {
-            switch (_selectedTextFieldIndex) {
-              case 1:
-                _origen = colocarMayusculas(result.recognizedWords);
-                break;
-              case 2:
-                _destino = colocarMayusculas(result.recognizedWords);
-                break;
-              case 3:
-                _servicio = colocarMayusculas(result.recognizedWords);
-                break;
-              case 4:
-                _preferencia = colocarMayusculas(result.recognizedWords);
-                break;
-              case 5:
-                _emergencia = colocarMayusculas(result.recognizedWords);
-                break;
-            }
-            _updateButtonState();
-          });
-        }, listenFor: const Duration(seconds: 4));
+        _speech.listen(
+            onResult: (result) {
+              setState(() {
+                switch (_selectedTextFieldIndex) {
+                  case 1:
+                    _origen = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 2:
+                    _destino = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 3:
+                    _servicio = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 4:
+                    _preferencia = colocarMayusculas(result.recognizedWords);
+                    break;
+                  case 5:
+                    _emergencia = colocarMayusculas(result.recognizedWords);
+                    break;
+                }
+                _updateButtonState();
+              });
+            },
+            listenFor: const Duration(seconds: 4));
       }
     } else {
       _stopListening();
@@ -143,7 +155,8 @@ class _AccesibleHome extends State<AccesibleHome> {
         _validarExistencia(_servicio, 'SERVICIO', serviciosPermitidos, 3);
         break;
       case 4:
-        _validarExistencia(_preferencia, 'PREFERENCIA', preferenciasPermitidas, 4);
+        _validarExistencia(
+            _preferencia, 'PREFERENCIA', preferenciasPermitidas, 4);
         break;
       case 5:
         _validarExistencia(_emergencia, 'EMERGENCIA', areasPermitidas, 5);
@@ -151,9 +164,11 @@ class _AccesibleHome extends State<AccesibleHome> {
     }
   }
 
-  void _validarExistencia(String escucha, String campo, List<String> listaChequeo, int textFieldIndex) {
+  void _validarExistencia(String escucha, String campo,
+      List<String> listaChequeo, int textFieldIndex) {
     if (!listaChequeo.contains(escucha)) {
-      speak("Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
+      speak(
+          "Disculpe, no he entendido. Las opciones válidas son: ${listaChequeo.join(', ')}");
       setState(() {
         switch (textFieldIndex) {
           case 1:
@@ -180,8 +195,14 @@ class _AccesibleHome extends State<AccesibleHome> {
 
   void _updateButtonState() {
     setState(() {
-      _isButtonEnabled = (_origen.isNotEmpty && _destino.isNotEmpty && _preferencia.isNotEmpty) ||
-          (_origen.isNotEmpty && _servicio.isNotEmpty && _preferencia.isNotEmpty);
+      _isButtonEnabled = (_origen.isNotEmpty &&
+              _destino.isNotEmpty &&
+              _preferencia.isNotEmpty) ||
+          (_origen.isNotEmpty &&
+              _servicio.isNotEmpty &&
+              _preferencia.isNotEmpty) ||
+          !(_origen == _destino) ||
+          (_preferencia.isNotEmpty);
     });
   }
 
@@ -201,7 +222,9 @@ class _AccesibleHome extends State<AccesibleHome> {
               children: [
                 //header(context),  // Llamamos al header que importamos
                 SizedBox(height: 20),
-                HeaderTexto(),
+                HeaderTextoAccesible(),
+                SizedBox(height: 20),
+                _buildIcons(context),
                 //qSizedBox(height: 20),
                 Expanded(
                   child: ListView(
@@ -215,8 +238,6 @@ class _AccesibleHome extends State<AccesibleHome> {
                       _buildLabelAndField('PREFERENCIA', 4, _preferencia),
                       SizedBox(height: 40),
                       _buildButtons(),
-                      //SizedBox(height: 20),
-                      //_buildRecordButton(), // Botón de grabación
                     ],
                   ),
                 ),
@@ -229,16 +250,9 @@ class _AccesibleHome extends State<AccesibleHome> {
   }
 
   Widget _buildLabelAndField(String label, int index, String text) {
-    String ayudita = colocarMayusculas(("cargué " + label));
+    String ayudita = colocarMayusculas(label);
     return Row(
       children: [
-        /*Expanded(
-          flex: 2,
-          child: Text(
-            label,
-            style: TextStyle(fontSize: 20),
-          ),
-        ),*/
         SizedBox(width: 10),
         Expanded(
           flex: 3,
@@ -247,13 +261,14 @@ class _AccesibleHome extends State<AccesibleHome> {
             child: AbsorbPointer(
               child: TextFormField(
                 key: ValueKey(text),
-                initialValue: text,
-                readOnly: true,
+                initialValue: text.isNotEmpty ? text : '',
+                readOnly: false,
+                enableInteractiveSelection: false,
                 decoration: InputDecoration(
                   hintText: ayudita,
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(18),
-                      borderSide: BorderSide.none
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none,
                   ),
                   fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
                   filled: true,
@@ -266,68 +281,105 @@ class _AccesibleHome extends State<AccesibleHome> {
     );
   }
 
-
   Widget _buildButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Column(
       children: [
-        ElevatedButton(
-          onPressed: _isButtonEnabled
-              ? () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NavigationConfirmation(
-                  selectedOrigin: _origen,
-                  selectedArea: _destino,
-                  selectedService: _servicio,
-                  selectedPreference: _preferencia,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: _isButtonEnabled
+                      ? () {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    //const SizedBox(height: 25),
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 100,
+                                    ),
+                                    //const SizedBox(height: 3),
+                                    NavigationConfirmation(
+                                      selectedOrigin: _origen,
+                                      selectedArea: _destino,
+                                      selectedService: _servicio,
+                                      selectedPreference: _preferencia,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                          /*
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NavigationConfirmation(
+                          selectedOrigin: _origen,
+                          selectedArea: _destino,
+                          selectedService: _servicio,
+                          selectedPreference: _preferencia,
+                        ),
+                      ),
+                    );*/
+                        }
+                      : null,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'ACEPTAR',
+                    style: TextStyle(fontSize: 20, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
-            );
-          }
-              : null,
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
-            backgroundColor: Colors.blue, // Color de fondo
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
             ),
-          ),
-          child: Text(
-            'ACEPTAR',
-            style: TextStyle(fontSize: 20, color: Colors.white),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            _triggerSOSAction();
-          },
-          style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30), // Tamaño rectangular
-            backgroundColor: Colors.red, // Color de fondo
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10), // Bordes redondeados pero rectangulares
+            SizedBox(width: 16),
+            Expanded(
+              child: SizedBox(
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _triggerSOSAction();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  child: Text(
+                    'S.O.S.',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
             ),
-          ),
-          child: Text(
-            'S.O.S.',
-            style: TextStyle(fontSize: 20, color: Colors.black),
-          ),
+          ],
         ),
       ],
     );
   }
- /*
-  Widget _buildRecordButton() {
-    return ElevatedButton(
-      onPressed: _isListening
-          ? _stopListening
-          : () => _listen(_selectedTextFieldIndex, 'Campo seleccionado'),
-      child: Text(_isListening ? 'Detener Grabación' : 'Iniciar Grabación'),
-    );
-  }
-*/
+
   Future<void> _triggerSOSAction() async {
     detenerReproduccion();
     await _listen(5, "Area de Emergencia");
@@ -362,3 +414,136 @@ class CurvedClipper extends CustomClipper<Path> {
   }
 }
 
+Widget _buildIcons(BuildContext context) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      _buildButtonMenu('¿Como usar?', Icons.help, () {
+        detenerReproduccion();
+        speak(
+            "Complete el campo origen y preferencia, el servicio y/o destino luego presionar aceptar. Posee un botón de S.O.S si lo precisa.");
+      }),
+      _buildButtonMenu('Cambiar Ubicación', Icons.location_on, () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LocationSelection()),
+          (Route<dynamic> route) => false,
+        );
+      }),
+      _buildButtonMenu('Mi Cuenta', Icons.account_circle, () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const MyDataPage()),
+          (Route<dynamic> route) => false,
+        );
+      }),
+      _buildButtonMenu('Cambiar Contraseña', Icons.lock, () {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const ChangePassword()),
+          (Route<dynamic> route) => false,
+        );
+      }),
+      _buildButtonMenu('Cerrar Sesión', Icons.logout, () {
+        _logout(context);
+      }),
+    ],
+  );
+}
+
+Widget _buildButtonMenu(String label, IconData icon, VoidCallback onPressed) {
+  return Expanded(
+    child: SizedBox(
+      height: 80,
+      child: Semantics(
+        label: label,
+        button: true,
+        child: InkWell(
+          onTap: onPressed,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: Colors.white, size: 30),
+              SizedBox(height: 8),
+              Text(
+                label,
+                style: TextStyle(fontSize: 12, color: Colors.white),
+                textAlign: TextAlign.center,
+                softWrap: true,
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+Future<void> _logout(context) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await deleteUserSession();
+  await prefs.remove('isLoggedIn');
+
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          content: const Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.logout,
+                color: Colors.grey,
+                size: 80,
+              ),
+              SizedBox(height: 10),
+              Text(
+                '¿Cerrar sesión?',
+                style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 10),
+            ],
+          ),
+          actions: <Widget>[
+            SizedBox(
+              width: 95,
+              height: 55,
+              child: ElevatedButton(
+                onPressed: () async {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const StartPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  backgroundColor: Color.fromRGBO(17, 116, 186, 1),
+                ),
+                child: const Text(
+                  "SI",
+                  style: TextStyle(fontSize: 20, color: Colors.white),
+                ),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                'NO',
+                style: TextStyle(
+                    color: Color.fromRGBO(17, 116, 186, 1), fontSize: 16),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      });
+}
