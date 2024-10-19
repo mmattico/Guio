@@ -40,6 +40,7 @@ class _MyDataPageState extends State<MyDataPage> {
   String errorEmailMessage = "";
   String emailInicial = "";
   String userNameInicial = "";
+  bool isAccesibleInicial=false;
 
   bool userNameChange = false;
   bool emailChange = false;
@@ -59,7 +60,7 @@ class _MyDataPageState extends State<MyDataPage> {
   @override
   void initState() {
     super.initState();
-
+  loadUserAccessibility();
     getUserID().then((int? id) {
       setState(() {
         _userID = id ?? 0; // Si el id es nulo, asigna 0 u otro valor entero por defecto.
@@ -93,6 +94,16 @@ class _MyDataPageState extends State<MyDataPage> {
         _isChecked = accesibility ?? false;
       });
     });
+
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesibleInicial = userAccessibility;
+      });
+    }
   }
 
   Future<void> _getUserByUsername(String username) async{
@@ -202,11 +213,11 @@ class _MyDataPageState extends State<MyDataPage> {
                   const SizedBox(height: 2),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomePage()),
-                            (Route<dynamic> route) => false,
-                      );
+                      if (isAccesibleInicial) {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => AccesibleHome()), (Route<dynamic> route) => false,);
+                      } else {
+                        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+                      }
                     },
                     child: const Text(
                       "Cancelar",
@@ -254,6 +265,7 @@ class _MyDataPageState extends State<MyDataPage> {
                 TextFormField(
                   controller: _firstnameController,
                   decoration: InputDecoration(
+                    labelText: "Nombre",
                       hintText: "Nombre",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
@@ -277,6 +289,7 @@ class _MyDataPageState extends State<MyDataPage> {
                 TextFormField(
                   controller: _lastnameController,
                   decoration: InputDecoration(
+                    labelText: "Apellido",
                       hintText: "Apellido",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
@@ -305,6 +318,7 @@ class _MyDataPageState extends State<MyDataPage> {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
+                    labelText: "D.N.I",
                     hintText: "DNI",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
@@ -341,6 +355,7 @@ class _MyDataPageState extends State<MyDataPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
+                    labelText: "Correo Electrónico",
                       hintText: "Correo Electrónico",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
@@ -376,6 +391,7 @@ class _MyDataPageState extends State<MyDataPage> {
                     FilteringTextInputFormatter.digitsOnly,
                   ],
                   decoration: InputDecoration(
+                    labelText: "Número de Teléfono",
                     hintText: "Número de Teléfono",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(18),
@@ -406,6 +422,7 @@ class _MyDataPageState extends State<MyDataPage> {
                 TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
+                    labelText: "Nombre de usuario",
                       hintText: "Nombre de usuario",
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(18),
@@ -434,6 +451,7 @@ class _MyDataPageState extends State<MyDataPage> {
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
+                    labelText: "Contraseña",
                     hintText: "Contraseña",
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(18),
@@ -531,9 +549,11 @@ class _MyDataPageState extends State<MyDataPage> {
                   if (response.statusCode == 200) {
                     // Usuario creado con éxito
                     showDialog(
+                      barrierDismissible: false,
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
+
                           backgroundColor: Colors.white,
                           content: const Column(
                             mainAxisSize: MainAxisSize.min,
