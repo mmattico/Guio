@@ -18,6 +18,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:math' as math;
 
+import 'home_page_accesible.dart';
+
 class Navigation extends StatefulWidget {
   final String? selectedService;
   final String? selectedArea;
@@ -47,6 +49,7 @@ class _NavigationState extends State<Navigation> {
   String _imagenPath = "";
   double _angle = 0;
   int _norteGrado = 0;
+  bool isAccesible=false;
 
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
@@ -82,6 +85,16 @@ class _NavigationState extends State<Navigation> {
     requestPermisos();
     startListening();
     _iniciarProceso();
+    loadUserAccessibility();
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesible = userAccessibility;
+      });
+    }
   }
 
   Future<void> _iniciarProceso() async {
@@ -238,11 +251,18 @@ class _NavigationState extends State<Navigation> {
         await speak(_recorridoFinalizado);
       }
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-        (Route<dynamic> route) => false,
-      );
+      if(!isAccesible){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+            builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+      }else{
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AccesibleHome()),
+              (Route<dynamic> route) => false,
+        );
+      }
     }
   }
 
