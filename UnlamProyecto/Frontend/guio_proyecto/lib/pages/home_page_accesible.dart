@@ -265,6 +265,7 @@ class _AccesibleHome extends State<AccesibleHome> {
                 readOnly: false,
                 enableInteractiveSelection: false,
                 decoration: InputDecoration(
+                  labelText: ayudita,
                   hintText: ayudita,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
