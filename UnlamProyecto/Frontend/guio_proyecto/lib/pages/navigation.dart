@@ -446,6 +446,21 @@ class _NavigationState extends State<Navigation> {
         }
 
         print("________Ciclo: $i");
+        print(
+            "Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+
+        setState(() {
+          if (i > 0) {
+            _instruccionActual = i;
+            if (instrucciones[i].sentidoDestino != '') {
+              _angle = _mapSentidoConSentidoDestinoAImagen(
+                  instrucciones[i].sentidoOrigen ?? '');
+            }
+          }
+        });
+
+        print(
+            "Instruccion de nuevo: ${instrucciones[_instruccionActual].instruccionToString()}");
 
         if (instrucciones[i].commando == 'Fin parte 1 del recorrido') {
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
@@ -459,13 +474,13 @@ class _NavigationState extends State<Navigation> {
           await _popupPrimerDestino(context);
         } else {
           if (i > 0) {
-            if (instrucciones[i - 1].distancia! > 0) {
+            if (instrucciones[i].distancia! > 0) {
               if (i > 2) {
                 posicionActual = instrucciones[i - 2].siguienteNodo.toString();
               }
               setState(() {
                 pasosRecorridos = 0;
-                pasosARecorrer = instrucciones[i - 1].distancia!;
+                pasosARecorrer = instrucciones[i].distancia!;
               });
               while (pasosRecorridos < pasosARecorrer) {
                 print(
@@ -478,23 +493,17 @@ class _NavigationState extends State<Navigation> {
               resetStepCount();
             }
           }
-          setState(() {
-            if (i > 0) {
-              _instruccionActual = i;
-              if (instrucciones[i].sentidoDestino != '') {
-                _angle = _mapSentidoConSentidoDestinoAImagen(
-                    instrucciones[i].sentidoOrigen ?? '');
-              }
-            }
-          });
-          print(
-              "Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+
+
         }
 
         if (_instruccion != "" && selectedVoiceAssistance) {
           detenerReproduccion();
           speak(_instruccion);
         }
+
+        print(
+            "Instruccion actual 2da ver: ${instrucciones[_instruccionActual].instruccionToString()}");
       }
       subscriptionInstruccion.cancel();
       subscriptionTts.cancel();
