@@ -149,6 +149,8 @@ class _AlertsState extends State<Alerts> {
     int pendientes = widget.tickets.where((alerta) => alerta.estado == 'pendiente').length;
     int canceladas = widget.tickets.where((alerta) => alerta.estado == 'cancelada').length;
     int finalizadas = widget.tickets.where((alerta) => alerta.estado == 'finalizada').length;
+    _filteredTickets.sort((a, b) => b.id.compareTo(a.id));
+
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -369,7 +371,7 @@ class _AlertsState extends State<Alerts> {
                       DataColumn(label: Text('Whatsapp')),
                     ],
                     rows: _filteredTickets
-                        .map((ticket) => DataRow(
+                          .map((ticket) => DataRow(
                               cells: [
                                 DataCell(
                                   MouseRegion(
