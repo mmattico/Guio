@@ -40,6 +40,7 @@ class _MyDataPageState extends State<MyDataPage> {
   String errorEmailMessage = "";
   String emailInicial = "";
   String userNameInicial = "";
+  bool isAccesibleInicial=false;
 
   bool userNameChange = false;
   bool emailChange = false;
@@ -59,7 +60,7 @@ class _MyDataPageState extends State<MyDataPage> {
   @override
   void initState() {
     super.initState();
-
+  loadUserAccessibility();
     getUserID().then((int? id) {
       setState(() {
         _userID = id ?? 0; // Si el id es nulo, asigna 0 u otro valor entero por defecto.
@@ -93,6 +94,16 @@ class _MyDataPageState extends State<MyDataPage> {
         _isChecked = accesibility ?? false;
       });
     });
+
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesibleInicial = userAccessibility;
+      });
+    }
   }
 
   Future<void> _getUserByUsername(String username) async{
@@ -202,7 +213,7 @@ class _MyDataPageState extends State<MyDataPage> {
                   const SizedBox(height: 2),
                   TextButton(
                     onPressed: () {
-                      if (_isChecked) {
+                      if (isAccesibleInicial) {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => AccesibleHome()), (Route<dynamic> route) => false,);
                       } else {
                         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
