@@ -6,8 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="4261002c-162a-46f9-a7db-2b3e45adc7f4" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/guio_proyecto/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/guio_proyecto/android/app/google-services.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/guio_proyecto/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/guio_proyecto/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/controller/VersionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/repositorio/AlertaRepositorio.java" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/guio/src/main/java/com/guio/guio/repositorio/AlertaRepositorio.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +42,10 @@
               <option name="branches">
                 <list>
                   <RecentBranch>
+                    <option name="branchName" value="PruebaSHA" />
+                    <option name="lastUsedInstant" value="1729447094" />
+                  </RecentBranch>
+                  <RecentBranch>
                     <option name="branchName" value="develop3" />
                     <option name="lastUsedInstant" value="1729132153" />
                   </RecentBranch>
@@ -56,10 +60,6 @@
                   <RecentBranch>
                     <option name="branchName" value="Version33" />
                     <option name="lastUsedInstant" value="1727380910" />
-                  </RecentBranch>
-                  <RecentBranch>
-                    <option name="branchName" value="develop2" />
-                    <option name="lastUsedInstant" value="1726337153" />
                   </RecentBranch>
                 </list>
               </option>
