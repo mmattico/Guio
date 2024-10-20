@@ -18,6 +18,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'dart:math' as math;
 
+import 'home_page_accesible.dart';
+
 class Navigation extends StatefulWidget {
   final String? selectedService;
   final String? selectedArea;
@@ -47,6 +49,7 @@ class _NavigationState extends State<Navigation> {
   String _imagenPath = "";
   double _angle = 0;
   int _norteGrado = 0;
+  bool isAccesible=false;
 
   bool _cancelarRecorrido = false;
   bool _botonCancelarRecorrido = false;
@@ -82,6 +85,16 @@ class _NavigationState extends State<Navigation> {
     requestPermisos();
     startListening();
     _iniciarProceso();
+    loadUserAccessibility();
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesible = userAccessibility;
+      });
+    }
   }
 
   Future<void> _iniciarProceso() async {
@@ -238,11 +251,18 @@ class _NavigationState extends State<Navigation> {
         await speak(_recorridoFinalizado);
       }
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-        (Route<dynamic> route) => false,
-      );
+      if(!isAccesible){
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+            builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+      }else{
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  AccesibleHome()),
+              (Route<dynamic> route) => false,
+        );
+      }
     }
   }
 
@@ -426,6 +446,21 @@ class _NavigationState extends State<Navigation> {
         }
 
         print("________Ciclo: $i");
+        print(
+            "Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+
+        setState(() {
+          if (i > 0) {
+            _instruccionActual = i;
+            if (instrucciones[i].sentidoDestino != '') {
+              _angle = _mapSentidoConSentidoDestinoAImagen(
+                  instrucciones[i].sentidoOrigen ?? '');
+            }
+          }
+        });
+
+        print(
+            "Instruccion de nuevo: ${instrucciones[_instruccionActual].instruccionToString()}");
 
         if (instrucciones[i].commando == 'Fin parte 1 del recorrido') {
           Vibration.vibrate(pattern: [50, 500, 50, 1000]);
@@ -439,13 +474,13 @@ class _NavigationState extends State<Navigation> {
           await _popupPrimerDestino(context);
         } else {
           if (i > 0) {
-            if (instrucciones[i - 1].distancia! > 0) {
+            if (instrucciones[i].distancia! > 0) {
               if (i > 2) {
                 posicionActual = instrucciones[i - 2].siguienteNodo.toString();
               }
               setState(() {
                 pasosRecorridos = 0;
-                pasosARecorrer = instrucciones[i - 1].distancia!;
+                pasosARecorrer = instrucciones[i].distancia!;
               });
               while (pasosRecorridos < pasosARecorrer) {
                 print(
@@ -458,23 +493,17 @@ class _NavigationState extends State<Navigation> {
               resetStepCount();
             }
           }
-          setState(() {
-            if (i > 0) {
-              _instruccionActual = i;
-              if (instrucciones[i].sentidoDestino != '') {
-                _angle = _mapSentidoConSentidoDestinoAImagen(
-                    instrucciones[i].sentidoOrigen ?? '');
-              }
-            }
-          });
-          print(
-              "Instruccion actual: ${instrucciones[_instruccionActual].instruccionToString()}");
+
+
         }
 
         if (_instruccion != "" && selectedVoiceAssistance) {
           detenerReproduccion();
           speak(_instruccion);
         }
+
+        print(
+            "Instruccion actual 2da ver: ${instrucciones[_instruccionActual].instruccionToString()}");
       }
       subscriptionInstruccion.cancel();
       subscriptionTts.cancel();

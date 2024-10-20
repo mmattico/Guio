@@ -5,6 +5,7 @@ import 'package:guio_proyecto/other/user_session.dart';
 import 'package:guio_proyecto/pages/start_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'home_page_accesible.dart';
 import 'location_selection.dart';
 
 class ChangePassword extends StatefulWidget {
@@ -18,6 +19,7 @@ class ChangePassword extends StatefulWidget {
 class _ChangePasswordState extends State<ChangePassword> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool isAccesible=false;
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
   TextEditingController();
@@ -28,169 +30,207 @@ class _ChangePasswordState extends State<ChangePassword> {
   String passwordConfirm = '';
 
   @override
+  void initState() {
+    super.initState();
+    loadUserAccessibility();
+  }
+
+  void loadUserAccessibility() async {
+    final bool? userAccessibility = await getUserAccessibility();
+    if (userAccessibility != null) {
+      setState(() {
+        isAccesible = userAccessibility;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DoubleBackToExit(
-        child: Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(22,70,22,50),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Padding(
+          padding: const EdgeInsets.fromLTRB(22, 70, 22, 50),
+          child: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
               child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20.0),
-                    // Título
-                    const Text(
-                      "Cambio de contraseña",
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8.0),
-                    // Subtítulo
-                    Text(
-                      "Por favor, establezca una nueva contraseña",
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                    const SizedBox(height: 45.0),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      decoration: InputDecoration(
-                        labelText: "Nueva Contraseña",
-                        labelStyle: const TextStyle(fontSize: 18),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none
-                        ),
-                        fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
-                        filled: true,
-                        prefixIcon: const Icon(Icons.password),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 20.0),
+                  // Título y subtítulo usando RichText
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Cambio de contraseña\n",
+                          style: const TextStyle(
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black, // Aseguramos el color de texto
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
                         ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, ingrese una contraseña';
-                        }
-                        if (value.length <10) {
-                          return 'La contraseña debe tener un mínimo de 10 caracteres';
-                        }
-                        password = value;
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureConfirmPassword,
-                      decoration: InputDecoration(
-                        labelText: "Confirmar Contraseña",
-                        labelStyle: const TextStyle(fontSize: 18),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none
-                        ),
-                        fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
-                        filled: true,
-                        prefixIcon: const Icon(Icons.password),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirmPassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (value) {
-                        if (password == '') {
-                          return null;
-                        }
-                        if (value == null || value.isEmpty) {
-                          return 'Por favor, ingrese una contraseña';
-                        }
-                        if (value != password) {
-                          return 'Las contraseñas no son iguales';
-                        }
-
-                        passwordConfirm = value;
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 40.0),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 55,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            SharedPreferences prefs = await SharedPreferences.getInstance();
-                            int? usuarioId = prefs.getInt('usuarioId');
-                            actualizarPassword(usuarioId, password, context);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14.0),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
-                        ),
-                        child: const Text(
-                          "Cambiar contraseña",
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 20,),
-                    Center(
-                      child: TextButton(
-                        onPressed: () async {
-                          String? graphCode = await getGraphCode();
-                          if(graphCode != null) {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => HomePage()),);
-                          } else {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => StartPage()),);
-                          }
-                        },
-                        child: const Text(
-                          "Cancelar",
+                        TextSpan(
+                          text: "Por favor, establezca una nueva contraseña.",
                           style: TextStyle(
-                            fontSize: 18,
-                            color: Color.fromRGBO(17, 116, 186, 1),
+                            fontSize: 16.0,
+                            color: Colors.grey[600],
                           ),
                         ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 45.0),
+                  // Campo de Nueva Contraseña
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      labelText: "Nueva Contraseña",
+                      labelStyle: const TextStyle(fontSize: 18),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide.none,
                       ),
-                    )
-                  ],
-          ),),
-        )
-      ),),
+                      fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.password),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingrese una contraseña';
+                      }
+                      if (value.length < 10) {
+                        return 'La contraseña debe tener un mínimo de 10 caracteres';
+                      }
+                      password = value;
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 20.0),
+                  // Campo de Confirmar Contraseña
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: _obscureConfirmPassword,
+                    decoration: InputDecoration(
+                      labelText: "Confirmar Contraseña",
+                      labelStyle: const TextStyle(fontSize: 18),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(18),
+                        borderSide: BorderSide.none,
+                      ),
+                      fillColor: const Color.fromRGBO(65, 105, 225, 0.1),
+                      filled: true,
+                      prefixIcon: const Icon(Icons.password),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                          });
+                        },
+                      ),
+                    ),
+                    validator: (value) {
+                      if (password == '') {
+                        return null;
+                      }
+                      if (value == null || value.isEmpty) {
+                        return 'Por favor, ingrese una contraseña';
+                      }
+                      if (value != password) {
+                        return 'Las contraseñas no son iguales';
+                      }
+
+                      passwordConfirm = value;
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: 40.0),
+                  // Botón de Cambiar Contraseña
+                  SizedBox(
+                    width: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          int? usuarioId = prefs.getInt('usuarioId');
+                          actualizarPassword(usuarioId, password, context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        backgroundColor: const Color.fromRGBO(17, 116, 186, 1),
+                      ),
+                      child: const Text(
+                        "Cambiar contraseña",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // Botón de Cancelar
+                  Center(
+                    child: TextButton(
+                      onPressed: () async {
+                        String? graphCode = await getGraphCode();
+                        if (graphCode != null) {
+                          if(!isAccesible){
+                            Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                                builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+                          }else{
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AccesibleHome()),
+                                  (Route<dynamic> route) => false,
+                            );
+                          }
+                        } else {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => StartPage()),
+                          );
+                        }
+                      },
+                      child: const Text(
+                        "Cancelar",
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Color.fromRGBO(17, 116, 186, 1),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
+
+
 
   Future<void> actualizarPassword(int? idUsuario, String nuevaContrasenia, BuildContext context) async {
     print("idUsuario");
@@ -247,9 +287,21 @@ class _ChangePasswordState extends State<ChangePassword> {
                     child: ElevatedButton(
                       onPressed: () async {
                         String? graphCode = await getGraphCode();
+
                         if(graphCode != null) {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => HomePage()),);
+                          if(!isAccesible){
+                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(
+                              builder: (context) => const HomePage()),(Route<dynamic> route) => false,);
+                          }else{
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      AccesibleHome()),
+                                  (Route<dynamic> route) => false,
+                            );
+                          }
+
                         } else {
                           Navigator.push(context, MaterialPageRoute(
                               builder: (context) => LocationSelection()),);

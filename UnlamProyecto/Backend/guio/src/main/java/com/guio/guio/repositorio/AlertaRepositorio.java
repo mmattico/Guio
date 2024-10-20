@@ -29,6 +29,7 @@ public interface AlertaRepositorio extends JpaRepository<AlertaDAO, Long> {
                     "FROM BSAlerta as a " +
                     "INNER JOIN BSUsuario as u ON u.UsuarioID = a.UsuarioID " +
                     "INNER JOIN BSGrafo as g on g.GrafoID = a.GrafoID " +
-                    "WHERE g.Codigo = ?1", nativeQuery = true)
+                    "WHERE g.Codigo = ?1 " +
+                    "ORDER BY a.AlertaID DESC", nativeQuery = true)
     List<AlertaSummary> findByGrafoUbicacion(@Param("ubicacion") String ubicacion);
 }
