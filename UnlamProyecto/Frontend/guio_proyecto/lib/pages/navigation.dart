@@ -83,6 +83,7 @@ class _NavigationState extends State<Navigation> {
     _isLoading = true;
     _getAccesibilidad();
     requestPermisos();
+    resetStepCount();
     startListening();
     _iniciarProceso();
     loadUserAccessibility();
@@ -479,7 +480,6 @@ class _NavigationState extends State<Navigation> {
                 posicionActual = instrucciones[i - 2].siguienteNodo.toString();
               }
               setState(() {
-                pasosRecorridos = 0;
                 pasosARecorrer = instrucciones[i].distancia!;
               });
               while (pasosRecorridos < pasosARecorrer) {

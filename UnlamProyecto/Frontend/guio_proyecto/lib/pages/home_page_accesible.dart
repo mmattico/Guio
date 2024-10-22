@@ -319,6 +319,7 @@ class _AccesibleHome extends State<AccesibleHome> {
                                       selectedArea: _destino,
                                       selectedService: _servicio,
                                       selectedPreference: _preferencia,
+                                      isAccesible:true,
                                     ),
                                   ],
                                 ),
