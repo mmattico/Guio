@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guio_proyecto/other/button_back.dart';
 import 'package:guio_proyecto/other/user_session.dart';
+import 'package:guio_proyecto/pages/home_page_accesible.dart';
 import '../pages/home_page.dart';
 import '../pages/navigation.dart';
 import 'package:flutter/services.dart';
@@ -10,9 +11,10 @@ class NavigationConfirmation extends StatefulWidget {
   final String? selectedArea;
   final String? selectedOrigin;
   final String? selectedPreference;
+  final bool isAccesible;
 
   const NavigationConfirmation({Key? key, required this.selectedOrigin, required this.selectedArea,
-    required this.selectedService, required this.selectedPreference}) : super(key: key);
+    required this.selectedService, required this.selectedPreference, required this.isAccesible}) : super(key: key);
 
   @override
   _NavigationConfirmationState createState() => _NavigationConfirmationState();
@@ -133,9 +135,13 @@ class _NavigationConfirmationState extends State<NavigationConfirmation> {
                 height: 38,
                 child: TextButton(
                   onPressed: () {
-
+                    if(widget.isAccesible){
+                      Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => AccesibleHome()),);
+                    }else{
                     Navigator.push(context,
                       MaterialPageRoute(builder: (context) => const HomePage()),);
+                    }
                   },
                   child: const Text(
                     "Cancelar",

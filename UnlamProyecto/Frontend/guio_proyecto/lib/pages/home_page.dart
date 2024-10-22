@@ -511,6 +511,7 @@ class _HomePageState extends State<HomePage> {
                         selectedArea: selectedArea,
                         selectedService: selectedService,
                         selectedPreference: selectedPreference,
+                        isAccesible:false,
                       ),
                     ],
                   ),
