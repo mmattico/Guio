@@ -240,7 +240,7 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           SizedBox(
-                            width: 115.0,
+                            width: 120.0,
                             child: Text(
                               selectedOrigin,
                               style: const TextStyle(
@@ -286,7 +286,7 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           SizedBox(
-                            width: 105.0,
+                            width: 113.0,
                             child: Text(
                               selectedArea,
                               style: const TextStyle(
