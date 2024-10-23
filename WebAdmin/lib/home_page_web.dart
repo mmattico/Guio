@@ -110,7 +110,32 @@ class _WebHomePageState extends State<WebHomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     const SizedBox(height: 30),
-                    Image.asset('assets/images/unlam-logo.png', height: 80, width: 200),
+                    //Image.asset('assets/images/unlam-logo.png', height: 80, width: 200),
+                    FutureBuilder<String?>(
+                      future: graphCode, // Usar la variable Future aquí
+                      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // Mostrar un indicador de carga mientras se obtiene el graphCode
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          // Manejo de errores
+                          return Text('Error: ${snapshot.error}');
+                        } else if (!snapshot.hasData || snapshot.data == null) {
+                          // Manejo del caso cuando no hay datos
+                          return const Text('No se encontró el grafo.');
+                        } else {
+                          // Aquí ya tienes el valor de graphCode
+                          String? graphCodeValue = snapshot.data;
+
+                          // Decide qué imagen mostrar
+                          if (graphCodeValue == 'UNLAM') {
+                            return Image.asset('assets/images/unlam-logo.png', height: 80, width: 200);
+                          } else {
+                            return Image.asset('assets/images/logo_GUIO.png', height: 80, width: 200);
+                          }
+                        }
+                      },
+                    ),
                     const SizedBox(height: 10),
                     const Divider(color: Colors.blueAccent),
                     const SizedBox(height: 10),
@@ -172,7 +197,7 @@ class _WebHomePageState extends State<WebHomePage> {
                               });
                             },
                           ),
-                          const SizedBox(height: 450),
+                          const SizedBox(height: 100),
                           ListTile(
                             title: const Text(
                               'Cerrar Sesion',
@@ -206,7 +231,7 @@ class _WebHomePageState extends State<WebHomePage> {
                     if (selectedOption == 0) ...[
                       Image.asset('assets/images/logo_GUIO.png', height: 350, width: 800),
                       Text(
-                        'SISTEMA DE GESTIÓN DE ESPACIOS',
+                        'SISTEMA DE GESTIÓN DE ESTABLECIMIENTOS',
                         style: const TextStyle(fontSize: 50),
                       ),
                       const SizedBox(height: 6),

@@ -6,15 +6,18 @@ import 'package:guio_web_admin/other/user_session.dart';
 import 'kanban_view.dart';
 import 'ticket_dialog.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';  // For jsonEncode
+import 'dart:convert'; // For jsonEncode
 
 Future<List<Ticket>> fetchAlertas(Future<String?> ubicacionCodigo) async {
   final graphCode = await ubicacionCodigo;
   if (graphCode == null) {
     throw Exception('Graph code no proporcionado.');
   }
-  print(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$graphCode'));
-  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/alerta/$graphCode'));
+  print(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+      '/api/alerta/$graphCode'));
+  final response = await http.get(Uri.https(
+      'guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net',
+      '/api/alerta/$graphCode'));
 
   if (response.statusCode == 200) {
     final utf8DecodedBody = utf8.decode(response.bodyBytes);
@@ -25,7 +28,8 @@ Future<List<Ticket>> fetchAlertas(Future<String?> ubicacionCodigo) async {
     if (body == null) {
       return [];
     }
-    List<Ticket> alertas = body.map((dynamic item) => Ticket.fromJson(item)).toList();
+    List<Ticket> alertas =
+        body.map((dynamic item) => Ticket.fromJson(item)).toList();
     return alertas;
   } else {
     print('Error al obtener alertas: ${response.statusCode}');
@@ -36,6 +40,7 @@ Future<List<Ticket>> fetchAlertas(Future<String?> ubicacionCodigo) async {
 
 class Ticket {
   final int id;
+
   //final String usuarioID;
   final DateTime fecha;
   final String comentario;
@@ -46,17 +51,16 @@ class Ticket {
   final String dni;
   final String nombre;
 
-  Ticket({
-    required this.id,
-    required this.fecha,
-    required this.comentario,
-    required this.areaEmergencia,
-    required this.estado,
-    required this.apellido,
-    required this.telefono,
-    required this.dni,
-    required this.nombre
-  });
+  Ticket(
+      {required this.id,
+      required this.fecha,
+      required this.comentario,
+      required this.areaEmergencia,
+      required this.estado,
+      required this.apellido,
+      required this.telefono,
+      required this.dni,
+      required this.nombre});
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
     return Ticket(
@@ -68,8 +72,7 @@ class Ticket {
         apellido: json['apellido']?.toString() ?? '',
         telefono: json['telefono']?.toString() ?? '',
         dni: json['dni']?.toString() ?? '',
-        nombre: json['nombre']?.toString() ?? ''
-    );
+        nombre: json['nombre']?.toString() ?? '');
   }
 
   @override
@@ -84,11 +87,10 @@ class TicketListPage extends StatefulWidget {
 }
 
 class _TicketListPageState extends State<TicketListPage> {
-
   late Future<List<Ticket>> futureAlertas;
   List<Ticket>? _tickets;
   bool _isKanbanView = false;
-  Future<String?> graphCode =  getGraphCode();
+  Future<String?> graphCode = getGraphCode();
 
   @override
   void initState() {
@@ -132,23 +134,33 @@ class _TicketListPageState extends State<TicketListPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.0), // Altura total incluyendo el espacio
+        preferredSize: Size.fromHeight(80.0),
         child: Column(
-        children: [
-        SizedBox(height: 20.0),
-        AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1174ba),
-        title: const Text('Gestión de Alertas de Usuarios', style: TextStyle(fontFamily: 'Oswald', fontSize: 50, fontWeight: FontWeight.bold),),
-        actions: [
-          IconButton(
-            icon: Icon(_isKanbanView ? Icons.table_chart : Icons.view_kanban),
-            onPressed: _toggleView,
-          ),
-        ],
-        ),
-        ],
+          children: [
+            SizedBox(height: 20.0),
+            AppBar(
+              automaticallyImplyLeading: false,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              centerTitle: true,
+              backgroundColor: Colors.white,
+              foregroundColor: const Color(0xFF1174ba),
+              title: const Text(
+                'Gestión de Alertas de Usuarios',
+                style: TextStyle(
+                    fontFamily: 'Oswald',
+                    fontSize: 50,
+                    fontWeight: FontWeight.bold),
+              ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                      _isKanbanView ? Icons.table_chart : Icons.view_kanban),
+                  onPressed: _toggleView,
+                ),
+              ],
+            ),
+          ],
         ),
       ),
       body: FutureBuilder<List<Ticket>>(
@@ -168,11 +180,11 @@ class _TicketListPageState extends State<TicketListPage> {
               child: _isKanbanView
                   ? KanbanView(tickets: tickets)
                   : Alerts(
-                tickets: tickets,
-                onOpenTicketDetails: _openTicketDetails,
-                onStatusChanged: _updateTicketStatus,
-                cantidadAlertas: cantidadAlertas,
-              ),
+                      tickets: tickets,
+                      onOpenTicketDetails: _openTicketDetails,
+                      onStatusChanged: _updateTicketStatus,
+                      cantidadAlertas: cantidadAlertas,
+                    ),
             );
           }
         },
