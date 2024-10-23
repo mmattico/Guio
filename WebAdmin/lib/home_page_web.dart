@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/dashboard.dart';
 import 'package:guio_web_admin/other/user_session.dart';
 import 'package:guio_web_admin/area_management.dart';
 import 'package:guio_web_admin/get_tickets.dart';
@@ -157,7 +158,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.house, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 0; // Cambia la opción a 1
+                                selectedOption = 0;
                               });
                             },
                           ),
@@ -169,7 +170,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.add_alert_sharp, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 1; // Cambia la opción a 1
+                                selectedOption = 1;
                               });
                             },
                           ),
@@ -181,7 +182,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.bar_chart, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 2; // Cambia la opción a 2
+                                selectedOption = 2;
                               });
                             },
                           ),
@@ -193,7 +194,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.space_dashboard, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 3; // Cambia la opción a 3
+                                selectedOption = 3;
                               });
                             },
                           ),
@@ -246,9 +247,10 @@ class _WebHomePageState extends State<WebHomePage> {
                         child: TicketListPage(), // Mostrando la clase TicketsList aquí
                       ),
                     ] else if (selectedOption == 2) ...[
-                      const Text(
-                        'Dashboard',
-                        style: TextStyle(fontSize: 50),
+                      Container(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        child: DashboardPage(), // Mostrando la clase TicketsList aquí
                       ),
                     ] else if (selectedOption == 3) ...[
                       Container(
