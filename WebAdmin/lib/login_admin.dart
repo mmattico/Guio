@@ -1,11 +1,11 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:guio_web_admin/home_page_web.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:url_launcher/url_launcher.dart';
 import 'get_tickets.dart';
 import 'other/user_session.dart';
+import 'package:mailto/mailto.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   String errorContraseniaMessage = "";
   bool _isValidatingInfo = false;
   final _formKey = GlobalKey<FormState>();
+  bool isPasswordVisible = false;
 
   Future<void> _getUserByUsername(String username) async {
     var url;
@@ -196,10 +197,23 @@ class _LoginPageState extends State<LoginPage> {
                                       const Color.fromRGBO(65, 105, 225, 0.1),
                                   filled: true,
                                   prefixIcon: const Icon(Icons.password),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                      color: Colors.grey[600],  // Color del ícono
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        isPasswordVisible = !isPasswordVisible;
+                                      });
+                                    },
+                                    highlightColor: Colors.transparent,  // Sin efecto de highlight
+                                    splashColor: Colors.grey[300],  // Un gris claro visible
+                                  ),
                                   errorStyle: const TextStyle(height: 0),
                                   errorMaxLines: 1,
                                 ),
-                                obscureText: true,
+                                obscureText: !isPasswordVisible,
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
                                     return 'Por favor, ingrese su contraseña';
@@ -222,7 +236,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 30),
                       TextButton(
                           onPressed: () {
-                            // Lógica
+                            launchMailto();
                           },
                           child: const Text(
                             'Contactarse con soporte',
@@ -239,4 +253,15 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+}
+
+
+launchMailto() async {
+  final mailtoLink = Mailto(
+    to: ['contacto.guio@gmail.com'],
+  );
+  // Convert the Mailto instance into a string.
+  // Use either Dart's string interpolation
+  // or the toString() method.
+  await launch('$mailtoLink');
 }

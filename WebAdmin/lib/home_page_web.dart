@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guio_web_admin/dashboard.dart';
 import 'package:guio_web_admin/other/user_session.dart';
 import 'package:guio_web_admin/area_management.dart';
 import 'package:guio_web_admin/get_tickets.dart';
@@ -110,7 +111,32 @@ class _WebHomePageState extends State<WebHomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     const SizedBox(height: 30),
-                    Image.asset('assets/images/unlam-logo.png', height: 80, width: 200),
+                    //Image.asset('assets/images/unlam-logo.png', height: 80, width: 200),
+                    FutureBuilder<String?>(
+                      future: graphCode, // Usar la variable Future aquí
+                      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          // Mostrar un indicador de carga mientras se obtiene el graphCode
+                          return const CircularProgressIndicator();
+                        } else if (snapshot.hasError) {
+                          // Manejo de errores
+                          return Text('Error: ${snapshot.error}');
+                        } else if (!snapshot.hasData || snapshot.data == null) {
+                          // Manejo del caso cuando no hay datos
+                          return const Text('No se encontró el grafo.');
+                        } else {
+                          // Aquí ya tienes el valor de graphCode
+                          String? graphCodeValue = snapshot.data;
+
+                          // Decide qué imagen mostrar
+                          if (graphCodeValue == 'UNLAM') {
+                            return Image.asset('assets/images/unlam-logo.png', height: 80, width: 200);
+                          } else {
+                            return Image.asset('assets/images/logo_GUIO.png', height: 80, width: 200);
+                          }
+                        }
+                      },
+                    ),
                     const SizedBox(height: 10),
                     const Divider(color: Colors.blueAccent),
                     const SizedBox(height: 10),
@@ -132,7 +158,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.house, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 0; // Cambia la opción a 1
+                                selectedOption = 0;
                               });
                             },
                           ),
@@ -144,7 +170,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.add_alert_sharp, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 1; // Cambia la opción a 1
+                                selectedOption = 1;
                               });
                             },
                           ),
@@ -156,7 +182,7 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.bar_chart, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 2; // Cambia la opción a 2
+                                selectedOption = 2;
                               });
                             },
                           ),
@@ -168,11 +194,11 @@ class _WebHomePageState extends State<WebHomePage> {
                             leading: const Icon(Icons.space_dashboard, color: Colors.white, size: 30.0),
                             onTap: () {
                               setState(() {
-                                selectedOption = 3; // Cambia la opción a 3
+                                selectedOption = 3;
                               });
                             },
                           ),
-                          const SizedBox(height: 450),
+                          const SizedBox(height: 100),
                           ListTile(
                             title: const Text(
                               'Cerrar Sesion',
@@ -206,7 +232,7 @@ class _WebHomePageState extends State<WebHomePage> {
                     if (selectedOption == 0) ...[
                       Image.asset('assets/images/logo_GUIO.png', height: 350, width: 800),
                       Text(
-                        'SISTEMA DE GESTIÓN DE ESPACIOS',
+                        'SISTEMA DE GESTIÓN DE ESTABLECIMIENTOS',
                         style: const TextStyle(fontSize: 50),
                       ),
                       const SizedBox(height: 6),
@@ -221,9 +247,10 @@ class _WebHomePageState extends State<WebHomePage> {
                         child: TicketListPage(), // Mostrando la clase TicketsList aquí
                       ),
                     ] else if (selectedOption == 2) ...[
-                      const Text(
-                        'Dashboard',
-                        style: TextStyle(fontSize: 50),
+                      Container(
+                        width: constraints.maxWidth,
+                        height: constraints.maxHeight,
+                        child: DashboardPage(), // Mostrando la clase TicketsList aquí
                       ),
                     ] else if (selectedOption == 3) ...[
                       Container(
