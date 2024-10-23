@@ -68,16 +68,52 @@ class _WebHomePageState extends State<WebHomePage> {
         child: Material(
           color: Colors.transparent,
           child: IntrinsicWidth(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-              decoration: BoxDecoration(
-                color: Color(0xFF1174ba),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                '¡HAY UNA NUEVA ALERTA!',
-                style: TextStyle(color: Colors.white),
-                textAlign: TextAlign.center,
+            child: SizedBox(
+              width: 380,
+              height: 130,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.7),  // Color de fondo blanco
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2), // Sombra más sutil
+                      blurRadius: 10.0,
+                      spreadRadius: 2.0,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.add_alert, size: 45, color: Color(0xFF1174ba)), // Icono de advertencia
+                    SizedBox(width: 15), // Espacio entre el icono y el texto
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '¡HAY UNA ALERTA NUEVA!',
+                            style: TextStyle(
+                              color: Color(0xFF1174ba),
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold, // Texto en negrita
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
+                          SizedBox(height: 5), // Espacio entre el título y la descripción
+                          Text(
+                            'Revisa la nueva alerta desde el menú "Alertas"',
+                            style: TextStyle(color: Colors.grey[600], fontSize: 14.0), // Texto más pequeño
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -88,11 +124,12 @@ class _WebHomePageState extends State<WebHomePage> {
     // Muestra la notificación usando el overlay
     overlay.insert(overlayEntry);
 
-    // Elimina la notificación después de 3 segundos
-    Future.delayed(Duration(seconds: 3), () {
+    // Elimina la notificación después de 5 segundos
+    Future.delayed(Duration(seconds: 7), () {
       overlayEntry.remove();
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
