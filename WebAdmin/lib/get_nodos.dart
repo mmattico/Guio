@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';  // For jsonEncode
 
-Future<List<Nodo>> fetchNodos() async {
-  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/'));
+Future<List<Nodo>> fetchNodos(Future<String?> graphCodeFuture) async {
+  final graphCode = await graphCodeFuture;
+  if (graphCode == null) {
+    throw Exception('Graph code no proporcionado.');
+  }
+  final response = await http.get(Uri.https('guio-hgazcxb0cwgjhkev.eastus-01.azurewebsites.net', '/api/nodos/extremosyotros/$graphCode'));
 
   if (response.statusCode == 200) {
     final utf8DecodedBody = utf8.decode(response.bodyBytes);
